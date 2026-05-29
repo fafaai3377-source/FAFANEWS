@@ -336,6 +336,12 @@ def main():
     build_pdf(pages, pdf_path)
     print("PNG:", total, "장")
     print("PDF:", pdf_path)
+    # 이메일 자동 발송 (RESEND_API_KEY / SENDGRID_API_KEY 설정 시)
+    try:
+        import send_email
+        send_email.send(pdf_path, DATE)
+    except Exception as e:
+        print("이메일 발송 생략:", e)
 
 if __name__ == "__main__":
     main()
