@@ -28,6 +28,7 @@ CREAM  = (252, 250, 240)   # 내지 배경
 INK    = (58, 58, 58)      # 차콜 (메인 타이틀)
 INK2   = (90, 90, 86)      # 본문
 GRAY   = (146, 146, 136)   # 보조 텍스트
+VIOLET = (107, 78, 230)    # AI 액센트
 BLUE   = (58, 96, 232)     # 디자인 액센트
 CORAL  = (240, 96, 64)     # 마케팅 액센트
 LINE   = (230, 228, 216)
@@ -167,7 +168,7 @@ def cover(date_str, count):
     big = font("black", 150); y = 380
     for ln in ["오늘의", "디자인", "마케팅", "브리핑"]:
         d.text((M, y), ln, font=big, fill=INK); y += 168
-    d.text((M, H-118), f"지난 24시간 주요 소식 총 {count}건 요약", font=font("medium", 32), fill=(120,118,96))
+    d.text((M, H-118), f"지난 24시간 AI·디자인·마케팅 소식 {count}건", font=font("medium", 32), fill=(120,118,96))
     nav = "넘겨서 보기 →"; fn2 = font("bold", 38)
     d.text((W-M-d.textlength(nav, font=fn2), H-122), nav, font=fn2, fill=INK)
     p = os.path.join(OUT, "01_cover.png"); im.save(p)
@@ -186,10 +187,8 @@ def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn):
     im.paste(Image.alpha_composite(im.crop((0,0,W,180)).convert("RGBA"), shade).convert("RGB"), (0,0))
     d = ImageDraw.Draw(im)
     # 카테고리 pill (이미지 위 좌상단)
-    pill(d, M, 40, f"{cat_en} · {cat_ko}", font("bold", 28), ac, WHITE)
-    # 인덱스 번호 (이미지 위 우상단)
-    nf = font("black", 86); n = f"{idx:02d}"
-    d.text((W-M-d.textlength(n, font=nf), 28), n, font=nf, fill=WHITE)
+    label = cat_en if cat_en == cat_ko else f"{cat_en} · {cat_ko}"
+    pill(d, M, 40, label, font("bold", 28), ac, WHITE)
     # 본문 영역
     y = BH + 44
     y = dl(d, M, y, title, font("extrabold", 56), INK, W-2*M, 10, maxlines=3); y += 18
@@ -223,8 +222,33 @@ def build_pdf(pages, pdf_path):
     doc.save(pdf_path); doc.close()
 
 # ================================================================ 데이터 (매 실행 교체)
+# 분야별 7건씩. (제목, 한국어요약, 출처명, 원문 URL)
 DATE_ISO = datetime.date(2026, 5, 29)
 DATE = "2026년 5월 29 (금)"
+
+AI = [
+ ("Google I/O 2026: Gemini 3.5 Flash·Spark 공개",
+  "구글이 연례 I/O에서 경량 모델 Gemini 3.5 Flash와 범용 AI 에이전트 Gemini Spark를 공개했다. 프런티어급 성능을 1/3 수준 가격에 제공한다고 밝혔다.",
+  "CNBC", "https://www.cnbc.com/2026/05/19/google-ai-ultra-gemini-spark-omni.html"),
+ ("OpenAI, ChatGPT 광고 매니저 출시",
+  "OpenAI가 ChatGPT 안에서 광고를 직접 만들고 운영하는 셀프서브 광고 매니저를 출시했다. 올해 광고 매출 25억 달러를 목표로 한다.",
+  "Build Fast with AI", "https://www.buildfastwithai.com/blogs/ai-news-today-may-25-2026"),
+ ("Anthropic, 첫 분기 흑자 전망·9000억 달러 밸류에이션",
+  "Anthropic이 창사 이래 첫 분기 영업흑자를 전망했다. 300억 달러 펀딩 라운드로 9000억 달러 이상의 기업가치가 거론된다.",
+  "Mean.ceo", "https://blog.mean.ceo/ai-advancements-news-may-2026/"),
+ ("Anthropic·게이츠 재단, 2억 달러 AI 파트너십",
+  "Anthropic과 게이츠 재단이 4년간 2억 달러 규모로 협력한다. 의료·교육·농업 등 소외 지역을 위한 AI 도구 개발이 목표다.",
+  "AI News", "https://www.artificialintelligence-news.com/"),
+ ("MS·구글·xAI, 출시 전 정부 AI 모델 검증 수용",
+  "마이크로소프트·구글·xAI가 출시 전 정부 기관의 AI 모델 안전성 검증을 허용하기로 했다. AI 거버넌스 협력의 분기점으로 평가된다.",
+  "CNN Business", "https://www.cnn.com/2026/05/05/tech/microsoft-google-xai-government-test-ai-models"),
+ ("Runway, '월드 모델'로 53억 달러 밸류에이션",
+  "AI 스타트업 Runway가 영상 학습 기반 '월드 모델'을 차세대 프런티어로 제시했다. 최근 53억 달러 기업가치에 도달했다.",
+  "imFounder", "https://imfounder.com/science-tech/ai/ai-updates-may-2026/"),
+ ("텔레그램, 메시지 읽고 답하는 어시스턴트 봇 도입",
+  "텔레그램이 메시지를 읽고 필터링·응답하는 어시스턴트 봇을 도입한다. AI를 단순 챗봇이 아닌 일상 대화의 보조 레이어로 통합한다.",
+  "Medium", "https://medium.com/@davidakpovi/ai-news-week-of-may-18-to-may-24-2026-6cb451ecb766"),
+]
 
 DESIGN = [
  ("2026 브랜딩·디자인 트렌드: '감각 디자인'의 부상",
@@ -245,18 +269,9 @@ DESIGN = [
  ("키네틱 로고와 '차일드라이크 아나키'",
   "손글씨·낙서풍의 차일드라이크 아나키와 움직이는 키네틱 로고가 부상한다. 표면적 미니멀리즘의 종말을 예고하는 흐름이다.",
   "Envato Elements", "https://elements.envato.com/learn/logo-and-branding-trends"),
- ("다음 브랜드 혁명을 이끌 9대 디자인 트렌드",
-  "몰입형·적응형 브랜드 시스템이 차세대 브랜드 혁명을 주도할 전망이다. 정적인 정체성에서 살아있는 시스템으로의 전환이 가속된다.",
-  "Designerpeople", "https://www.designerpeople.com/blog/brand-design-trends-2026/"),
  ("Brand New: 최신 리브랜드·아이덴티티 아카이브",
   "전 세계 주요 로고·아이덴티티 프로젝트를 매일 큐레이션해 업데이트한다. 최신 리브랜드 사례를 한눈에 확인할 수 있는 레퍼런스다.",
   "UnderConsideration", "https://www.underconsideration.com/brandnew/"),
- ("2026 브랜딩 트렌드 8선",
-  "노스탤지어, 대담한 타이포그래피, 친환경 비주얼 등 8가지 브랜딩 트렌드가 올 한 해를 이끈다. 감성과 지속가능성이 키워드다.",
-  "The Brand Strategy Lab", "https://thebrandstrategylab.com/blog/branding-trends-were-going-to-see-this-year/"),
- ("리브랜드, 언제 해야 하나 — 2026 가이드",
-  "브랜드 리프레시가 필요한 시점을 가늠하는 기준과 2026년 주목할 디자인 흐름을 정리했다. 타이밍 판단의 실용 지침을 제시한다.",
-  "The Marketing Machine", "https://www.themmachine.com/branding-trends-2026/"),
 ]
 
 MARKETING = [
@@ -275,33 +290,31 @@ MARKETING = [
  ("스냅, '통합 어트리뷰션' 출시",
   "스냅이 플랫폼 지표와 MMP 데이터를 결합한 통합 어트리뷰션을 출시했다. 앱 광고주가 캠페인을 실시간으로 평가·최적화할 수 있게 됐다.",
   "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
- ("Robot.com, AI 광고 솔루션 'R-Ads' 출시",
-  "로봇닷컴이 AI 기반 광고 솔루션 R-Ads를 공식 출시했다. 광고 제작·운영 전반의 자동화를 표방한다.",
-  "MarTech Cube", "https://www.martechcube.com/robot-com-announced-the-launch-of-r-ads/"),
- ("오늘의 광고·마케팅·미디어 헤드라인 (5/28)",
-  "5월 28일자 글로벌 광고·마케팅·미디어 주요 뉴스 헤드라인을 한데 모았다. 업계 동향을 빠르게 훑기 좋은 브리핑이다.",
-  "BestMediaInfo", "https://bestmediainfo.com/mediainfo/advertising/top-advertising-marketing-and-media-news-headlines-of-today-may-28-2026-11881910"),
  ("4월 베스트 광고 캠페인 15선",
   "4월 한 달간 가장 인상적이었던 글로벌 광고 캠페인 15편을 선정해 소개한다. 크리에이티브 인사이트를 얻기 좋은 모음이다.",
   "Famous Campaigns", "https://www.famouscampaigns.com/2026/05/the-15-best-campaigns-we-saw-in-april/"),
- ("5월 4주차 마케팅 트렌드 5가지",
-  "5월 25일 주간 주목할 마케팅 트렌드 5가지를 정리했다. 크리에이터·AI·리테일 미디어가 핵심 키워드로 꼽혔다.",
-  "B2the7", "https://www.b2the7.com/news-blog/marketing-trends-may-25-2026"),
  ("크리에이터 이코노미, 2026년 440억 달러 전망",
   "크리에이터 콘텐츠가 핵심 미디어 채널로 자리잡으며 2026년 총 광고비가 440억 달러에 이를 전망이다. 브랜드의 크리에이터 투자가 본격화된다.",
-  "Seafoam Media", "https://seafoammedia.com/may-2026-marketing-news/"),
+  "B2the7", "https://www.b2the7.com/news-blog/marketing-trends-may-25-2026"),
+]
+
+# (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
+SECTIONS = [
+ ("AI", "AI", VIOLET, "ai", AI),
+ ("DESIGN", "디자인", BLUE, "design", DESIGN),
+ ("MARKETING", "마케팅", CORAL, "marketing", MARKETING),
 ]
 
 # ================================================================ 실행
 def main():
     pages = []
-    total = 1 + len(DESIGN) + len(MARKETING)
-    pages.append(cover(DATE, len(DESIGN)+len(MARKETING)))
+    total = 1 + sum(len(s[4]) for s in SECTIONS)
+    pages.append(cover(DATE, total-1))
     idx = 2
-    for t, b, s, u in DESIGN:
-        pages.append(card(idx, total, "DESIGN", "디자인", BLUE, t, b, s, u, f"{idx:02d}_design.png")); idx += 1
-    for t, b, s, u in MARKETING:
-        pages.append(card(idx, total, "MARKETING", "마케팅", CORAL, t, b, s, u, f"{idx:02d}_marketing.png")); idx += 1
+    for cat_en, cat_ko, ac, suffix, items in SECTIONS:
+        for t, b, s, u in items:
+            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u, f"{idx:02d}_{suffix}.png"))
+            idx += 1
     pdf_name = DATE_ISO.strftime("%y%m%d") + "_FAFA NEWS.pdf"
     pdf_path = os.path.join(OUT, pdf_name)
     build_pdf(pages, pdf_path)
