@@ -174,6 +174,20 @@ def cover(date_str, count):
     p = os.path.join(OUT, "01_cover.png"); im.save(p)
     return p, None
 
+def closing(fn):
+    im, d = base(YELLOW)
+    d.text((M, 96), "Outro", font=font("bold", 42), fill=INK)
+    fn0 = font("bold", 42); d.text((W-M-d.textlength("FAFA NEWS", font=fn0), 96), "FAFA NEWS", font=fn0, fill=GRAY)
+    big = font("black", 150); y = 430
+    for ln in ["오늘", "하루도", "파이팅!"]:
+        d.text((M, y), ln, font=big, fill=INK); y += 168
+    d.text((M, y+24), "오늘의 브리핑은 여기까지 — 좋은 하루 보내세요.", font=font("medium", 38), fill=(120,118,96))
+    d.text((M, H-118), "내일 아침 10시, 다시 만나요", font=font("medium", 32), fill=(120,118,96))
+    nav = "FAFA NEWS"; fn2 = font("bold", 38)
+    d.text((W-M-d.textlength(nav, font=fn2), H-122), nav, font=fn2, fill=INK)
+    p = os.path.join(OUT, fn); im.save(p)
+    return p, None
+
 def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn):
     im, d = base(CREAM)
     BH = 620
@@ -308,13 +322,15 @@ SECTIONS = [
 # ================================================================ 실행
 def main():
     pages = []
-    total = 1 + sum(len(s[4]) for s in SECTIONS)
-    pages.append(cover(DATE, total-1))
+    n_articles = sum(len(s[4]) for s in SECTIONS)
+    total = 1 + n_articles + 1   # 표지 + 기사 + 엔딩
+    pages.append(cover(DATE, n_articles))
     idx = 2
     for cat_en, cat_ko, ac, suffix, items in SECTIONS:
         for t, b, s, u in items:
             pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u, f"{idx:02d}_{suffix}.png"))
             idx += 1
+    pages.append(closing(f"{idx:02d}_closing.png"))
     pdf_name = DATE_ISO.strftime("%y%m%d") + "_FAFA NEWS.pdf"
     pdf_path = os.path.join(OUT, pdf_name)
     build_pdf(pages, pdf_path)
