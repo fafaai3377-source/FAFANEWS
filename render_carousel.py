@@ -96,25 +96,93 @@ def pill(d, x, y, t, f, bg, fg, px=24, py=12):
     return x+tw+px*2
 
 # ---------------------------------------------------------------- 이미지 페치
+def _abs_url(src, base_url):
+    src = html.unescape(src).strip()
+    if src.startswith("//"): return "https:" + src
+    if src.startswith("/"):
+        from urllib.parse import urlparse
+        p = urlparse(base_url); return f"{p.scheme}://{p.netloc}" + src
+    return src
+
+def _load_image(src):
+    try:
+        ir = requests.get(src, headers=UA, timeout=12)
+        ct = ir.headers.get("Content-Type", "")
+        if ir.status_code != 200 or len(ir.content) < 3000: return None
+        if "svg" in ct or src.lower().endswith(".svg"): return None
+        img = Image.open(io.BytesIO(ir.content)).convert("RGB")
+        if img.width < 200 or img.height < 150: return None  # 로고·아이콘 배제
+        return img
+    except Exception:
+        return None
+
 def fetch_og_image(url):
+    """기사 페이지에서 대표 이미지 추출 — 여러 메타/JSON-LD/본문 이미지를 순차 시도."""
     try:
         r = requests.get(url, headers=UA, timeout=12)
         if r.status_code != 200: return None
         h = r.text
-        m = (re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)', h, re.I)
-             or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', h, re.I)
-             or re.search(r'<meta[^>]+name=["\']twitter:image["\'][^>]+content=["\']([^"\']+)', h, re.I))
-        if not m: return None
-        src = html.unescape(m.group(1)).strip()
-        if src.startswith("//"): src = "https:" + src
-        elif src.startswith("/"):
-            from urllib.parse import urlparse
-            p = urlparse(url); src = f"{p.scheme}://{p.netloc}" + src
-        ir = requests.get(src, headers=UA, timeout=12)
-        if ir.status_code != 200 or len(ir.content) < 1500: return None
-        return Image.open(io.BytesIO(ir.content)).convert("RGB")
     except Exception:
         return None
+    cands = []
+    for pat in (
+        r'<meta[^>]+property=["\']og:image(?::secure_url)?["\'][^>]+content=["\']([^"\']+)',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+        r'<meta[^>]+name=["\']twitter:image(?::src)?["\'][^>]+content=["\']([^"\']+)',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+name=["\']twitter:image["\']',
+        r'<link[^>]+rel=["\']image_src["\'][^>]+href=["\']([^"\']+)',
+        r'<meta[^>]+itemprop=["\']image["\'][^>]+content=["\']([^"\']+)',
+    ):
+        cands += re.findall(pat, h, re.I)
+    # JSON-LD "image": "..." 또는 "image": ["..."]
+    for m in re.findall(r'"image"\s*:\s*(\[[^\]]+\]|"[^"]+")', h, re.I):
+        cands += re.findall(r'https?:[^"\']+', m)
+    # 본문 내 큰 이미지(article 우선)
+    body = re.search(r'<article[\s\S]{0,40000}?</article>', h, re.I)
+    scope = body.group(0) if body else h
+    cands += re.findall(r'<img[^>]+(?:data-src|src)=["\'](https?://[^"\']+\.(?:jpg|jpeg|png|webp)[^"\']*)', scope, re.I)
+    seen = set()
+    for c in cands:
+        src = _abs_url(c, url)
+        if src in seen: continue
+        seen.add(src)
+        img = _load_image(src)
+        if img: return img
+    return None
+
+def _img_queries(title, cat_en):
+    """구체적(브랜드명+주제) → 광범위(주제) 순의 검색어 목록. Openverse는 AND 매칭이라 단어를 적게."""
+    base = {"AI": ["artificial intelligence", "technology", "data center"],
+            "DESIGN": ["graphic design", "branding", "design studio"],
+            "MARKETING": ["marketing", "advertising", "business meeting"]}.get(cat_en, ["technology"])
+    toks = re.findall(r"[A-Za-z][A-Za-z0-9.&+-]{2,}", title)
+    qs = []
+    if toks: qs.append(f"{toks[0]} {base[0]}")
+    qs += base
+    return qs
+
+def fetch_related_image(queries, salt=0):
+    """og:image 실패 시 Openverse(무료 이미지 검색)로 주제 관련 실사진을 가져온다.
+    salt로 결과 순서를 회전시켜 카드마다 다른 이미지를 고른다."""
+    if isinstance(queries, str): queries = [queries]
+    for q in queries:
+        try:
+            r = requests.get("https://api.openverse.org/v1/images/",
+                             params={"q": q, "page_size": 12, "mature": "false"},
+                             headers=UA, timeout=12)
+            if r.status_code != 200: continue
+            results = r.json().get("results", [])
+        except Exception:
+            continue
+        if not results: continue
+        n = len(results); off = salt % n
+        for i in [(off + j) % n for j in range(n)]:
+            res = results[i]
+            for u in (res.get("url"), res.get("thumbnail")):
+                if not u: continue
+                img = _load_image(u)
+                if img: return img
+    return None
 
 def cover_crop(img, bw, bh):
     iw, ih = img.size
@@ -150,17 +218,24 @@ _SEEN_HASHES = set()
 def _ihash(img):
     return hashlib.md5(img.resize((64, 64)).tobytes()).hexdigest()
 
-def get_card_image(url, accent, source, bw, bh, key):
+def get_card_image(url, accent, source, bw, bh, key, title="", cat_en=""):
     cache = os.path.join(IMG_CACHE, key + ".png")
     if os.path.exists(cache):
         img = Image.open(cache).convert("RGB")
     else:
-        fetched = fetch_og_image(url)
+        salt = int(hashlib.md5(key.encode()).hexdigest(), 16)
+        # 1) 기사 대표 이미지 → 2) 주제 관련 실사진 → 3) (최후) 플레이스홀더
+        fetched = fetch_og_image(url) or fetch_related_image(_img_queries(title, cat_en), salt)
         img = cover_crop(fetched, bw, bh) if fetched else placeholder(accent, source, bw, bh, key)
         img.save(cache)
-    # 중복(동일 사진) 감지 → 그 카드만 고유 플레이스홀더로 대체
+    # 중복(동일 사진) 감지 → 결과 순서를 바꿔 다른 실사진 시도, 그래도 겹치면 고유 플레이스홀더
     if _ihash(img) in _SEEN_HASHES:
-        img = placeholder(accent, source, bw, bh, key)
+        salt = int(hashlib.md5((key + "alt").encode()).hexdigest(), 16)
+        alt = fetch_related_image(_img_queries(title, cat_en), salt)
+        if alt is not None and _ihash(cover_crop(alt, bw, bh)) not in _SEEN_HASHES:
+            img = cover_crop(alt, bw, bh)
+        else:
+            img = placeholder(accent, source, bw, bh, key)
         img.save(cache)
     _SEEN_HASHES.add(_ihash(img))
     return img
@@ -209,7 +284,7 @@ def closing(fn):
 def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn):
     im, d = base(CREAM)
     BH = 620
-    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0])
+    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0], title, cat_en)
     im.paste(img, (0, 0))
     # 이미지 위 그라데이션(가독성) — 상단 살짝 어둡게
     shade = Image.new("RGBA", (W, 180), (0,0,0,0))

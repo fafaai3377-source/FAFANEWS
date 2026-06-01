@@ -18,6 +18,14 @@ description: 지난 24시간 AI·디자인·마케팅 아티클을 웹 검색으
 최근 발행분 우선. 항목별로 제목·출처명·원문 URL·2~3문장 한국어 요약 확보.
 의미 있는 항목이 부족하면 억지로 채우지 말고 카드 수를 줄인다(상한 22장).
 
+### 참고 소스(국내외 폭넓게)
+네이버 뉴스에만 의존하지 말고 아래 같은 큐레이션·전문 매체도 함께 본다:
+- 국내 큐레이션: **서핏(surfit.io)**, **브런치(brunch.co.kr)**, 디자인프레스, 요즘IT(yozm.wishket), 폴인, 까탈로그
+- 디자인/브랜드: It's Nice That, Creative Boom, Brand New(UnderConsideration), Fast Company, Figma Blog
+- 마케팅: MarTech, Marketing Dive, The Drum, Adweek, 모비인사이드
+- AI: TechCrunch, The Verge, VentureBeat, 각 사 공식 블로그(OpenAI·Anthropic·Google 등)
+국내 서비스(서핏·브런치)는 해당 글이 인용·링크한 원문 매체 URL을 출처로 쓰는 것이 좋다.
+
 ## 2. 한국어 번역·요약
 모든 카드 텍스트 한국어. 요약 1~2문장, 사실 중심, 과장 없이. 고유명사는 통용 표기.
 
@@ -35,7 +43,7 @@ pip install --quiet Pillow PyMuPDF requests
 `render_carousel.py` 의 `DATE_ISO`, `DATE`, `DESIGN`, `MARKETING` 리스트만
 1단계 결과로 교체한 뒤 `python3 render_carousel.py` 실행.
 - 1080×1350 PNG 21장 → `output/`
-- 카드당 기사 URL의 og:image 자동 추출·삽입 (봇 차단 시 액센트 플레이스홀더로 대체)
+- 카드당 이미지: ① 기사 og:image/대표 이미지 추출 → ② 차단 시 Openverse에서 주제 관련 실사진 검색 → ③ 그래도 없으면 액센트 플레이스홀더 (최후)
 - 클릭 가능한 출처 링크 포함 PDF → `output/YYMMDD_FAFA NEWS.pdf`
 
 ## 5. 검증 후 공유
