@@ -150,16 +150,69 @@ def fetch_og_image(url):
         if img: return img
     return None
 
+# 한국어 브랜드·인물명 → 영어 변환 (Openverse 검색 품질 향상)
+KO_TO_EN = {
+    "안드레이 카파시": "Andrej Karpathy",
+    "카파시": "Karpathy",
+    "구글": "Google", "알파벳": "Alphabet Google",
+    "엔비디아": "NVIDIA", "엔비디아의": "NVIDIA",
+    "마이크로소프트": "Microsoft", "MS": "Microsoft",
+    "깃허브": "GitHub", "코파일럿": "GitHub Copilot",
+    "오픈AI": "OpenAI", "ChatGPT": "ChatGPT",
+    "앤트로픽": "Anthropic", "Anthropic": "Anthropic",
+    "피그마": "Figma", "Figma": "Figma",
+    "애플": "Apple", "메타": "Meta",
+    "아마존": "Amazon", "AWS": "AWS",
+    "스냅": "Snapchat Snap",
+    "타입폼": "Typeform",
+    "펍매틱": "PubMatic programmatic",
+    "세일즈포스": "Salesforce",
+    "틱톡": "TikTok",
+    "유튜브": "YouTube",
+    "링크드인": "LinkedIn",
+    "트위터": "Twitter X",
+    "펩시코": "PepsiCo",
+    "루프트한자": "Lufthansa",
+    "BMW": "BMW",
+    "BBH": "BBH advertising agency",
+    "리브랜드": "rebrand identity",
+    "브랜딩": "branding",
+    "광고": "advertising",
+    "캠페인": "marketing campaign",
+    "에이전트": "AI agent",
+    "펀딩": "startup funding",
+    "밸류에이션": "startup valuation",
+    "거버넌스": "AI governance policy",
+    "크리에이터": "creator content",
+}
+
 def _img_queries(title, cat_en):
-    """구체적(브랜드명+주제) → 광범위(주제) 순의 검색어 목록. Openverse는 AND 매칭이라 단어를 적게."""
-    base = {"AI": ["artificial intelligence", "technology", "data center"],
-            "DESIGN": ["graphic design", "branding", "design studio"],
-            "MARKETING": ["marketing", "advertising", "business meeting"]}.get(cat_en, ["technology"])
-    toks = re.findall(r"[A-Za-z][A-Za-z0-9.&+-]{2,}", title)
+    """제목에서 구체적 검색어 추출 → 카테고리 폴백 순서로 반환.
+    한국어 브랜드·인물명을 영어로 변환해 Openverse 검색 정밀도를 높인다."""
+    # 한국어 → 영어 치환
+    t = title
+    for ko, en in KO_TO_EN.items():
+        t = t.replace(ko, en)
+    # 영어 단어 추출 (3글자 이상, 숫자·기호 제외)
+    en_words = re.findall(r"[A-Z][A-Za-z]{2,}|[A-Za-z]{4,}", t)
+    # 브랜드명·고유명사(대문자 시작) 우선
+    proper = [w for w in en_words if w[0].isupper()]
+    common = [w for w in en_words if not w[0].isupper()]
+    fallback = {"AI":         ["artificial intelligence", "AI technology", "machine learning"],
+                "DESIGN":     ["graphic design", "brand identity", "design studio"],
+                "MARKETING":  ["marketing advertising", "brand campaign", "digital marketing"],
+                }.get(cat_en, ["technology"])
     qs = []
-    if toks: qs.append(f"{toks[0]} {base[0]}")
-    qs += base
-    return qs
+    # 가장 구체적: 고유명사 2개 조합
+    if len(proper) >= 2: qs.append(f"{proper[0]} {proper[1]}")
+    if proper:           qs.append(proper[0])
+    # 고유명사 + 카테고리 힌트
+    if proper:           qs.append(f"{proper[0]} {fallback[0]}")
+    # 일반 단어 + 힌트
+    if common:           qs.append(f"{common[0]} {fallback[0]}")
+    qs += fallback
+    seen = set()
+    return [q for q in qs if not (q in seen or seen.add(q))]
 
 def fetch_related_image(queries, salt=0):
     """og:image 실패 시 Openverse(무료 이미지 검색)로 주제 관련 실사진을 가져온다.
@@ -218,24 +271,26 @@ _SEEN_HASHES = set()
 def _ihash(img):
     return hashlib.md5(img.resize((64, 64)).tobytes()).hexdigest()
 
-def get_card_image(url, accent, source, bw, bh, key, title="", cat_en=""):
+def get_card_image(url, accent, source, bw, bh, key, title="", cat_en="", force_search=False):
+    """force_search=True: og:image를 건너뛰고 바로 제목 기반 이미지 검색(동일 URL 중복 카드용)."""
     cache = os.path.join(IMG_CACHE, key + ".png")
+    salt  = int(hashlib.md5(key.encode()).hexdigest(), 16)
+    qs    = _img_queries(title, cat_en)
     if os.path.exists(cache):
         img = Image.open(cache).convert("RGB")
     else:
-        salt = int(hashlib.md5(key.encode()).hexdigest(), 16)
-        # 1) 기사 대표 이미지 → 2) 주제 관련 실사진 → 3) (최후) 플레이스홀더
-        fetched = fetch_og_image(url) or fetch_related_image(_img_queries(title, cat_en), salt)
+        if force_search:
+            fetched = fetch_related_image(qs, salt)
+        else:
+            fetched = fetch_og_image(url) or fetch_related_image(qs, salt)
         img = cover_crop(fetched, bw, bh) if fetched else placeholder(accent, source, bw, bh, key)
         img.save(cache)
-    # 중복(동일 사진) 감지 → 결과 순서를 바꿔 다른 실사진 시도, 그래도 겹치면 고유 플레이스홀더
+    # 중복(동일 사진) 감지 → 다른 salt로 재검색, 그래도 겹치면 플레이스홀더
     if _ihash(img) in _SEEN_HASHES:
-        salt = int(hashlib.md5((key + "alt").encode()).hexdigest(), 16)
-        alt = fetch_related_image(_img_queries(title, cat_en), salt)
-        if alt is not None and _ihash(cover_crop(alt, bw, bh)) not in _SEEN_HASHES:
-            img = cover_crop(alt, bw, bh)
-        else:
-            img = placeholder(accent, source, bw, bh, key)
+        salt2 = int(hashlib.md5((key + "alt").encode()).hexdigest(), 16)
+        alt   = fetch_related_image(qs, salt2)
+        img   = cover_crop(alt, bw, bh) if (alt and _ihash(cover_crop(alt, bw, bh)) not in _SEEN_HASHES) \
+                else placeholder(accent, source, bw, bh, key)
         img.save(cache)
     _SEEN_HASHES.add(_ihash(img))
     return img
@@ -281,10 +336,10 @@ def closing(fn):
     p = os.path.join(OUT, fn); im.save(p)
     return p, None
 
-def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn):
+def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn, force_search=False):
     im, d = base(CREAM)
     BH = 620
-    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0], title, cat_en)
+    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0], title, cat_en, force_search)
     im.paste(img, (0, 0))
     # 이미지 위 그라데이션(가독성) — 상단 살짝 어둡게
     shade = Image.new("RGBA", (W, 180), (0,0,0,0))
@@ -336,22 +391,22 @@ DATE = "2026년 6월 1일 (월)"
 AI = [
  ("Claude Opus 4.8 공개 — SWE-bench 88.6%",
   "Anthropic이 Opus 4.8을 공개했다. SWE-bench Verified 88.6%, Terminal-Bench 2.1 74.6%를 기록했고 병렬 서브에이전트와 2.5배 빠른 패스트 모드를 지원한다. 가격은 동일하게 유지됐다.",
-  "LLM Stats", "https://llm-stats.com/llm-updates"),
+  "Build Fast with AI", "https://www.buildfastwithai.com/blogs/claude-opus-4-8-review-benchmarks-dynamic-workflows-2026"),
  ("구글 Gemini 3.5 Flash 정식 출시",
   "구글의 경량 모델 Gemini 3.5 Flash가 정식 버전(GA)으로 전환됐다. 동급 모델 대비 약 4배 빠른 속도로 프런티어급 지능을 제공한다고 밝혔다.",
-  "LLM Stats", "https://llm-stats.com/ai-news"),
+  "Google Blog", "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/"),
  ("깃허브 코파일럿, 6월 1일부터 사용량 과금 전환",
   "마이크로소프트 깃허브가 코파일럿을 요청 기반에서 사용량 기반 미터링 과금으로 전환한다. 1크레딧당 0.01달러의 가상화폐 'GitHub AI Credits'를 도입한다.",
-  "Releasebot", "https://releasebot.io/updates/openai"),
+  "GitHub Blog", "https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/"),
  ("OpenAI, 1220억 달러 조달 — 밸류 8520억 달러",
   "OpenAI가 역대 최대 규모인 1220억 달러를 8520억 달러 기업가치에 조달했다. 아마존 500억·엔비디아 300억 달러 등 대형 투자가 포함됐다.",
-  "Air Street Press", "https://press.airstreet.com/p/state-of-ai-may-2026"),
+  "TechCrunch", "https://techcrunch.com/2026/03/31/openai-not-yet-public-raises-3b-from-retail-investors-in-monster-122b-fund-raise/"),
  ("안드레이 카파시, Anthropic 합류",
-  "저명한 AI 연구자이자 교육자인 안드레이 카파시가 Anthropic에 합류했다고 밝혔다. 대규모 언어모델 최전선 연구와 R&D로 복귀한다.",
-  "Air Street Press", "https://press.airstreet.com/p/state-of-ai-may-2026"),
+  "저명한 AI 연구자이자 교육자인 안드레이 카파시가 Anthropic에 합류했다고 밝혔다. 프리트레이닝팀에서 Claude 자체를 활용한 연구 자동화를 이끈다.",
+  "TechCrunch", "https://techcrunch.com/2026/05/19/openai-co-founder-andrej-karpathy-joins-anthropics-pre-training-team/"),
  ("BMW i 벤처스, 3억 달러 에이전틱 AI 펀드",
   "BMW i 벤처스가 초기~시리즈 B 단계 스타트업을 겨냥한 3억 달러 신규 펀드를 발표했다. 에이전틱·피지컬 AI와 산업 소프트웨어, 공급망 기술에 투자한다.",
-  "Crescendo AI", "https://www.crescendo.ai/news/latest-ai-news-and-updates"),
+  "TechCrunch", "https://techcrunch.com/2026/04/29/bmw-i-ventures-has-a-new-300m-fund-and-ai-is-riding-shotgun/"),
  ("엔비디아, 오픈 에이전트 개발 플랫폼 공개",
   "엔비디아가 지식 노동을 자동화하는 오픈 에이전트 개발 플랫폼을 공개했다. 기업이 전문 영역 AI 에이전트를 직접 구축·운영할 수 있도록 지원한다.",
   "NVIDIA Newsroom", "https://nvidianews.nvidia.com/news/ai-agents"),
@@ -417,11 +472,19 @@ def main():
     pages = []
     n_articles = sum(len(s[4]) for s in SECTIONS)
     total = 1 + n_articles + 1   # 표지 + 기사 + 엔딩
+    # 동일 URL을 2번 이상 쓰는 카드는 og:image가 무관한 이미지일 가능성이 높음
+    # → 첫 번째 카드만 og:image, 나머지는 제목 기반 검색 강제
+    all_urls = [u for _, _, _, _, items in SECTIONS for _, _, _, u in items]
+    _seen_urls: set = set()
+    def _force(url):
+        if url in _seen_urls: return True
+        _seen_urls.add(url); return False
     pages.append(cover(DATE, n_articles))
     idx = 2
     for cat_en, cat_ko, ac, suffix, items in SECTIONS:
         for t, b, s, u in items:
-            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u, f"{idx:02d}_{suffix}.png"))
+            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u,
+                              f"{idx:02d}_{suffix}.png", force_search=_force(u)))
             idx += 1
     pages.append(closing(f"{idx:02d}_closing.png"))
     pdf_name = DATE_ISO.strftime("%y%m%d") + "_FAFA NEWS.pdf"
