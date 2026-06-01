@@ -9,7 +9,7 @@ FAFA NEWS — 디자인·마케팅 모닝 브리핑 캐러셀 렌더러
 
 매 실행 시 DATE / DESIGN / MARKETING 리스트만 교체하면 동일 포맷으로 재생성된다.
 """
-import os, re, io, html, datetime
+import os, re, io, html, datetime, hashlib, math
 import requests
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -124,26 +124,52 @@ def cover_crop(img, bw, bh):
     x = (nw-bw)//2; y = (nh-bh)//2
     return img.crop((x, y, x+bw, y+bh))
 
-def placeholder(accent, label, bw, bh):
+# 동일 이미지가 두 카드에 들어가지 않도록 16x16 그레이스케일 지문으로 중복 검출
+_SEEN_HASHES = set()
+def _img_hash(img):
+    return hashlib.md5(img.convert("L").resize((16, 16)).tobytes()).hexdigest()
+
+def placeholder(accent, label, bw, bh, seed=0):
+    """카드마다 시각적으로 구별되는 액센트 플레이스홀더 (그라데이션 각도·패턴·번호가 seed별로 달라짐)."""
     base = Image.new("RGB", (bw, bh), accent)
-    top = Image.new("RGB", (bw, bh), tuple(min(255,c+45) for c in accent))
-    mask = Image.linear_gradient("L").resize((bw, bh))
+    top  = Image.new("RGB", (bw, bh), tuple(min(255, c+60) for c in accent))
+    mask = Image.linear_gradient("L").rotate((seed*53 + 20) % 360, expand=False, resample=Image.BICUBIC)
+    mask = mask.resize((bw, bh))
     img = Image.composite(base, top, mask)
-    d = ImageDraw.Draw(img)
-    f = font("extrabold", 56)
+    d = ImageDraw.Draw(img, "RGBA")
+    # seed별로 위치·크기가 달라지는 반투명 도형으로 패턴 차별화
+    r = 180 + (seed % 4) * 60
+    cx = int(bw * (0.2 + 0.15 * (seed % 5)))
+    cy = int(bh * (0.3 + 0.12 * (seed % 3)))
+    d.ellipse([cx-r, cy-r, cx+r, cy+r], fill=(255, 255, 255, 28))
+    r2 = 90 + (seed % 3) * 40
+    cx2 = int(bw * (0.7 - 0.1 * (seed % 4)))
+    cy2 = int(bh * (0.65 + 0.08 * (seed % 4)))
+    d.ellipse([cx2-r2, cy2-r2, cx2+r2, cy2+r2], fill=(0, 0, 0, 22))
+    # 출처명 (중앙)
+    f = font("extrabold", 54)
     tw = d.textlength(label, font=f)
-    d.text(((bw-tw)//2, bh//2-40), label, font=f, fill=(255,255,255))
-    f2 = font("medium", 30)
+    d.text(((bw-tw)//2, bh//2-36), label, font=f, fill=(255, 255, 255))
+    f2 = font("semibold", 28)
     sub = "FAFA NEWS"
-    d.text(((bw-d.textlength(sub, font=f2))//2, bh//2+40), sub, font=f2, fill=(255,255,255))
+    d.text(((bw-d.textlength(sub, font=f2))//2, bh//2+44), sub, font=f2, fill=(255, 255, 255, 220))
     return img
 
-def get_card_image(url, accent, source, bw, bh, key):
+def get_card_image(url, accent, source, bw, bh, key, seed=0):
     cache = os.path.join(IMG_CACHE, key+".png")
     if os.path.exists(cache):
-        return Image.open(cache).convert("RGB")
-    img = fetch_og_image(url)
-    img = cover_crop(img, bw, bh) if img else placeholder(accent, source, bw, bh)
+        img = Image.open(cache).convert("RGB")
+        _SEEN_HASHES.add(_img_hash(img))
+        return img
+    raw = fetch_og_image(url)
+    if raw:
+        img = cover_crop(raw, bw, bh)
+        h = _img_hash(img)
+        if h in _SEEN_HASHES:          # 이미 쓴 이미지면 카드별 플레이스홀더로 대체
+            img = placeholder(accent, source, bw, bh, seed)
+    else:
+        img = placeholder(accent, source, bw, bh, seed)
+    _SEEN_HASHES.add(_img_hash(img))
     img.save(cache)
     return img
 
@@ -191,7 +217,7 @@ def closing(fn):
 def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn):
     im, d = base(CREAM)
     BH = 620
-    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0])
+    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0], seed=idx)
     im.paste(img, (0, 0))
     # 이미지 위 그라데이션(가독성) — 상단 살짝 어둡게
     shade = Image.new("RGBA", (W, 180), (0,0,0,0))
@@ -242,49 +268,49 @@ DATE = "2026년 6월 1일 (월)"
 
 AI = [
  ("OpenAI, GPT-5.5 공식 출시",
-  "OpenAI가 역대 가장 강력한 모델 GPT-5.5를 출시했다. 코딩·연구·데이터 분석에서 성능이 크게 개선됐으며 에이전틱 코딩과 컴퓨터 사용 능력이 특히 뛰어나다.",
+  "OpenAI가 역대 최강 모델 GPT-5.5를 공개했다. 에이전틱 코딩·컴퓨터 사용·지식 작업에서 큰 폭의 성능 향상을 보이며, 복잡한 멀티스텝 업무 자동화를 겨냥한다.",
   "OpenAI", "https://openai.com/index/introducing-gpt-5-5/"),
- ("Anthropic, Claude Opus 4.8 업데이트",
-  "Anthropic이 플래그십 모델 Claude Opus 4.8을 업데이트했다. 코딩·에이전틱 작업·추론 능력이 향상됐으며 병렬 서브에이전트를 활용하는 동적 워크플로를 지원한다.",
-  "Dentro.de AI", "https://dentro.de/ai/news/"),
- ("DeepSeek, V4-Pro·Flash 동시 출시",
-  "DeepSeek이 100만 토큰 컨텍스트 윈도우를 갖춘 MoE(혼합 전문가) 모델 V4-Pro와 V4-Flash를 동시에 출시했다. 하이브리드 어텐션으로 추론 비용을 낮추고 장기 에이전틱 작업을 최적화했다.",
+ ("Anthropic, Claude Opus 4.8 출시",
+  "Anthropic이 플래그십 Claude Opus 4.8을 내놨다. 추론 강도(effort)를 직접 조절하고 병렬 서브에이전트를 돌리는 동적 워크플로를 지원해 에이전틱 작업의 통제권을 사용자에게 넘겼다.",
+  "Anthropic", "https://www.anthropic.com/news"),
+ ("DeepSeek, V4-Pro·Flash 동시 공개",
+  "DeepSeek이 100만 토큰 컨텍스트의 MoE 모델 V4-Pro·Flash를 출시했다. 하이브리드 어텐션으로 추론 비용을 낮춰, 장시간 도는 에이전트 작업의 경제성을 끌어올린 점이 핵심이다.",
   "LLM Stats", "https://llm-stats.com/llm-updates"),
- ("GitHub Copilot, AI 크레딧 과금으로 전환",
-  "GitHub이 6월 1일부터 Copilot 과금 방식을 요청 기반에서 사용량 기반 'AI 크레딧' 체계로 전환했다. 사용한 만큼 지불하는 구조로 기업 고객의 비용 예측 가능성을 높인다.",
-  "OpenAI Release Notes", "https://releasebot.io/updates/openai"),
- ("OpenAI, IPO 기밀 제출 시작",
-  "OpenAI가 골드만삭스·모건스탠리를 주관사로 선정하고 IPO 기밀 서류를 제출했다. 9월 상장이 유력하며 밸류에이션은 $8,520억으로 추산된다.",
-  "Dentro.de AI", "https://dentro.de/ai/news/"),
- ("OpenRouter, 시리즈B $1.13억 조달",
-  "AI 모델 통합 플랫폼 OpenRouter가 시리즈B에서 1억 1,300만 달러를 조달하며 기업가치 13억 달러를 달성했다. 현재 주당 25조 토큰을 처리하는 규모로 성장했다.",
-  "Dentro.de AI", "https://dentro.de/ai/news/"),
- ("MIT 연구: 기업 85%, 3년 내 에이전틱 전환 목표",
-  "MIT 연구에 따르면 기업의 85%가 3년 안에 에이전틱 AI를 도입하길 원하지만 76%는 인프라 지원이 부족하다. AI 에이전트 확산의 최대 병목은 기술이 아닌 조직 역량이라는 결론이다.",
-  "Dentro.de AI", "https://dentro.de/ai/news/"),
+ ("GitHub Copilot, '사용량 기반' 과금으로 전환",
+  "GitHub이 6월 1일부로 Copilot을 요청 기반에서 'AI 크레딧' 사용량 과금으로 바꿨다. 에이전트가 토큰을 많이 쓰는 시대에 맞춰 비용 구조를 재설계한 신호다.",
+  "GitHub Blog", "https://github.blog/"),
+ ("OpenAI, 9월 IPO 정조준 — 기밀 서류 제출",
+  "OpenAI가 골드만삭스·모건스탠리를 주관사로 IPO 기밀 서류 작업에 들어갔다. 9월 상장이 거론되며 밸류에이션은 약 8,520억 달러 수준으로 추산된다.",
+  "Crescendo AI", "https://www.crescendo.ai/news/latest-ai-news-and-updates"),
+ ("OpenRouter, 시리즈B 1.13억 달러 — 기업가치 13억",
+  "AI 모델 통합 라우팅 플랫폼 OpenRouter가 1억 1,300만 달러를 조달해 13억 달러 밸류에이션에 올랐다. 주당 25조 토큰을 처리하며 '모델 중립' 인프라 수요를 입증했다.",
+  "Qubit Capital", "https://qubit.capital/blog/ai-startup-fundraising-trends"),
+ ("MIT: 기업 85% '에이전틱 전환' 원하지만 76%는 준비 안 됨",
+  "MIT Technology Review 조사에서 기업 85%가 3년 내 에이전틱 전환을 목표로 했지만 76%는 인프라가 부족했다. AI 도입의 진짜 병목이 모델이 아닌 조직 역량임을 드러낸다.",
+  "MIT Tech Review", "https://www.technologyreview.com/"),
 ]
 
 DESIGN = [
- ("Figma Config 2026, 6월 23-25일 샌프란시스코 개최",
-  "제품 크리에이터를 위한 연례 컨퍼런스 Figma Config 2026이 샌프란시스코에서 열린다. AI 기반 디자인 시스템 생성과 프로토타입 자동화 등 대형 발표가 예고되고 있다.",
-  "Mean.ceo", "https://blog.mean.ceo/design-trends-june-2026/"),
- ("UX London 2026 개막 — 6월 2일부터 4일간",
-  "유럽 최대 UX 컨퍼런스 UX London 2026이 6월 2일 개막한다. 에이전틱 인터페이스 설계·AI 시대의 인간 중심 UX가 핵심 주제로 다뤄진다.",
+ ("Figma Config 2026, 6월 23-25일 샌프란시스코 개막",
+  "제품 크리에이터 연례 컨퍼런스 Config 2026이 열린다. 실제 컴포넌트 라이브러리를 기반으로 한 AI UI 생성과 프로토타입 자동화가 올해의 화두로 예고됐다.",
+  "Figma", "https://config.figma.com/"),
+ ("UX London 2026, 6월 2일부터 사흘간",
+  "유럽 최대 UX 컨퍼런스가 막을 올린다. AI 에이전트 시대의 인터페이스 설계와 인간 중심 UX의 재정의가 핵심 세션으로 다뤄진다.",
   "UIUX Trend", "https://uiuxtrend.com/events/"),
- ("'디자인 as 인프라' — AI 시대의 새로운 패러다임",
-  "브랜드 규칙을 PDF가 아닌 머신리더블 마크다운 파일로 전환하는 흐름이 가속되고 있다. AI가 실시간으로 브랜드 기준을 적용해 비전문가도 일관된 디자인 산출물을 만들 수 있게 됐다.",
+ ("디자인이 '실행 가능한 인프라'가 된다",
+  "브랜드 규칙을 PDF가 아닌 머신리더블 마크다운으로 옮기는 흐름이 빨라졌다. AI가 생성 단계에서 브랜드 기준을 강제하면서 비전문가도 일관된 산출물을 뽑아낸다.",
   "Mean.ceo", "https://blog.mean.ceo/design-trends-june-2026/"),
- ("Motion-First 브랜딩, 2026 핵심 트렌드로 부상",
-  "정적 로고에서 키네틱·적응형 시스템으로 이동하는 Motion-First 브랜딩이 2026년 디자인의 핵심 흐름으로 자리잡았다. 모바일·소셜·몰입형 환경 모두에 최적화된 다이나믹 비주얼이 표준이 됐다.",
+ ("Motion-First — 정적 로고의 시대가 저문다",
+  "키네틱·적응형 시스템으로 옮겨가는 Motion-First가 2026 브랜딩의 표준이 됐다. 화면·맥락에 따라 변하는 다이나믹 아이덴티티가 디지털·몰입형 환경 전반에 적용된다.",
   "Big Orange Planet", "https://www.bigorangeplanet.com/2026/05/20/top-10-branding-trends-in-2026"),
- ("비디자이너가 디자인 운영자로 — AI 브리프의 힘",
-  "구조화된 요구사항 중심 브리프로 PM·창업자·마케터가 전문 디자이너 없이도 제품급 UI를 만들고 있다. 2시간 내 클릭 가능한 프로토타입 완성이 새로운 기준이 됐다.",
-  "Mean.ceo", "https://blog.mean.ceo/design-trends-june-2026/"),
- ("접근성이 '기능'에서 '인프라'로 재정의",
-  "2026 UX/UI 설계에서 접근성은 선택 사항이 아닌 기반 시설로 취급되기 시작했다. 시각·운동·인지·환경 다양성을 기본값으로 전제하는 설계 원칙이 업계 표준으로 정착하고 있다.",
+ ("제품 디자인, 'AI 동일성'을 버리고 의도로 회귀",
+  "AI가 찍어낸 듯한 비슷한 디자인에서 벗어나, 의도와 맥락을 앞세운 제품 디자인이 부상한다. 기계를 위한 설계(MX)와 인간적 결정 사이의 균형이 핵심 과제로 떠올랐다.",
+  "UX Pilot", "https://uxpilot.ai/blogs/product-design-trends"),
+ ("접근성이 '기능'에서 '인프라'로 격상",
+  "2026 UX 설계는 접근성을 선택이 아닌 기반 시설로 다룬다. 시각·운동·인지·기기·환경의 다양성을 기본값으로 전제하는 설계가 업계 표준으로 자리잡았다.",
   "UXPin", "https://www.uxpin.com/studio/blog/ui-ux-design-trends/"),
- ("Raw & Imperfect — AI 미학의 반작용",
-  "AI가 쏟아내는 매끈한 이미지에 대한 반작용으로 거친 타이포·불균형 레이아웃·스캔 텍스처 등 의도된 불완전함이 새로운 크리에이티브 기준으로 떠올랐다.",
+ ("Raw & Imperfect — AI 매끈함에 대한 반작용",
+  "거친 타이포·불균형 레이아웃·스캔 텍스처 등 '의도된 불완전함'이 새 크리에이티브 기준으로 떠올랐다. 천편일률적 미니멀리즘에 대한 피로가 만든 흐름이다.",
   "Creative Boom", "https://www.creativeboom.com/insight/how-being-weird-can-save-branding-in-2026/"),
 ]
 
