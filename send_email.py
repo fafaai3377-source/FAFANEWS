@@ -16,7 +16,7 @@ FAFA NEWS 브리핑 이메일 발송 모듈 (HTTPS API 사용 — 이 환경은 
 import os, sys, base64, json, datetime
 import requests
 
-DEFAULT_TO   = "taeo@foundfounded.com"
+DEFAULT_TO   = "fafaai3377@gmail.com"
 DEFAULT_FROM = "FAFA NEWS <onboarding@resend.dev>"
 
 def _subject(date_label):
