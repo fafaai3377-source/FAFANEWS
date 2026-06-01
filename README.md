@@ -33,3 +33,14 @@
 3. 예약 세션이 시작되면 스킬이 수집→요약→렌더→PDF→발송을 자동 수행한다.
 
 > 예약 트리거 생성은 웹 UI에서 이뤄진다: https://code.claude.com/docs/en/claude-code-on-the-web
+
+## 이메일 발송
+- 수신자: **fafaai3377@gmail.com** (코드 기본값 `send_email.py`의 `DEFAULT_TO`)
+- 발송 수단: HTTPS 이메일 API (SMTP 차단 환경). 환경변수 `RESEND_API_KEY` 또는 `SENDGRID_API_KEY` 필요.
+- Resend의 경우 **가입 계정 본인 주소(fafaai3377@gmail.com)** 로는 도메인 인증 없이 바로 발송된다.
+  → 환경 시크릿에 `RESEND_API_KEY`만 등록하면 매일 자동 발송 완료.
+- 다른 주소로 보내려면 도메인 인증 후 `EMAIL_TO`/`EMAIL_FROM` 환경변수로 지정한다.
+
+## 중복 이미지 방지
+- 카드 이미지 해시를 추적해 같은 사진은 PDF/카드에 **한 번만** 들어간다.
+- 중복 시 해당 카드만 카드별 고유 플레이스홀더로 대체된다.
