@@ -6,7 +6,7 @@ FAFA NEWS 브리핑 이메일 발송 모듈 (HTTPS API 사용 — 이 환경은 
 환경변수:
   RESEND_API_KEY      Resend API 키 (권장)  또는
   SENDGRID_API_KEY    SendGrid API 키
-  EMAIL_TO            수신자 (기본: taeo@foundfounded.com)
+  EMAIL_TO            수신자 (기본: fafaai3377@gmail.com)
   EMAIL_FROM          발신자 (기본: FAFA NEWS <onboarding@resend.dev>)
                       ※ 커스텀 도메인 발신은 해당 서비스에서 도메인 인증 필요
 
@@ -16,7 +16,7 @@ FAFA NEWS 브리핑 이메일 발송 모듈 (HTTPS API 사용 — 이 환경은 
 import os, sys, base64, json, datetime
 import requests
 
-DEFAULT_TO   = "taeo@foundfounded.com"
+DEFAULT_TO   = "fafaai3377@gmail.com"
 DEFAULT_FROM = "FAFA NEWS <onboarding@resend.dev>"
 
 def _subject(date_label):
