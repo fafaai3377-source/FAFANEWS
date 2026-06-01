@@ -9,7 +9,7 @@ FAFA NEWS — 디자인·마케팅 모닝 브리핑 캐러셀 렌더러
 
 매 실행 시 DATE / DESIGN / MARKETING 리스트만 교체하면 동일 포맷으로 재생성된다.
 """
-import os, re, io, html, datetime
+import os, re, io, html, datetime, hashlib
 import requests
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -124,10 +124,16 @@ def cover_crop(img, bw, bh):
     x = (nw-bw)//2; y = (nh-bh)//2
     return img.crop((x, y, x+bw, y+bh))
 
-def placeholder(accent, label, bw, bh):
+def placeholder(accent, label, bw, bh, seed=""):
+    # seed로 그라데이션 방향·색을 다르게 해 카드마다 고유한 플레이스홀더 생성
+    s = int(hashlib.md5((seed or label).encode()).hexdigest(), 16)
+    shift = 28 + (s % 46)
+    c2 = tuple(min(255, c + shift) for c in accent)
     base = Image.new("RGB", (bw, bh), accent)
-    top = Image.new("RGB", (bw, bh), tuple(min(255,c+45) for c in accent))
+    top  = Image.new("RGB", (bw, bh), c2)
     mask = Image.linear_gradient("L").resize((bw, bh))
+    if s & 1:   mask = mask.transpose(Image.FLIP_TOP_BOTTOM)
+    if s & 2:   mask = mask.rotate(90, expand=True).resize((bw, bh))
     img = Image.composite(base, top, mask)
     d = ImageDraw.Draw(img)
     f = font("extrabold", 56)
@@ -138,13 +144,25 @@ def placeholder(accent, label, bw, bh):
     d.text(((bw-d.textlength(sub, font=f2))//2, bh//2+40), sub, font=f2, fill=(255,255,255))
     return img
 
+# 같은 사진이 두 번 들어가지 않도록 사용한 이미지 해시를 추적
+_SEEN_HASHES = set()
+
+def _ihash(img):
+    return hashlib.md5(img.resize((64, 64)).tobytes()).hexdigest()
+
 def get_card_image(url, accent, source, bw, bh, key):
-    cache = os.path.join(IMG_CACHE, key+".png")
+    cache = os.path.join(IMG_CACHE, key + ".png")
     if os.path.exists(cache):
-        return Image.open(cache).convert("RGB")
-    img = fetch_og_image(url)
-    img = cover_crop(img, bw, bh) if img else placeholder(accent, source, bw, bh)
-    img.save(cache)
+        img = Image.open(cache).convert("RGB")
+    else:
+        fetched = fetch_og_image(url)
+        img = cover_crop(fetched, bw, bh) if fetched else placeholder(accent, source, bw, bh, key)
+        img.save(cache)
+    # 중복(동일 사진) 감지 → 그 카드만 고유 플레이스홀더로 대체
+    if _ihash(img) in _SEEN_HASHES:
+        img = placeholder(accent, source, bw, bh, key)
+        img.save(cache)
+    _SEEN_HASHES.add(_ihash(img))
     return img
 
 # ---------------------------------------------------------------- 카드
