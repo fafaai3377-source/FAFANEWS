@@ -16,6 +16,15 @@ FAFA NEWS 브리핑 이메일 발송 모듈 (HTTPS API 사용 — 이 환경은 
 import os, sys, base64, json, datetime
 import requests
 
+# .env 파일이 있으면 자동 로드
+_env = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+if os.path.exists(_env):
+    for _line in open(_env):
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _v = _line.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
+
 DEFAULT_TO   = "fafaai3377@gmail.com"
 DEFAULT_FROM = "FAFA NEWS <onboarding@resend.dev>"
 
