@@ -1,14 +1,17 @@
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
-          }
-        ]
-      }
-    ]
-  }
+    "env": {
+          "RESEND_API_KEY": "re_81hDwqQA_N7vw3J5m2Lem9zE3LfSCYHQ2"
+    },
+    "hooks": {
+          "SessionStart": [
+                  {
+                            "hooks": [
+                                        {
+                                                      "type": "command",
+                                                      "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+                                        }
+                            ]
+                  }
+          ]
+    }
 }
