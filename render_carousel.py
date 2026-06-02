@@ -37,6 +37,31 @@ WHITE  = (255, 255, 255)
 F = {"black":"Pretendard-Black.otf","extrabold":"Pretendard-ExtraBold.otf",
      "bold":"Pretendard-Bold.otf","semibold":"Pretendard-SemiBold.otf",
      "medium":"Pretendard-Medium.otf","regular":"Pretendard-Regular.otf"}
+
+def ensure_fonts():
+    """Pretendard(한글) 폰트가 없으면 npm으로 자동 설치. 그래도 없으면 에러로 중단
+    — 한글이 □□□(두부)로 깨진 PDF가 만들어지는 사고를 원천 차단한다."""
+    import subprocess, glob
+    need = os.path.join(FONT_DIR, F["black"])
+    if os.path.exists(need):
+        return
+    os.makedirs(FONT_DIR, exist_ok=True)
+    try:
+        subprocess.run("npm install pretendard@1.3.9", cwd=FONT_DIR, shell=True,
+                       check=False, capture_output=True, timeout=180)
+        for f in glob.glob(os.path.join(FONT_DIR, "node_modules/pretendard/dist/public/static/*.otf")):
+            dst = os.path.join(FONT_DIR, os.path.basename(f))
+            if not os.path.exists(dst):
+                import shutil; shutil.copy(f, dst)
+    except Exception as e:
+        print("폰트 설치 시도 실패:", e)
+    if not os.path.exists(need):
+        raise RuntimeError(
+            f"Pretendard 폰트를 찾을 수 없습니다 ({need}). 한글이 깨지므로 렌더링을 중단합니다. "
+            "`cd /tmp/fonts && npm install pretendard@1.3.9 && "
+            "cp node_modules/pretendard/dist/public/static/*.otf /tmp/fonts/` 실행 후 재시도하세요.")
+
+ensure_fonts()
 def font(w, s): return ImageFont.truetype(os.path.join(FONT_DIR, F[w]), s)
 
 UA = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -96,25 +121,146 @@ def pill(d, x, y, t, f, bg, fg, px=24, py=12):
     return x+tw+px*2
 
 # ---------------------------------------------------------------- 이미지 페치
+def _abs_url(src, base_url):
+    src = html.unescape(src).strip()
+    if src.startswith("//"): return "https:" + src
+    if src.startswith("/"):
+        from urllib.parse import urlparse
+        p = urlparse(base_url); return f"{p.scheme}://{p.netloc}" + src
+    return src
+
+def _load_image(src):
+    try:
+        ir = requests.get(src, headers=UA, timeout=12)
+        ct = ir.headers.get("Content-Type", "")
+        if ir.status_code != 200 or len(ir.content) < 3000: return None
+        if "svg" in ct or src.lower().endswith(".svg"): return None
+        img = Image.open(io.BytesIO(ir.content)).convert("RGB")
+        if img.width < 200 or img.height < 150: return None  # 로고·아이콘 배제
+        return img
+    except Exception:
+        return None
+
 def fetch_og_image(url):
+    """기사 페이지에서 대표 이미지 추출 — 여러 메타/JSON-LD/본문 이미지를 순차 시도."""
     try:
         r = requests.get(url, headers=UA, timeout=12)
         if r.status_code != 200: return None
         h = r.text
-        m = (re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)', h, re.I)
-             or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', h, re.I)
-             or re.search(r'<meta[^>]+name=["\']twitter:image["\'][^>]+content=["\']([^"\']+)', h, re.I))
-        if not m: return None
-        src = html.unescape(m.group(1)).strip()
-        if src.startswith("//"): src = "https:" + src
-        elif src.startswith("/"):
-            from urllib.parse import urlparse
-            p = urlparse(url); src = f"{p.scheme}://{p.netloc}" + src
-        ir = requests.get(src, headers=UA, timeout=12)
-        if ir.status_code != 200 or len(ir.content) < 1500: return None
-        return Image.open(io.BytesIO(ir.content)).convert("RGB")
     except Exception:
         return None
+    cands = []
+    for pat in (
+        r'<meta[^>]+property=["\']og:image(?::secure_url)?["\'][^>]+content=["\']([^"\']+)',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+        r'<meta[^>]+name=["\']twitter:image(?::src)?["\'][^>]+content=["\']([^"\']+)',
+        r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+name=["\']twitter:image["\']',
+        r'<link[^>]+rel=["\']image_src["\'][^>]+href=["\']([^"\']+)',
+        r'<meta[^>]+itemprop=["\']image["\'][^>]+content=["\']([^"\']+)',
+    ):
+        cands += re.findall(pat, h, re.I)
+    # JSON-LD "image": "..." 또는 "image": ["..."]
+    for m in re.findall(r'"image"\s*:\s*(\[[^\]]+\]|"[^"]+")', h, re.I):
+        cands += re.findall(r'https?:[^"\']+', m)
+    # 본문 내 큰 이미지(article 우선)
+    body = re.search(r'<article[\s\S]{0,40000}?</article>', h, re.I)
+    scope = body.group(0) if body else h
+    cands += re.findall(r'<img[^>]+(?:data-src|src)=["\'](https?://[^"\']+\.(?:jpg|jpeg|png|webp)[^"\']*)', scope, re.I)
+    seen = set()
+    for c in cands:
+        src = _abs_url(c, url)
+        if src in seen: continue
+        seen.add(src)
+        img = _load_image(src)
+        if img: return img
+    return None
+
+# 한국어 브랜드·인물명 → 영어 변환 (Openverse 검색 품질 향상)
+KO_TO_EN = {
+    "안드레이 카파시": "Andrej Karpathy",
+    "카파시": "Karpathy",
+    "구글": "Google", "알파벳": "Alphabet Google",
+    "엔비디아": "NVIDIA", "엔비디아의": "NVIDIA",
+    "마이크로소프트": "Microsoft", "MS": "Microsoft",
+    "깃허브": "GitHub", "코파일럿": "GitHub Copilot",
+    "오픈AI": "OpenAI", "ChatGPT": "ChatGPT",
+    "앤트로픽": "Anthropic", "Anthropic": "Anthropic",
+    "피그마": "Figma", "Figma": "Figma",
+    "애플": "Apple", "메타": "Meta",
+    "아마존": "Amazon", "AWS": "AWS",
+    "스냅": "Snapchat Snap",
+    "타입폼": "Typeform",
+    "펍매틱": "PubMatic programmatic",
+    "세일즈포스": "Salesforce",
+    "틱톡": "TikTok",
+    "유튜브": "YouTube",
+    "링크드인": "LinkedIn",
+    "트위터": "Twitter X",
+    "펩시코": "PepsiCo",
+    "루프트한자": "Lufthansa",
+    "BMW": "BMW",
+    "BBH": "BBH advertising agency",
+    "리브랜드": "rebrand identity",
+    "브랜딩": "branding",
+    "광고": "advertising",
+    "캠페인": "marketing campaign",
+    "에이전트": "AI agent",
+    "펀딩": "startup funding",
+    "밸류에이션": "startup valuation",
+    "거버넌스": "AI governance policy",
+    "크리에이터": "creator content",
+}
+
+def _img_queries(title, cat_en):
+    """제목에서 구체적 검색어 추출 → 카테고리 폴백 순서로 반환.
+    한국어 브랜드·인물명을 영어로 변환해 Openverse 검색 정밀도를 높인다."""
+    # 한국어 → 영어 치환
+    t = title
+    for ko, en in KO_TO_EN.items():
+        t = t.replace(ko, en)
+    # 영어 단어 추출 (3글자 이상, 숫자·기호 제외)
+    en_words = re.findall(r"[A-Z][A-Za-z]{2,}|[A-Za-z]{4,}", t)
+    # 브랜드명·고유명사(대문자 시작) 우선
+    proper = [w for w in en_words if w[0].isupper()]
+    common = [w for w in en_words if not w[0].isupper()]
+    fallback = {"AI":         ["artificial intelligence", "AI technology", "machine learning"],
+                "DESIGN":     ["graphic design", "brand identity", "design studio"],
+                "MARKETING":  ["marketing advertising", "brand campaign", "digital marketing"],
+                }.get(cat_en, ["technology"])
+    qs = []
+    # 가장 구체적: 고유명사 2개 조합
+    if len(proper) >= 2: qs.append(f"{proper[0]} {proper[1]}")
+    if proper:           qs.append(proper[0])
+    # 고유명사 + 카테고리 힌트
+    if proper:           qs.append(f"{proper[0]} {fallback[0]}")
+    # 일반 단어 + 힌트
+    if common:           qs.append(f"{common[0]} {fallback[0]}")
+    qs += fallback
+    seen = set()
+    return [q for q in qs if not (q in seen or seen.add(q))]
+
+def fetch_related_image(queries, salt=0):
+    """og:image 실패 시 Openverse(무료 이미지 검색)로 주제 관련 실사진을 가져온다.
+    salt로 결과 순서를 회전시켜 카드마다 다른 이미지를 고른다."""
+    if isinstance(queries, str): queries = [queries]
+    for q in queries:
+        try:
+            r = requests.get("https://api.openverse.org/v1/images/",
+                             params={"q": q, "page_size": 12, "mature": "false"},
+                             headers=UA, timeout=12)
+            if r.status_code != 200: continue
+            results = r.json().get("results", [])
+        except Exception:
+            continue
+        if not results: continue
+        n = len(results); off = salt % n
+        for i in [(off + j) % n for j in range(n)]:
+            res = results[i]
+            for u in (res.get("url"), res.get("thumbnail")):
+                if not u: continue
+                img = _load_image(u)
+                if img: return img
+    return None
 
 def cover_crop(img, bw, bh):
     iw, ih = img.size
@@ -150,17 +296,26 @@ _SEEN_HASHES = set()
 def _ihash(img):
     return hashlib.md5(img.resize((64, 64)).tobytes()).hexdigest()
 
-def get_card_image(url, accent, source, bw, bh, key):
+def get_card_image(url, accent, source, bw, bh, key, title="", cat_en="", force_search=False):
+    """force_search=True: og:image를 건너뛰고 바로 제목 기반 이미지 검색(동일 URL 중복 카드용)."""
     cache = os.path.join(IMG_CACHE, key + ".png")
+    salt  = int(hashlib.md5(key.encode()).hexdigest(), 16)
+    qs    = _img_queries(title, cat_en)
     if os.path.exists(cache):
         img = Image.open(cache).convert("RGB")
     else:
-        fetched = fetch_og_image(url)
+        if force_search:
+            fetched = fetch_related_image(qs, salt)
+        else:
+            fetched = fetch_og_image(url) or fetch_related_image(qs, salt)
         img = cover_crop(fetched, bw, bh) if fetched else placeholder(accent, source, bw, bh, key)
         img.save(cache)
-    # 중복(동일 사진) 감지 → 그 카드만 고유 플레이스홀더로 대체
+    # 중복(동일 사진) 감지 → 다른 salt로 재검색, 그래도 겹치면 플레이스홀더
     if _ihash(img) in _SEEN_HASHES:
-        img = placeholder(accent, source, bw, bh, key)
+        salt2 = int(hashlib.md5((key + "alt").encode()).hexdigest(), 16)
+        alt   = fetch_related_image(qs, salt2)
+        img   = cover_crop(alt, bw, bh) if (alt and _ihash(cover_crop(alt, bw, bh)) not in _SEEN_HASHES) \
+                else placeholder(accent, source, bw, bh, key)
         img.save(cache)
     _SEEN_HASHES.add(_ihash(img))
     return img
@@ -206,10 +361,10 @@ def closing(fn):
     p = os.path.join(OUT, fn); im.save(p)
     return p, None
 
-def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn):
+def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn, force_search=False):
     im, d = base(CREAM)
     BH = 620
-    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0])
+    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0], title, cat_en, force_search)
     im.paste(img, (0, 0))
     # 이미지 위 그라데이션(가독성) — 상단 살짝 어둡게
     shade = Image.new("RGBA", (W, 180), (0,0,0,0))
@@ -255,79 +410,84 @@ def build_pdf(pages, pdf_path):
 
 # ================================================================ 데이터 (매 실행 교체)
 # 분야별 7건씩. (제목, 한국어요약, 출처명, 원문 URL)
-DATE_ISO = datetime.date(2026, 5, 29)
-DATE = "2026년 5월 29 (금)"
+# 날짜는 한국 시간(KST) 기준 '오늘'로 자동 설정 — 스케줄 실행 시 날짜가 어긋나지 않게 한다.
+# (특정 날짜로 고정하려면 아래 두 줄을 직접 값으로 바꾼다.)
+_KST    = datetime.timezone(datetime.timedelta(hours=9))
+_TODAY  = datetime.datetime.now(_KST).date()
+_WD     = ["월", "화", "수", "목", "금", "토", "일"]
+DATE_ISO = _TODAY
+DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
 AI = [
- ("Google I/O 2026: Gemini 3.5 Flash·Spark 공개",
-  "구글이 연례 I/O에서 경량 모델 Gemini 3.5 Flash와 범용 AI 에이전트 Gemini Spark를 공개했다. 프런티어급 성능을 1/3 수준 가격에 제공한다고 밝혔다.",
-  "CNBC", "https://www.cnbc.com/2026/05/19/google-ai-ultra-gemini-spark-omni.html"),
- ("OpenAI, ChatGPT 광고 매니저 출시",
-  "OpenAI가 ChatGPT 안에서 광고를 직접 만들고 운영하는 셀프서브 광고 매니저를 출시했다. 올해 광고 매출 25억 달러를 목표로 한다.",
-  "Build Fast with AI", "https://www.buildfastwithai.com/blogs/ai-news-today-may-25-2026"),
- ("Anthropic, 첫 분기 흑자 전망·9000억 달러 밸류에이션",
-  "Anthropic이 창사 이래 첫 분기 영업흑자를 전망했다. 300억 달러 펀딩 라운드로 9000억 달러 이상의 기업가치가 거론된다.",
-  "Mean.ceo", "https://blog.mean.ceo/ai-advancements-news-may-2026/"),
- ("Anthropic·게이츠 재단, 2억 달러 AI 파트너십",
-  "Anthropic과 게이츠 재단이 4년간 2억 달러 규모로 협력한다. 의료·교육·농업 등 소외 지역을 위한 AI 도구 개발이 목표다.",
-  "AI News", "https://www.artificialintelligence-news.com/"),
- ("MS·구글·xAI, 출시 전 정부 AI 모델 검증 수용",
-  "마이크로소프트·구글·xAI가 출시 전 정부 기관의 AI 모델 안전성 검증을 허용하기로 했다. AI 거버넌스 협력의 분기점으로 평가된다.",
-  "CNN Business", "https://www.cnn.com/2026/05/05/tech/microsoft-google-xai-government-test-ai-models"),
- ("Runway, '월드 모델'로 53억 달러 밸류에이션",
-  "AI 스타트업 Runway가 영상 학습 기반 '월드 모델'을 차세대 프런티어로 제시했다. 최근 53억 달러 기업가치에 도달했다.",
-  "imFounder", "https://imfounder.com/science-tech/ai/ai-updates-may-2026/"),
- ("텔레그램, 메시지 읽고 답하는 어시스턴트 봇 도입",
-  "텔레그램이 메시지를 읽고 필터링·응답하는 어시스턴트 봇을 도입한다. AI를 단순 챗봇이 아닌 일상 대화의 보조 레이어로 통합한다.",
-  "Medium", "https://medium.com/@davidakpovi/ai-news-week-of-may-18-to-may-24-2026-6cb451ecb766"),
+ ("Claude Opus 4.8 공개 — SWE-bench 88.6%",
+  "Anthropic이 Opus 4.8을 공개했다. SWE-bench Verified 88.6%, Terminal-Bench 2.1 74.6%를 기록했고 병렬 서브에이전트와 2.5배 빠른 패스트 모드를 지원한다. 가격은 동일하게 유지됐다.",
+  "Build Fast with AI", "https://www.buildfastwithai.com/blogs/claude-opus-4-8-review-benchmarks-dynamic-workflows-2026"),
+ ("구글 Gemini 3.5 Flash 정식 출시",
+  "구글의 경량 모델 Gemini 3.5 Flash가 정식 버전(GA)으로 전환됐다. 동급 모델 대비 약 4배 빠른 속도로 프런티어급 지능을 제공한다고 밝혔다.",
+  "Google Blog", "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/"),
+ ("깃허브 코파일럿, 6월 1일부터 사용량 과금 전환",
+  "마이크로소프트 깃허브가 코파일럿을 요청 기반에서 사용량 기반 미터링 과금으로 전환한다. 1크레딧당 0.01달러의 가상화폐 'GitHub AI Credits'를 도입한다.",
+  "GitHub Blog", "https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/"),
+ ("OpenAI, 1220억 달러 조달 — 밸류 8520억 달러",
+  "OpenAI가 역대 최대 규모인 1220억 달러를 8520억 달러 기업가치에 조달했다. 아마존 500억·엔비디아 300억 달러 등 대형 투자가 포함됐다.",
+  "TechCrunch", "https://techcrunch.com/2026/03/31/openai-not-yet-public-raises-3b-from-retail-investors-in-monster-122b-fund-raise/"),
+ ("안드레이 카파시, Anthropic 합류",
+  "저명한 AI 연구자이자 교육자인 안드레이 카파시가 Anthropic에 합류했다고 밝혔다. 프리트레이닝팀에서 Claude 자체를 활용한 연구 자동화를 이끈다.",
+  "TechCrunch", "https://techcrunch.com/2026/05/19/openai-co-founder-andrej-karpathy-joins-anthropics-pre-training-team/"),
+ ("BMW i 벤처스, 3억 달러 에이전틱 AI 펀드",
+  "BMW i 벤처스가 초기~시리즈 B 단계 스타트업을 겨냥한 3억 달러 신규 펀드를 발표했다. 에이전틱·피지컬 AI와 산업 소프트웨어, 공급망 기술에 투자한다.",
+  "TechCrunch", "https://techcrunch.com/2026/04/29/bmw-i-ventures-has-a-new-300m-fund-and-ai-is-riding-shotgun/"),
+ ("엔비디아, 오픈 에이전트 개발 플랫폼 공개",
+  "엔비디아가 지식 노동을 자동화하는 오픈 에이전트 개발 플랫폼을 공개했다. 기업이 전문 영역 AI 에이전트를 직접 구축·운영할 수 있도록 지원한다.",
+  "NVIDIA Newsroom", "https://nvidianews.nvidia.com/news/ai-agents"),
 ]
 
 DESIGN = [
- ("2026 브랜딩·디자인 트렌드: '감각 디자인'의 부상",
-  "정적 자산에서 벗어나 텍스처·깊이·움직임을 더한 감각적 디자인이 부상한다. 플랫폼에 따라 변하는 적응형 아이덴티티 시스템이 올해의 핵심 화두로 떠올랐다.",
-  "The Branding Journal", "https://www.thebrandingjournal.com/2026/01/top-branding-design-trends-2026/"),
- ("2026년을 정의할 로고 디자인 트렌드",
-  "키네틱 로고와 가변형 워드마크가 주류로 부상하고 있다. 기하학적 정밀함보다 살아 움직이며 상호작용하는 마크가 선호된다.",
-  "Creative Bloq", "https://www.creativebloq.com/design/logos-icons/these-logo-design-trends-will-define-2026"),
- ("브랜딩을 살리는 '괴짜다움'",
-  "과도하게 다듬어진 미니멀리즘에 대한 반작용으로 개성과 위트를 앞세운 안티브랜드 접근이 주목받는다. 남다름이 차별화의 무기가 됐다.",
-  "Creative Boom", "https://www.creativeboom.com/insight/how-being-weird-can-save-branding-in-2026/"),
- ("'의도된 불완전함' — 2026 비주얼 트렌드",
-  "AI 시대에 인간적 손맛과 의도된 불완전함을 살린 작업이 새로운 기준으로 떠올랐다. 매끈함보다 날것의 진정성이 강조된다.",
-  "Canva Newsroom", "https://www.canva.com/newsroom/news/design-trends-2026/"),
- ("브랜드 아이덴티티를 바꾸는 8가지 흐름",
-  "적응형 로고, 접근성 우선 컬러·타이포, 모션 시스템 등 8가지 디자인 흐름이 2026년 브랜드 아이덴티티를 재편하고 있다.",
-  "Threerooms", "https://www.threerooms.com/blog/8-design-trends-shaping-brand-identity-in-2026"),
- ("키네틱 로고와 '차일드라이크 아나키'",
-  "손글씨·낙서풍의 차일드라이크 아나키와 움직이는 키네틱 로고가 부상한다. 표면적 미니멀리즘의 종말을 예고하는 흐름이다.",
-  "Envato Elements", "https://elements.envato.com/learn/logo-and-branding-trends"),
+ ("피그마 Make, 로컬 코드베이스 연결 지원",
+  "5월 28일 피그마 Make가 로컬 코드베이스에 연결되도록 확장됐다. 특정 요소를 지정해 프롬프트하거나 편집 패널·채팅으로 변경을 지시하면 AI 코딩 에이전트가 코드를 수정한다.",
+  "Figma Release Notes", "https://www.figma.com/release-notes/"),
+ ("피그마 Buzz, 캠페인 자산 대량 편집 기능",
+  "5월 22일 피그마 Buzz가 캠페인 자산을 대규모로 일괄 편집·리사이즈하는 기능을 추가했다. 스프레드시트 업로드로 수백 개 변형을 한 번에 생성·관리할 수 있다.",
+  "Fast Company", "https://www.fastcompany.com/91545179/figma-ai-agent-tool"),
+ ("피그마, 캔버스 위 AI 디자인 에이전트 도입",
+  "피그마가 디자인 작업이 이뤄지는 캔버스에 전용 AI 에이전트를 내장했다. 디자인 생성·리믹스와 반복 작업 자동화를 수행하며 디자인 시스템을 기본 준수한다.",
+  "Figma Blog", "https://www.figma.com/blog/4-new-ways-to-go-from-idea-to-product-with-ai-tools/"),
+ ("펩시코, 25년 만의 새 비주얼 아이덴티티",
+  "펩시코가 약 25년 만에 기업 아이덴티티를 전면 개편했다. 소문자 워드마크와 흙빛 컬러 팔레트, 단순화된 아이코노그래피를 도입하고 'P'를 중심에 뒀다.",
+  "PepsiCo", "https://www.pepsico.com/newsroom/stories/2026/an-inside-look-at-pepsico-new-visual-identity-with-its-lead-designer"),
+ ("구글 워크스페이스 아이콘 대대적 리디자인",
+  "구글이 워크스페이스 앱 아이콘을 'AI 우선' 미학으로 개편하는 정황이 포착됐다. 수년간 이어진 플랫·4색 아이콘 체계에서 벗어나 Gemini 계열과 결을 맞춘다.",
+  "CGfrog", "https://blog.cgfrog.com/new-google-logos-icons-leaked-2026/"),
+ ("BBH, 44년 만의 첫 대규모 리브랜드",
+  "광고 에이전시 BBH가 44년 만에 첫 비주얼 아이덴티티 개편을 단행했다. Studio DRAMA와 협업한 전용 서체로 'AI 획일화'에 반기를 들며 창업자들의 개성을 타이포에 녹였다.",
+  "It's Nice That", "https://www.itsnicethat.com/articles/bbh-studio-drama-rebrand-graphic-design-project-260226"),
  ("Brand New: 최신 리브랜드·아이덴티티 아카이브",
   "전 세계 주요 로고·아이덴티티 프로젝트를 매일 큐레이션해 업데이트한다. 최신 리브랜드 사례를 한눈에 확인할 수 있는 레퍼런스다.",
   "UnderConsideration", "https://www.underconsideration.com/brandnew/"),
 ]
 
 MARKETING = [
- ("Spot & Tango, 창사 이래 최대 마케팅 캠페인",
-  "D2C 반려견 영양 브랜드가 TV·OOH·필드 마케팅을 아우르는 최대 규모 캠페인을 시작했다. 2026년 마케팅 예산을 50% 늘리고 350만 달러를 TV·OOH에 투입한다.",
-  "PetfoodIndustry", "https://www.petfoodindustry.com/pet-food-marketing-and-branding/news/15823276/spot-tango-launches-largest-marketing-campaign-in-company-history"),
- ("Google Marketing Live 2026: 광고의 AI 전환",
-  "구글이 AI 기반 캠페인 도구와 검색·쇼핑 내 에이전틱 커머스, 유튜브 성과 스위트 확장을 발표했다. 광고 운영의 자동화가 한층 가속된다.",
+ ("구글 마케팅 라이브 2026: 광고의 AI 전환",
+  "5월 20일 구글이 마케팅 라이브에서 AI 기반 광고 솔루션을 대거 공개했다. 구글과 유튜브 전반에서 마케터 성장을 돕는 도구들이 소개됐다.",
   "Google", "https://blog.google/products/ads-commerce/google-marketing-live-2026-collection/"),
- ("틱톡, 신규 광고 포맷 3종 공개",
-  "틱톡이 Logo Takeover·Prime Time·TopReach 등 3종 광고 상품을 공개하며 수익화에 박차를 가한다. 문화적 순간을 겨냥한 대형 노출 상품이 핵심이다.",
-  "Seafoam Media", "https://seafoammedia.com/may-2026-marketing-news/"),
- ("2026 최고의 마케팅 캠페인 — 월간 리뷰",
-  "올해 가장 화제가 된 브랜드 캠페인을 월간으로 정리했다. 창의성과 성과를 동시에 잡은 사례들이 소개된다.",
-  "The Gone Network", "https://www.thegonetwork.com/articles/the-best-marketing-campaigns-of-2026---monthly-review-2026"),
  ("스냅, '통합 어트리뷰션' 출시",
   "스냅이 플랫폼 지표와 MMP 데이터를 결합한 통합 어트리뷰션을 출시했다. 앱 광고주가 캠페인을 실시간으로 평가·최적화할 수 있게 됐다.",
   "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
- ("4월 베스트 광고 캠페인 15선",
-  "4월 한 달간 가장 인상적이었던 글로벌 광고 캠페인 15편을 선정해 소개한다. 크리에이티브 인사이트를 얻기 좋은 모음이다.",
-  "Famous Campaigns", "https://www.famouscampaigns.com/2026/05/the-15-best-campaigns-we-saw-in-april/"),
- ("크리에이터 이코노미, 2026년 440억 달러 전망",
-  "크리에이터 콘텐츠가 핵심 미디어 채널로 자리잡으며 2026년 총 광고비가 440억 달러에 이를 전망이다. 브랜드의 크리에이터 투자가 본격화된다.",
-  "B2the7", "https://www.b2the7.com/news-blog/marketing-trends-may-25-2026"),
+ ("타입폼, 'Growth Flow' 출시",
+  "5월 21일 타입폼이 폼 응답이 후속 비즈니스 액션을 자동 실행하는 Growth Flow를 출시했다. 응답 데이터를 세일즈 파이프라인·이메일·고객 지원으로 수작업 없이 전달한다.",
+  "MarTech", "https://martech.org/the-latest-ai-powered-martech-news-and-releases/"),
+ ("펍매틱, '디테일드 리즈닝 에이전트' 도입",
+  "5월 21일 펍매틱이 프로그래매틱 광고 대시보드에 분석 요약을 제공하는 추론 에이전트를 도입했다. 거래 경로·수수료·경매 역학을 상세히 보고한다.",
+  "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
+ ("Sounder AI, 트레이드 데스크서 컨텍스트 광고 확장",
+  "트라이튼 디지털의 Sounder AI가 5월 21일 트레이드 데스크 내 컨텍스트 광고 배치를 확장했다. 팟캐스트 음성을 스캔해 콘텐츠를 분류하고 위험 신호를 식별한다.",
+  "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
+ ("세일즈포스, 'Agentforce Coworker' 베타 공개",
+  "5월 22일 세일즈포스가 검색형 인터페이스에 AI 동료를 심는 Agentforce Coworker 베타를 공개했다. 업무 화면 안에서 에이전트가 협업 파트너처럼 동작한다.",
+  "MarTech", "https://martech.org/the-latest-ai-powered-martech-news-and-releases/"),
+ ("\"바이럴은 전략이 아니다\" — 적합성·주목도 강조",
+  "DS그룹의 라지브 자인은 브랜드가 바이럴을 전략으로 삼지 말고 적합성·주목도·발견 가능성에 집중해야 한다고 강조했다. AI·크리에이터·CTV가 광고를 재편하고 있다.",
+  "BestMediaInfo", "https://bestmediainfo.com/mediainfo/advertising/top-advertising-marketing-and-media-news-headlines-of-today-may-22-2026-11861013"),
 ]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
@@ -342,11 +502,19 @@ def main():
     pages = []
     n_articles = sum(len(s[4]) for s in SECTIONS)
     total = 1 + n_articles + 1   # 표지 + 기사 + 엔딩
+    # 동일 URL을 2번 이상 쓰는 카드는 og:image가 무관한 이미지일 가능성이 높음
+    # → 첫 번째 카드만 og:image, 나머지는 제목 기반 검색 강제
+    all_urls = [u for _, _, _, _, items in SECTIONS for _, _, _, u in items]
+    _seen_urls: set = set()
+    def _force(url):
+        if url in _seen_urls: return True
+        _seen_urls.add(url); return False
     pages.append(cover(DATE, n_articles))
     idx = 2
     for cat_en, cat_ko, ac, suffix, items in SECTIONS:
         for t, b, s, u in items:
-            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u, f"{idx:02d}_{suffix}.png"))
+            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u,
+                              f"{idx:02d}_{suffix}.png", force_search=_force(u)))
             idx += 1
     pages.append(closing(f"{idx:02d}_closing.png"))
     pdf_name = DATE_ISO.strftime("%y%m%d") + "_FAFA NEWS.pdf"

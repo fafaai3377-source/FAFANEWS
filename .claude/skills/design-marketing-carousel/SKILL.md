@@ -18,6 +18,14 @@ description: 지난 24시간 AI·디자인·마케팅 아티클을 웹 검색으
 최근 발행분 우선. 항목별로 제목·출처명·원문 URL·2~3문장 한국어 요약 확보.
 의미 있는 항목이 부족하면 억지로 채우지 말고 카드 수를 줄인다(상한 22장).
 
+### 참고 소스(국내외 폭넓게)
+네이버 뉴스에만 의존하지 말고 아래 같은 큐레이션·전문 매체도 함께 본다:
+- 국내 큐레이션: **서핏(surfit.io)**, **브런치(brunch.co.kr)**, 디자인프레스, 요즘IT(yozm.wishket), 폴인, 까탈로그
+- 디자인/브랜드: It's Nice That, Creative Boom, Brand New(UnderConsideration), Fast Company, Figma Blog
+- 마케팅: MarTech, Marketing Dive, The Drum, Adweek, 모비인사이드
+- AI: TechCrunch, The Verge, VentureBeat, 각 사 공식 블로그(OpenAI·Anthropic·Google 등)
+국내 서비스(서핏·브런치)는 해당 글이 인용·링크한 원문 매체 URL을 출처로 쓰는 것이 좋다.
+
 ## 2. 한국어 번역·요약
 모든 카드 텍스트 한국어. 요약 1~2문장, 사실 중심, 과장 없이. 고유명사는 통용 표기.
 
@@ -31,16 +39,28 @@ cp node_modules/pretendard/dist/public/static/*.otf /tmp/fonts/
 pip install --quiet Pillow PyMuPDF requests
 ```
 
-## 4. 렌더링
-`render_carousel.py` 의 `DATE_ISO`, `DATE`, `DESIGN`, `MARKETING` 리스트만
-1단계 결과로 교체한 뒤 `python3 render_carousel.py` 실행.
-- 1080×1350 PNG 21장 → `output/`
-- 카드당 기사 URL의 og:image 자동 추출·삽입 (봇 차단 시 액센트 플레이스홀더로 대체)
-- 클릭 가능한 출처 링크 포함 PDF → `output/YYMMDD_FAFA NEWS.pdf`
+## 4. 렌더링  ⚠️ 반드시 저장소의 render_carousel.py 사용
+**절대 PDF나 카드 디자인을 즉석에서 새로 만들지 말 것.** 색·레이아웃·폰트는 이미
+`render_carousel.py`에 고정돼 있다. 새 디자인을 만들면 옐로우 표지가 아닌 다른 디자인,
+한글 깨짐(□□□) 등 사고가 난다. 무조건 아래 절차만 따른다:
 
-## 5. 검증 후 공유
-표지 + 카드 1~2장을 열어 한글 깨짐·줄바꿈·이미지·레이아웃 확인 후
-PDF와 PNG 전체를 사용자에게 공유(SendUserFile). 출처 URL 목록도 함께 제공.
+1. `render_carousel.py`의 `AI`, `DESIGN`, `MARKETING` 세 리스트(각 7건, 튜플
+   `(제목, 한국어요약, 출처명, 원문URL)`)**만** 1~2단계 결과로 교체한다.
+   - **URL은 각 항목마다 서로 다른 '전용 기사' URL**을 쓴다. 한 roundup URL을 여러 항목에
+     재사용하면 og:image가 무관한 이미지로 나오므로 금지.
+   - 날짜(`DATE_ISO`/`DATE`)는 건드리지 않는다 — 코드가 KST 오늘로 자동 설정한다.
+2. `python3 render_carousel.py` 실행. (폰트는 코드가 자동 설치하며, 실패 시 에러로 중단됨)
+3. 산출물: 1080×1350 PNG 23장 + 클릭 링크 PDF `output/YYMMDD_FAFA NEWS.pdf`
+   - 카드 이미지: ① 기사 og:image → ② Openverse 주제 관련 실사진 → ③ (최후) 플레이스홀더
+
+## 5. 검증 후 공유  ⚠️ 이미지·내용 연관성 100% 필수
+1. 표지 + 카드 전체를 Read로 열어 **모든 카드의 이미지가 그 기사 내용과 직접 연관**되는지,
+   한글 깨짐(□)·줄바꿈·레이아웃을 확인한다.
+2. 무관한 이미지(차트·뉴스레터 배너·케이크 등)나 플레이스홀더가 보이면 → 해당 항목의
+   URL을 더 적절한 '전용 기사'로 바꾸거나, 제목에 영어 고유명사를 넣어 재렌더한다.
+   `_img` 캐시 때문에 안 바뀌면 `rm -rf output` 후 재실행.
+3. 통과되면 PDF를 SendUserFile로 공유하고, `send_email.py`로 이메일도 발송한다.
+   출처 URL 목록도 함께 제공.
 
 ## 디자인 시스템 (참고 표지 기준 · 고정값)
 - 캔버스 1080×1350, 여백 80px, 폰트 Pretendard
