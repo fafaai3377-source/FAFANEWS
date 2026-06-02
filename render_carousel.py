@@ -37,6 +37,31 @@ WHITE  = (255, 255, 255)
 F = {"black":"Pretendard-Black.otf","extrabold":"Pretendard-ExtraBold.otf",
      "bold":"Pretendard-Bold.otf","semibold":"Pretendard-SemiBold.otf",
      "medium":"Pretendard-Medium.otf","regular":"Pretendard-Regular.otf"}
+
+def ensure_fonts():
+    """Pretendard(한글) 폰트가 없으면 npm으로 자동 설치. 그래도 없으면 에러로 중단
+    — 한글이 □□□(두부)로 깨진 PDF가 만들어지는 사고를 원천 차단한다."""
+    import subprocess, glob
+    need = os.path.join(FONT_DIR, F["black"])
+    if os.path.exists(need):
+        return
+    os.makedirs(FONT_DIR, exist_ok=True)
+    try:
+        subprocess.run("npm install pretendard@1.3.9", cwd=FONT_DIR, shell=True,
+                       check=False, capture_output=True, timeout=180)
+        for f in glob.glob(os.path.join(FONT_DIR, "node_modules/pretendard/dist/public/static/*.otf")):
+            dst = os.path.join(FONT_DIR, os.path.basename(f))
+            if not os.path.exists(dst):
+                import shutil; shutil.copy(f, dst)
+    except Exception as e:
+        print("폰트 설치 시도 실패:", e)
+    if not os.path.exists(need):
+        raise RuntimeError(
+            f"Pretendard 폰트를 찾을 수 없습니다 ({need}). 한글이 깨지므로 렌더링을 중단합니다. "
+            "`cd /tmp/fonts && npm install pretendard@1.3.9 && "
+            "cp node_modules/pretendard/dist/public/static/*.otf /tmp/fonts/` 실행 후 재시도하세요.")
+
+ensure_fonts()
 def font(w, s): return ImageFont.truetype(os.path.join(FONT_DIR, F[w]), s)
 
 UA = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -385,8 +410,13 @@ def build_pdf(pages, pdf_path):
 
 # ================================================================ 데이터 (매 실행 교체)
 # 분야별 7건씩. (제목, 한국어요약, 출처명, 원문 URL)
-DATE_ISO = datetime.date(2026, 6, 1)
-DATE = "2026년 6월 1일 (월)"
+# 날짜는 한국 시간(KST) 기준 '오늘'로 자동 설정 — 스케줄 실행 시 날짜가 어긋나지 않게 한다.
+# (특정 날짜로 고정하려면 아래 두 줄을 직접 값으로 바꾼다.)
+_KST    = datetime.timezone(datetime.timedelta(hours=9))
+_TODAY  = datetime.datetime.now(_KST).date()
+_WD     = ["월", "화", "수", "목", "금", "토", "일"]
+DATE_ISO = _TODAY
+DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
 AI = [
  ("Claude Opus 4.8 공개 — SWE-bench 88.6%",
