@@ -59,8 +59,23 @@ pip install --quiet Pillow PyMuPDF requests
 2. 무관한 이미지(차트·뉴스레터 배너·케이크 등)나 플레이스홀더가 보이면 → 해당 항목의
    URL을 더 적절한 '전용 기사'로 바꾸거나, 제목에 영어 고유명사를 넣어 재렌더한다.
    `_img` 캐시 때문에 안 바뀌면 `rm -rf output` 후 재실행.
-3. 통과되면 PDF를 SendUserFile로 공유하고, `send_email.py`로 이메일도 발송한다.
-   출처 URL 목록도 함께 제공.
+3. 통과되면 PDF를 SendUserFile로 공유한다. 출처 URL 목록도 함께 제공.
+
+## 6. Git push → 이메일 자동 발송
+PDF 검증 통과 후 아래 명령을 반드시 실행한다.
+output/에 쌓인 PNG는 용량 절약을 위해 제외하고 PDF와 render_carousel.py만 커밋한다.
+
+```bash
+cd /home/user/FAFANEWS
+git config user.email "fafaai3377@gmail.com"
+git config user.name "FAFA NEWS Bot"
+git add render_carousel.py output/*.pdf
+git commit -m "briefing: $(date +'%Y-%m-%d') FAFA NEWS 자동 생성"
+git push origin main
+```
+
+push가 성공하면 GitHub Actions가 자동으로 fafaai3377@gmail.com에 이메일을 발송한다.
+(GitHub Secret `RESEND_API_KEY` 등록 필요 — 미등록 시 Actions 로그에서 확인)
 
 ## 디자인 시스템 (참고 표지 기준 · 고정값)
 - 캔버스 1080×1350, 여백 80px, 폰트 Pretendard
