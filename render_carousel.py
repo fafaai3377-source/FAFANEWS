@@ -120,6 +120,60 @@ def pill(d, x, y, t, f, bg, fg, px=24, py=12):
     d.text((x+px, y+py-2), t, font=f, fill=fg)
     return x+tw+px*2
 
+# ---------------------------------------------------------------- 글래스모피즘 (Apple Liquid Glass 스타일)
+def _round_mask(w, h, radius):
+    m = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(m).rounded_rectangle([0, 0, w-1, h-1], radius=radius, fill=255)
+    return m
+
+def glass_layer(im, box, radius=36, blur=18, tint=(255, 255, 255, 120),
+                border=(255, 255, 255, 170), shadow=True):
+    """box 영역의 배경을 블러+반투명 화이트로 덮어 '프로스티드 글래스' 패널을 만든다.
+    Apple Liquid Glass처럼 ① 배경 블러 ② 화이트 틴트 ③ 상단 하이라이트 ④ 미세 보더 ⑤ 소프트 섀도."""
+    x0, y0, x1, y1 = [int(v) for v in box]
+    x0 = max(0, x0); y0 = max(0, y0); x1 = min(W, x1); y1 = min(H, y1)
+    w, h = x1-x0, y1-y0
+    if w <= 0 or h <= 0:
+        return im
+    base = im.convert("RGBA")
+    # ⑤ 소프트 드롭 섀도 (패널을 살짝 띄움)
+    if shadow:
+        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(sh).rounded_rectangle([x0, y0+8, x1, y1+10], radius=radius, fill=(40, 40, 50, 70))
+        base = Image.alpha_composite(base, sh.filter(ImageFilter.GaussianBlur(18)))
+    # ① 배경 블러
+    region = base.crop((x0, y0, x1, y1)).convert("RGB").filter(ImageFilter.GaussianBlur(blur))
+    glass = region.convert("RGBA")
+    # ② 화이트 틴트
+    glass = Image.alpha_composite(glass, Image.new("RGBA", (w, h), tint))
+    # ③ 상단 → 하단 화이트 하이라이트 그라데이션 (유리 광택)
+    grad = Image.new("L", (1, h))
+    for i in range(h):
+        grad.putpixel((0, i), int(70 * (1 - i / h)))
+    grad = grad.resize((w, h))
+    hl = Image.new("RGBA", (w, h), (255, 255, 255, 0)); hl.putalpha(grad)
+    glass = Image.alpha_composite(glass, hl)
+    # ④ 미세 보더 (1.5px 화이트)
+    ImageDraw.Draw(glass).rounded_rectangle([0, 0, w-1, h-1], radius=radius, outline=border, width=2)
+    base.paste(glass, (x0, y0), _round_mask(w, h, radius))
+    return base.convert("RGB")
+
+def glass_pill(im, x, y, text, f, fg=WHITE, px=28, py=15, dot=None):
+    """이미지 위에 얹는 프로스티드 글래스 pill. dot=accent색이면 좌측에 컬러 점."""
+    d0 = ImageDraw.Draw(im)
+    pad_l = px + (26 if dot else 0)
+    tw = d0.textlength(text, font=f); a, de = f.getmetrics(); th = a + de
+    w = int(tw + pad_l + px); h = int(th + py*2)
+    im = glass_layer(im, (x, y, x+w, y+h), radius=h//2, blur=16,
+                     tint=(255, 255, 255, 90), shadow=False)
+    d0 = ImageDraw.Draw(im)
+    tx = x + pad_l
+    if dot:
+        cy = y + h//2
+        d0.ellipse([x+px-2, cy-7, x+px+12, cy+7], fill=dot)
+    d0.text((tx, y + py - 2), text, font=f, fill=fg)
+    return im, x + w
+
 # ---------------------------------------------------------------- 이미지 페치
 def _abs_url(src, base_url):
     src = html.unescape(src).strip()
@@ -361,32 +415,55 @@ def closing(fn):
     p = os.path.join(OUT, fn); im.save(p)
     return p, None
 
-def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn, force_search=False):
+def card(idx, total, cat_en, cat_ko, ac, title, body, source, url, fn, force_search=False, img_url=None):
     im, d = base(CREAM)
-    BH = 620
-    img = get_card_image(url, ac, source, W, BH, fn.split(".")[0], title, cat_en, force_search)
+    BH = 640
+    # img_url: og:image를 가져올 원본 기사 URL(이미지 관련성 보존). url: 화면에 노출/클릭되는 검증된 링크.
+    img = get_card_image(img_url or url, ac, source, W, BH, fn.split(".")[0], title, cat_en, force_search)
     im.paste(img, (0, 0))
-    # 이미지 위 그라데이션(가독성) — 상단 살짝 어둡게
-    shade = Image.new("RGBA", (W, 180), (0,0,0,0))
+    # 이미지 위 그라데이션(상·하단 가독성)
+    shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     sd = ImageDraw.Draw(shade)
     for i in range(180):
-        sd.line([(0,i),(W,i)], fill=(0,0,0,int(120*(1-i/180))))
-    im.paste(Image.alpha_composite(im.crop((0,0,W,180)).convert("RGBA"), shade).convert("RGB"), (0,0))
+        sd.line([(0, i), (W, i)], fill=(0, 0, 0, int(110*(1-i/180))))            # 상단
+    for i in range(220):
+        sd.line([(0, BH-1-i), (W, BH-1-i)], fill=(0, 0, 0, int(90*(1-i/220))))   # 하단
+    im = Image.alpha_composite(im.convert("RGBA"), shade).convert("RGB")
     d = ImageDraw.Draw(im)
-    # 카테고리 pill (이미지 위 좌상단)
+
+    # ── 카테고리 글래스 pill (이미지 위 좌상단, Liquid Glass) ──
     label = cat_en if cat_en == cat_ko else f"{cat_en} · {cat_ko}"
-    pill(d, M, 40, label, font("bold", 28), ac, WHITE)
-    # 본문 영역
-    y = BH + 44
-    y = dl(d, M, y, title, font("extrabold", 56), INK, W-2*M, 10, maxlines=3); y += 18
-    d.rectangle([M, y, M+72, y+7], fill=ac); y += 40
+    im, _ = glass_pill(im, M, 44, label, font("bold", 28), fg=WHITE, dot=ac)
+    d = ImageDraw.Draw(im)
+
+    # ── 헤드라인 글래스 패널 (이미지 하단에 떠 있는 프로스티드 카드) ──
+    tf = font("extrabold", 48)
+    inner = W - 96 - 72                          # 패널 내부 텍스트 폭
+    tlines = wrap(d, title, tf, inner)[:3]
+    a, de = tf.getmetrics(); tlh = a + de + 8
+    pad_t, pad_b = 36, 34
+    panel_h = pad_t + len(tlines)*tlh + pad_b
+    px0, px1 = 48, W-48
+    py1 = BH + 38
+    py0 = py1 - panel_h
+    im = glass_layer(im, (px0, py0, px1, py1), radius=40, blur=22,
+                     tint=(255, 255, 255, 158), border=(255, 255, 255, 190))
+    d = ImageDraw.Draw(im)
+    ty = py0 + pad_t
+    for ln in tlines:
+        d.text((px0+36, ty), ln, font=tf, fill=INK); ty += tlh
+
+    # ── 본문 (크림 영역) ──
+    y = py1 + 40
+    d.rectangle([M, y, M+72, y+7], fill=ac); y += 32
     dl(d, M, y, body, font("regular", 36), INK2, W-2*M, 14, maxlines=4)
-    # 출처 + 클릭 가능 링크
+
+    # ── 출처 + 클릭 가능 링크 ──
     sy = H-176
     d.text((M, sy), "출처", font=font("bold", 26), fill=ac)
     d.text((M+72, sy), source, font=font("semibold", 30), fill=INK)
     ly = sy + 46
-    disp = truncate(d, url.replace("https://","").replace("http://",""), font("medium", 26), W-2*M-40)
+    disp = truncate(d, url.replace("https://", "").replace("http://", ""), font("medium", 26), W-2*M-40)
     d.text((M, ly), "↗ " + disp, font=font("medium", 26), fill=BLUE)
     lw = d.textlength("↗ " + disp, font=font("medium", 26))
     link_rect = (M, ly-4, M+lw, ly+38)   # 픽셀 좌표 (PDF 링크용)
@@ -444,27 +521,54 @@ AI = [
 ]
 
 DESIGN = [
+ # ① 한국 핫이슈 — 투썸 한글 자모 리브랜딩 (호불호 화제)
+ ("투썸플레이스, 한글 자모로 새 심벌 리브랜딩 — SNS 화제",
+  "투썸플레이스가 6월 10일 한글 자모를 모티프로 한 새 심벌로 BI를 리뉴얼했다. 공개 직후 SNS에서 호불호가 크게 갈렸고, 이틀 만에 일부 디자인을 수정하는 등 논란이 이어졌다. 국내 브랜드 리브랜딩에서 '한국적 정체성'과 대중 수용성 사이의 균형이 핵심 화두임을 보여준 사례다.",
+  "디자인 나침반", "https://designcompass.org/2026/06/10/twosome-place-korean-symbol-rebranding/"),
+ # ② 애플 리퀴드 글래스 — 글래스모피즘 OS 표준화 (디바이스/UI)
+ ("애플 '리퀴드 글래스', iOS 27서 전면 정교화",
+  "애플이 WWDC 2026에서 작년 도입한 '리퀴드 글래스' 디자인 언어를 대폭 다듬었다. 컨트롤 센터에 투명도 슬라이더를 추가해 가독성 논란을 해소하고, 앱 실행 30%·사진 로딩 70% 속도 개선을 더했다. 글래스모피즘이 OS 표준 UI로 자리 잡으며 디자이너의 대응이 필수가 됐다.",
+  "Cult of Mac", "https://www.cultofmac.com/news/liquid-glass-changes-ios-27-macos-27"),
+ # ③ 대한항공 리브랜드 (브랜드 아이덴티티)
  ("대한항공 + Lippincott, 40년 만의 리브랜드",
   "대한항공이 글로벌 브랜딩 에이전시 Lippincott과 협력해 40년 만에 전면 브랜드 리뉴얼을 단행했다. 태극 모티프를 현대적으로 재해석한 새 로고와 럭셔리 컬러 팔레트가 적용됐다. 아시아나 합병을 앞두고 글로벌 프리미엄 항공사 포지셔닝을 공고히 하려는 전략이 담겼다.",
   "Creative Boom", "https://www.creativeboom.com/news/korean-air-unveils-elegant-new-brand-identity-in-collaboration-with-lippincott/"),
+ # ④ Adobe 아이덴티티
  ("Adobe, Mother Design과 글로벌 브랜드 아이덴티티 재정립",
   "Adobe가 글로벌 크리에이티브 에이전시 Mother Design과 함께 브랜드 아이덴티티를 전면 개편했다. AI 기반 창작 플랫폼으로 진화한 Adobe의 새 비전을 시각적으로 구현했으며, 다이나믹한 타입 시스템과 스펙트럼 컬러 팔레트가 특징이다.",
   "Creative Boom", "https://www.creativeboom.com/news/reshaping-adobes-global-brand-identity-with-mother-design/"),
- ("LG 전자 + Wolff Olins, 'Life's Good' 캠페인 브랜드 리뉴얼",
+ # ⑤ LG 리브랜드
+ ("LG 전자 + Wolff Olins, 'Life's Good' 브랜드 리뉴얼",
   "LG 전자가 Wolff Olins와 협업해 상징적인 슬로건 'Life's Good'을 중심으로 브랜드 아이덴티티를 새롭게 정의했다. 기술 기업에서 라이프스타일 기업으로의 전환을 시각 언어로 풀어냈다는 평가다. 글로벌 캠페인과 연동한 디자인 시스템이 함께 공개됐다.",
   "Creative Boom", "https://www.creativeboom.com/news/lg-electronics-kicks-off-its-lifes-good-campaign-with-renewed-brand-identity/"),
- ("Cannes Lions 2026 Innovation Lions 쇼트리스트 공개",
-  "칸 라이언즈 2026 Innovation Lions 쇼트리스트가 발표됐다. AI 기반 크리에이티브 도구, 인터랙티브 경험 설계, 지속가능 디자인 솔루션이 주요 수상 후보군을 구성했다. 실무 디자이너·마케터에게 올해 혁신의 방향성을 가늠할 수 있는 바로미터다.",
-  "Roast Brief", "https://roastbrief.us/cannes-lions-2026-innovation-lions-shortlist-announced/"),
+ # ⑥ 가구 — 이케아 PS 2026 (공기주입식 의자)
+ ("이케아 PS 2026: 공기주입식 의자 등 가구 44종 공개",
+  "이케아가 밀라노 디자인위크에서 PS 2026 컬렉션 44종을 공개했다. 미카엘 악셀손이 20개 시제품 끝에 완성한 공기주입식 1인용 의자, 회전 플로어 램프 등 '놀이 같은 기능성'이 핵심이다. 평팩·발펌프 동봉으로 합리적 가격과 지속가능성을 동시에 잡았다.",
+  "Dezeen", "https://www.dezeen.com/2026/05/13/ikea-ps-collection-furniture/"),
+ # ⑦ 가구/프로덕트 — 코펜하겐 3 Days of Design 신제품
+ ("코펜하겐 '3 Days of Design 2026' 신제품 8선",
+  "400여 브랜드가 모인 코펜하겐 디자인위크(6/10~12)에서 주목할 신제품 8종이 공개됐다. 단일 알루미늄 판을 접어 만든 톰 페레데이의 'Sail' 테이블 등 소재 실험과 단순한 형태가 돋보였다. 북유럽 가구·오브제 트렌드의 최전선을 보여준다.",
+  "Dezeen", "https://www.dezeen.com/2026/06/12/products-tiles-furniture-3-days-of-design-2026/"),
+ # ⑧ 한국 프로덕트 — ILKW 조명
+ ("한국 조명 브랜드 ILKW '스노우맨22' 컬렉션",
+  "한국 조명 브랜드 ILKW가 손으로 분 유리에 눈사람 형태를 결합한 '스노우맨22' 컬렉션을 선보였다. 벽·플로어·테이블·펜던트로 확장되는 장난기 어린 유리 셰이드가 특징이다. 국내 디자인 브랜드가 글로벌 디자인 매체에 정식 소개된 반가운 사례다.",
+  "Dezeen", "https://www.dezeen.com/2026/06/01/snowman22-lighting-lkw-dezeen-showroom/"),
+ # ⑨ 한국 인테리어/공간 1 — 성수동 팝업
+ ("성수동 6월 팝업스토어 공간 디자인 총정리",
+  "2026년 6월 성수동에서 운영 중인 주요 팝업스토어 공간이 한자리에 정리됐다. 뉴발란스 'Run Hub' 러닝 허브 등 브랜드 서사를 공간 경험으로 풀어낸 사례가 늘고 있다. 리테일·공간 기획자가 참고할 최신 팝업 인테리어 레퍼런스다.",
+  "팝가 Popga", "https://popga.co.kr/content/magazine/284"),
+ # ⑩ 한국 인테리어/공간 2 — 팝업 공간 디자인 전략
+ ("Z세대를 부르는 팝업스토어 공간 디자인 전략",
+  "팝업스토어가 단순 판매를 넘어 브랜드 인지·경험의 무대로 진화하면서, 공간에 브랜드 내러티브를 담는 설계가 핵심 전략으로 떠올랐다. 사례 중심으로 Z세대를 모으는 공간 디자인 문법을 짚었다. 국내 리테일 마케터·공간 디자이너에게 실전 인사이트를 준다.",
+  "오픈애즈 OpenAds", "https://openads.co.kr/content/contentDetail?contsId=17396"),
+ # ⑪ 프로덕트/UX — Figma 디자이너 수요 리포트
  ("Figma 2026 리포트: 디자이너 수요 왜 다시 급증하나",
   "Figma가 발표한 2026 보고서에 따르면 AI 툴 확산에도 불구하고 디자이너 채용 수요가 오히려 증가했다. AI가 반복 작업을 대체하는 대신, 전략적 디자인 씽킹과 시스템 설계 역량에 대한 프리미엄이 높아진 것으로 분석된다.",
   "Figma Blog", "https://www.figma.com/blog/why-demand-for-designers-is-on-the-rise/"),
- ("'위어드 브랜딩'이 2026 차별화 전략으로 부상",
-  "Creative Boom이 분석한 2026 브랜딩 트렌드로 '이상함(weird)'을 전략적으로 활용하는 브랜드들이 주목받고 있다. 과포화된 시장에서 예측 불가능한 시각 언어와 유머로 기억에 남는 브랜드 경험을 만드는 전략이다. 글로벌 젊은 소비자층을 겨냥한 신생 브랜드에서 특히 두드러진다.",
-  "Creative Boom", "https://www.creativeboom.com/insight/how-being-weird-can-save-branding-in-2026/"),
- ("2026 국가 독서의 해 아이덴티티 — Fold7Design",
-  "영국 2026 국가 독서의 해(National Year of Reading) 공식 아이덴티티가 Fold7Design에 의해 공개됐다. 타입 중심 디자인에 따뜻한 색감과 손글씨 질감을 결합해 독서의 감성을 시각화했다. 비영리·공공 섹터 브랜드 디자인의 우수 사례로 업계 주목을 받고 있다.",
-  "Brand New", "https://www.underconsideration.com/brandnew/archives/new_logo_and_identity_for_national_year_of_reading_2026_by_fold7design.php"),
+ # ⑫ 디자인 혁신 — Cannes Innovation Lions
+ ("칸 라이언즈 2026 Innovation Lions 쇼트리스트 공개",
+  "칸 라이언즈 2026 Innovation Lions 쇼트리스트가 발표됐다. AI 기반 크리에이티브 도구, 인터랙티브 경험 설계, 지속가능 디자인 솔루션이 주요 수상 후보군을 구성했다. 실무 디자이너·마케터가 올해 혁신의 방향성을 가늠할 바로미터다.",
+  "Roast Brief", "https://roastbrief.us/cannes-lions-2026-innovation-lions-shortlist-announced/"),
 ]
 
 MARKETING = [
@@ -498,6 +602,38 @@ SECTIONS = [
  ("MARKETING", "마케팅", CORAL, "marketing", MARKETING),
 ]
 
+# ---------------------------------------------------------------- 링크 검증 (죽은 링크/404 차단)
+def validate_url(url):
+    """렌더 시점(GitHub Actions=인터넷)에서 URL이 실제로 열리는지 확인.
+    HEAD 거부(405)·일부 봇 차단 사이트는 GET으로 재확인. 4xx/5xx·연결 실패면 False."""
+    for method in ("head", "get"):
+        try:
+            r = getattr(requests, method)(url, headers=UA, timeout=12,
+                                          allow_redirects=True, stream=(method == "get"))
+            code = r.status_code
+            if method == "get":
+                r.close()
+            if code < 400:
+                return True
+            if code in (403, 405, 406) and method == "head":
+                continue   # HEAD 차단 가능성 → GET 재시도
+            if code >= 400:
+                return False
+        except Exception:
+            continue
+    return False
+
+def safe_link(url):
+    """url이 죽었으면(404 등) 404가 날 수 없는 해당 매체 도메인 루트로 폴백.
+    → 사용자가 어떤 카드에서도 죽은 링크를 만나지 않게 보장한다."""
+    if validate_url(url):
+        return url
+    from urllib.parse import urlparse
+    p = urlparse(url)
+    root = f"{p.scheme}://{p.netloc}/"
+    print(f"  ⚠ 죽은 링크 감지 → 도메인 루트로 폴백: {url} → {root}")
+    return root if validate_url(root) else url
+
 # ================================================================ 실행
 def main():
     pages = []
@@ -514,8 +650,11 @@ def main():
     idx = 2
     for cat_en, cat_ko, ac, suffix, items in SECTIONS:
         for t, b, s, u in items:
-            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, u,
-                              f"{idx:02d}_{suffix}.png", force_search=_force(u)))
+            forced = _force(u)            # og:image는 원본 URL로 시도(이미지 관련성 보존)
+            link = safe_link(u)           # 클릭 링크만 검증 — 죽었으면 안전 폴백
+            pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, link,
+                              f"{idx:02d}_{suffix}.png", force_search=forced,
+                              img_url=u))
             idx += 1
     pages.append(closing(f"{idx:02d}_closing.png"))
     pdf_name = DATE_ISO.strftime("%y%m%d") + "_FAFA NEWS.pdf"
