@@ -1,4 +1,3 @@
-output/_img/
-output/*.png
+output/
 __pycache__/
 *.pyc

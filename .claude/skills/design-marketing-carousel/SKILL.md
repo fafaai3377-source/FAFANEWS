@@ -61,21 +61,22 @@ pip install --quiet Pillow PyMuPDF requests
    `_img` 캐시 때문에 안 바뀌면 `rm -rf output` 후 재실행.
 3. 통과되면 PDF를 SendUserFile로 공유한다. 출처 URL 목록도 함께 제공.
 
-## 6. Git push → 이메일 자동 발송
-PDF 검증 통과 후 아래 명령을 반드시 실행한다.
-output/에 쌓인 PNG는 용량 절약을 위해 제외하고 PDF와 render_carousel.py만 커밋한다.
+## 6. Git push → GitHub Actions가 렌더링 + 이메일 자동 발송
+검증 통과 후 render_carousel.py(뉴스 데이터)만 커밋해서 push한다.
+이 환경은 외부 인터넷이 제한적이라 실제 기사 이미지(og:image)를 가져오지 못한다.
+GitHub Actions가 인터넷이 열린 환경에서 렌더링하므로, 실제 이미지가 포함된 PDF가 만들어진다.
+**render_carousel.py만 push하면 충분하다. PDF나 PNG는 커밋하지 않는다.**
 
 ```bash
 cd /home/user/FAFANEWS
 git config user.email "fafaai3377@gmail.com"
 git config user.name "FAFA NEWS Bot"
-git add render_carousel.py output/*.pdf
-git commit -m "briefing: $(date +'%Y-%m-%d') FAFA NEWS 자동 생성"
+git add render_carousel.py
+git commit -m "briefing: $(date +'%Y-%m-%d') FAFA NEWS 뉴스 데이터 업데이트"
 git push origin main
 ```
 
-push가 성공하면 GitHub Actions가 자동으로 fafaai3377@gmail.com에 이메일을 발송한다.
-(GitHub Secret `RESEND_API_KEY` 등록 필요 — 미등록 시 Actions 로그에서 확인)
+push 성공 → GitHub Actions 자동 트리거 → 렌더링(실제 이미지) → fafaai3377@gmail.com 발송.
 
 ## 디자인 시스템 (참고 표지 기준 · 고정값)
 - 캔버스 1080×1350, 여백 80px, 폰트 Pretendard

@@ -1,16 +1,16 @@
-name: FAFA NEWS 이메일 발송
+name: FAFA NEWS 렌더링 + 이메일 발송
 
 on:
   push:
     branches: [main]
     paths:
-      - 'output/**.pdf'   # 세션이 PDF를 푸시하면 자동 트리거
-  workflow_dispatch:       # 수동 실행 버튼
+      - 'render_carousel.py'   # 세션이 뉴스 데이터를 업데이트하면 자동 트리거
+  workflow_dispatch:            # 수동 실행 버튼
 
 jobs:
-  send-email:
+  render-and-send:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
 
     steps:
       - name: 레포 체크아웃
@@ -22,7 +22,17 @@ jobs:
           python-version: '3.11'
 
       - name: 의존성 설치
-        run: pip install requests
+        run: pip install pillow pymupdf requests
+
+      - name: Pretendard 폰트 설치
+        run: |
+          mkdir -p /tmp/fonts
+          cd /tmp/fonts
+          npm install pretendard@1.3.9 --silent
+          cp node_modules/pretendard/dist/public/static/Pretendard-*.otf .
+
+      - name: PDF 렌더링 (실제 기사 이미지 포함)
+        run: python3 render_carousel.py
 
       - name: 이메일 발송
         env:
@@ -32,11 +42,7 @@ jobs:
           PDF=$(ls output/*.pdf | sort | tail -1)
           echo "발송 대상: $PDF"
           DATE_LABEL=$(python3 -c "
-          import datetime, locale
-          try:
-              locale.setlocale(locale.LC_TIME, 'ko_KR.UTF-8')
-          except:
-              pass
+          import datetime
           d = datetime.date.today()
           days = ['월','화','수','목','금','토','일']
           print(f'{d.year}년 {d.month:02d}월 {d.day:02d}일 ({days[d.weekday()]})')
