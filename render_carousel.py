@@ -418,17 +418,78 @@ _WD     = ["월", "화", "수", "목", "금", "토", "일"]
 DATE_ISO = _TODAY
 DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
-# ── 테스트: AI 1건만 렌더링 ──────────────────────────────────────────────────
-# 서핏·이오플래닛에서 공통으로 다룬 핫토픽 우선 배치
-# TechCrunch 원문 URL → og:image 품질 보장
+# ── 2026-06-15 (월) 브리핑 — 6/12(금)~6/15(월) 72시간 ─────────────────────
 AI = [
- ("애플 WWDC 2026: Siri AI·iOS 27·애플 인텔리전스 전면 공개",
-  "서핏·이오플래닛이 모두 주목한 이번 주 최대 AI 이슈. 애플이 WWDC 2026에서 iOS 27과 전면 재설계된 Siri AI를 공개했다. Safari 탭 AI 관리·크로스앱 문맥 인식·원탭 비밀번호 업데이트 등 Apple Intelligence가 실사용 수준으로 도약했다는 평가다.",
+ ("애플 WWDC 2026: Siri AI·iOS 27 전면 공개",
+  "서핏·이오플래닛이 모두 주목한 이번 주 최대 AI 이슈. 애플이 WWDC 2026에서 iOS 27과 전면 재설계된 Siri AI를 공개했다. Gemini 연동·크로스앱 문맥 인식·원탭 비밀번호 업데이트 등 Apple Intelligence가 실사용 수준으로 도약했다는 평가다.",
   "TechCrunch", "https://techcrunch.com/2026/06/09/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/"),
+ ("ChatGPT, 월 10억 명 돌파 — 역사상 가장 빠른 앱",
+  "ChatGPT가 출시 약 3년 만에 월간 활성 사용자 10억 명을 달성했다. YouTube·TikTok·Instagram이 10억 명까지 5~8년 걸린 것과 비교해 압도적 속도다. 전 세계 AI 앱 경쟁에서 OpenAI가 1위 독주 구도를 굳히고 있어 마케터·디자이너의 AI 도입 압박도 빨라질 전망이다.",
+  "The Next Web", "https://thenextweb.com/news/chatgpt-1-billion-monthly-active-users"),
+ ("OpenAI, IPO 비밀 신고 — Anthropic과 나란히 상장 레이스",
+  "OpenAI가 6월 8일 SEC에 비밀 IPO 신고서를 제출했다. 앞서 Anthropic도 IPO를 공식 신고하며 AI 양대 산맥이 동시에 공개시장을 향해 나아가고 있다. 상장 후 자금 조달로 인프라·연구 투자가 더욱 가속화될 것으로 보인다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/08/following-anthropic-openai-files-confidentially-for-ipo/"),
+ ("Anthropic, Claude Fable 5 공개 — 추론·코딩 최고 성능",
+  "Anthropic이 Claude Fable 5(코드명 Mythos)를 공개했다. 추론·수학·코딩 벤치마크에서 최상위 성능을 기록하며 GPT-4o를 일부 지표에서 앞섰다. 월 $100 Max 플랜 구독자에게 우선 제공되며, API는 별도 요금으로 접근 가능하다.",
+  "CNBC", "https://www.cnbc.com/2026/06/09/anthropic-mythos-claude-fable-5.html"),
+ ("OpenAI Codex, 직군별 AI 에이전트 6종 출시",
+  "OpenAI가 Codex에 데이터 분석·크리에이티브 제작·영업·제품 디자인·투자 등 6개 직군 특화 플러그인을 추가했다. 주간 활성 사용자 500만 명으로 2월 대비 6배 성장. 화이트칼라 업무 자동화를 겨냥한 AI 에이전트 경쟁이 본격화됐다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/02/openai-launches-new-codex-tools-for-white-collar-work/"),
+ ("마이크로소프트, 자체 AI 모델 공개 — OpenAI 의존 줄인다",
+  "Microsoft가 자체 개발 AI 모델을 발표하며 OpenAI 의존도를 줄이겠다는 의지를 밝혔다. 소형 모델부터 대형 모델까지 라인업을 구축해 클라우드·엣지 비용을 낮추는 전략이다. AI 코딩·생산성 도구에서 OpenAI·Anthropic과 직접 경쟁 구도가 형성된다.",
+  "CNBC", "https://www.cnbc.com/2026/06/02/microsoft-unveils-new-ai-models-lessen-reliance-on-openai-lower-costs.html"),
+ ("Anthropic, IPO 공식 신고 — 기업가치 $9,650억",
+  "Anthropic이 SEC에 상장 신고서를 제출하며 기업가치 약 9,650억 달러(약 1,300조 원)를 목표로 설정했다. 아마존·구글의 대규모 투자와 Claude 기반 B2B 서비스 성장이 뒷받침된 수치다. OpenAI IPO와 함께 AI 스타트업 역사상 최대 규모 상장이 될 전망이다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/01/anthropic-files-to-go-public/"),
 ]
 
-DESIGN = []
-MARKETING = []
+DESIGN = [
+ ("대한항공 + Lippincott, 40년 만의 리브랜드",
+  "대한항공이 글로벌 브랜딩 에이전시 Lippincott과 협력해 40년 만에 전면 브랜드 리뉴얼을 단행했다. 태극 모티프를 현대적으로 재해석한 새 로고와 럭셔리 컬러 팔레트가 적용됐다. 아시아나 합병을 앞두고 글로벌 프리미엄 항공사 포지셔닝을 공고히 하려는 전략이 담겼다.",
+  "Creative Boom", "https://www.creativeboom.com/news/korean-air-unveils-elegant-new-brand-identity-in-collaboration-with-lippincott/"),
+ ("Adobe, Mother Design과 글로벌 브랜드 아이덴티티 재정립",
+  "Adobe가 글로벌 크리에이티브 에이전시 Mother Design과 함께 브랜드 아이덴티티를 전면 개편했다. AI 기반 창작 플랫폼으로 진화한 Adobe의 새 비전을 시각적으로 구현했으며, 다이나믹한 타입 시스템과 스펙트럼 컬러 팔레트가 특징이다.",
+  "Creative Boom", "https://www.creativeboom.com/news/reshaping-adobes-global-brand-identity-with-mother-design/"),
+ ("LG 전자 + Wolff Olins, 'Life's Good' 캠페인 브랜드 리뉴얼",
+  "LG 전자가 Wolff Olins와 협업해 상징적인 슬로건 'Life's Good'을 중심으로 브랜드 아이덴티티를 새롭게 정의했다. 기술 기업에서 라이프스타일 기업으로의 전환을 시각 언어로 풀어냈다는 평가다. 글로벌 캠페인과 연동한 디자인 시스템이 함께 공개됐다.",
+  "Creative Boom", "https://www.creativeboom.com/news/lg-electronics-kicks-off-its-lifes-good-campaign-with-renewed-brand-identity/"),
+ ("Cannes Lions 2026 Innovation Lions 쇼트리스트 공개",
+  "칸 라이언즈 2026 Innovation Lions 쇼트리스트가 발표됐다. AI 기반 크리에이티브 도구, 인터랙티브 경험 설계, 지속가능 디자인 솔루션이 주요 수상 후보군을 구성했다. 실무 디자이너·마케터에게 올해 혁신의 방향성을 가늠할 수 있는 바로미터다.",
+  "Roast Brief", "https://roastbrief.us/cannes-lions-2026-innovation-lions-shortlist-announced/"),
+ ("Figma 2026 리포트: 디자이너 수요 왜 다시 급증하나",
+  "Figma가 발표한 2026 보고서에 따르면 AI 툴 확산에도 불구하고 디자이너 채용 수요가 오히려 증가했다. AI가 반복 작업을 대체하는 대신, 전략적 디자인 씽킹과 시스템 설계 역량에 대한 프리미엄이 높아진 것으로 분석된다.",
+  "Figma Blog", "https://www.figma.com/blog/why-demand-for-designers-is-on-the-rise/"),
+ ("'위어드 브랜딩'이 2026 차별화 전략으로 부상",
+  "Creative Boom이 분석한 2026 브랜딩 트렌드로 '이상함(weird)'을 전략적으로 활용하는 브랜드들이 주목받고 있다. 과포화된 시장에서 예측 불가능한 시각 언어와 유머로 기억에 남는 브랜드 경험을 만드는 전략이다. 글로벌 젊은 소비자층을 겨냥한 신생 브랜드에서 특히 두드러진다.",
+  "Creative Boom", "https://www.creativeboom.com/insight/how-being-weird-can-save-branding-in-2026/"),
+ ("2026 국가 독서의 해 아이덴티티 — Fold7Design",
+  "영국 2026 국가 독서의 해(National Year of Reading) 공식 아이덴티티가 Fold7Design에 의해 공개됐다. 타입 중심 디자인에 따뜻한 색감과 손글씨 질감을 결합해 독서의 감성을 시각화했다. 비영리·공공 섹터 브랜드 디자인의 우수 사례로 업계 주목을 받고 있다.",
+  "Brand New", "https://www.underconsideration.com/brandnew/archives/new_logo_and_identity_for_national_year_of_reading_2026_by_fold7design.php"),
+]
+
+MARKETING = [
+ ("칸 라이언즈 2026 Titanium 후보 18캠페인 공개",
+  "칸 라이언즈 2026 Titanium Lions 쇼트리스트 18개 캠페인이 발표됐다. IKEA·Heineken·Asics·Oreo 등 글로벌 브랜드의 문화적 긴장감을 활용한 캠페인들이 포함됐다. Titanium은 업계 방향을 바꾸는 혁신적 작업에 수여되는 최고 권위 부문이다.",
+  "Adweek", "https://www.adweek.com/creativity/these-18-campaigns-are-competing-for-the-coveted-cannes-titanium-lion/"),
+ ("칸 라이언즈 Glass: 변화를 위한 라이언 쇼트리스트",
+  "사회 변화를 이끄는 마케팅을 선정하는 Glass: Lion for Change 쇼트리스트가 공개됐다. 젠더 편견 해소·기후 행동·포용성을 주제로 한 글로벌 캠페인들이 이름을 올렸다. 브랜드가 사회적 목소리를 내는 방식이 수상의 핵심 기준으로 자리 잡고 있다.",
+  "Marketing Report", "https://marketingreport.one/creation/cannes-lions-releases-first-2026-award-shortlists.html"),
+ ("Omnicom + Google, YouTube 라이브스트림 파트너십 체결",
+  "Omnicom이 칸 라이언즈 현장에서 Google과 YouTube 라이브스트림 광고 파트너십을 발표했다. 실시간 이벤트 맥락과 연동된 타기팅 광고로 브랜드 안전성과 도달률을 동시에 높이는 솔루션이다. 라이브 콘텐츠 광고 시장에서 구글의 영향력이 더욱 확대될 전망이다.",
+  "Digiday", "https://digiday.com/media-buying/omnicom-wraps-up-its-cannes-lions-presence-with-a-youtube-livestream-partnership/"),
+ ("Omnicom, Disney·Walmart과 인플루언서 라이브 커머스 협약",
+  "Omnicom이 칸 현장에서 Disney와 Walmart를 대상으로 인플루언서 기반 라이브 커머스 파트너십을 동시 체결했다. 크리에이터 경제와 대형 리테일러를 잇는 새 광고 모델로, 인플루언서 마케팅이 퍼포먼스 채널로 진화하는 흐름을 반영한다.",
+  "Digiday", "https://digiday.com/media-buying/omnicom-strikes-partnerships-at-cannes-lions-with-disney-and-walmart-around-harnessing-live/"),
+ ("VML, 칸 라이언즈 Innovation·Titanium 동시 쇼트리스트",
+  "글로벌 크리에이티브 에이전시 VML이 칸 라이언즈 2026에서 Innovation과 Titanium 두 부문 쇼트리스트에 동시 진입했다. AI 기반 크리에이티브 솔루션과 사회적 임팩트 캠페인 두 축에서 모두 인정받은 것으로, 에이전시 혁신 역량의 지표로 주목된다.",
+  "VML", "https://www.vml.com/news/vml-shortlisted-for-innovation-and-titanium-honors-at-cannes-lions-2026"),
+ ("칸 라이언즈 2026 완벽 프로그램 가이드 (6/22~26)",
+  "칸 라이언즈 2026이 6월 22~26일 프랑스 칸에서 열린다. 주요 세미나·시상 일정과 주목할 세션 큐레이션이 정리됐다. 크리에이티브 업계 종사자라면 올해 수상 트렌드를 미리 파악해 두면 기획·제안에 직접 활용할 수 있다.",
+  "Famous Campaigns", "https://www.famouscampaigns.com/2026/06/cannes-lions-2026-your-essential-programme-guide/"),
+ ("2026 마케팅 트렌드 전망 — 브랜드가 준비할 것들",
+  "Marketing Dive가 정리한 2026 마케팅 트렌드 보고서. AI 자동화·퍼스트파티 데이터·크리에이터 파트너십·지속가능 메시지가 핵심 축으로 제시됐다. 브랜드가 단기 성과보다 신뢰 구축과 장기 관계에 집중해야 한다는 것이 공통 시사점이다.",
+  "Marketing Dive", "https://www.marketingdive.com/news/marketing-trends-outlook-2026/810740/"),
+]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
 SECTIONS = [
