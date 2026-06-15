@@ -102,9 +102,20 @@ def dl(d, x, y, t, f, fill, mw, gap, maxlines=None):
     lines = wrap(d, t, f, mw)
     if maxlines and len(lines) > maxlines:
         lines = lines[:maxlines]
-        while lines and d.textlength(lines[-1] + "…", font=f) > mw:
-            lines[-1] = lines[-1][:-1]
-        lines[-1] += "…"
+        last = lines[-1]
+        # 단어(어절) 단위 먼저 줄이기 — 영어·한국어 단어가 중간에 끊기지 않게
+        while last:
+            if d.textlength(last + "…", font=f) <= mw:
+                break
+            # 마지막 공백 앞까지 잘라 시도
+            sp = last.rfind(" ")
+            if sp > 0:
+                candidate = last[:sp]
+                if d.textlength(candidate + "…", font=f) <= mw:
+                    last = candidate; break
+            # 공백 없으면(긴 한 단어) 한 글자씩 줄이기
+            last = last[:-1]
+        lines[-1] = last + "…"
     for ln in lines:
         d.text((x, y), ln, font=f, fill=fill); y += lh
     return y
@@ -231,64 +242,120 @@ def fetch_og_image(url):
 
 # 한국어 브랜드·인물명 → 영어 변환 (Openverse 검색 품질 향상)
 KO_TO_EN = {
-    "안드레이 카파시": "Andrej Karpathy",
-    "카파시": "Karpathy",
+    # AI/테크 기업
+    "안드레이 카파시": "Andrej Karpathy", "카파시": "Karpathy",
     "구글": "Google", "알파벳": "Alphabet Google",
     "엔비디아": "NVIDIA", "엔비디아의": "NVIDIA",
     "마이크로소프트": "Microsoft", "MS": "Microsoft",
     "깃허브": "GitHub", "코파일럿": "GitHub Copilot",
     "오픈AI": "OpenAI", "ChatGPT": "ChatGPT",
-    "앤트로픽": "Anthropic", "Anthropic": "Anthropic",
-    "피그마": "Figma", "Figma": "Figma",
-    "애플": "Apple", "메타": "Meta",
-    "아마존": "Amazon", "AWS": "AWS",
-    "스냅": "Snapchat Snap",
-    "타입폼": "Typeform",
-    "펍매틱": "PubMatic programmatic",
-    "세일즈포스": "Salesforce",
-    "틱톡": "TikTok",
-    "유튜브": "YouTube",
-    "링크드인": "LinkedIn",
-    "트위터": "Twitter X",
-    "펩시코": "PepsiCo",
-    "루프트한자": "Lufthansa",
-    "BMW": "BMW",
+    "앤트로픽": "Anthropic", "클로드": "Claude Anthropic",
+    "피그마": "Figma",
+    "애플": "Apple", "아이폰": "iPhone Apple", "아이패드": "iPad Apple",
+    "메타": "Meta", "아마존": "Amazon", "AWS": "AWS",
+    "스냅": "Snapchat Snap", "타입폼": "Typeform",
+    "펍매틱": "PubMatic programmatic", "세일즈포스": "Salesforce",
+    "틱톡": "TikTok", "유튜브": "YouTube",
+    "링크드인": "LinkedIn", "트위터": "Twitter X",
+    # 가구·인테리어·제품 브랜드
+    "이케아": "IKEA furniture", "의자": "chair furniture",
+    "가구": "furniture", "조명": "lighting lamp",
+    "인테리어": "interior design", "공간": "interior space design",
+    "팝업": "popup store retail", "팝업스토어": "popup store retail",
+    "매장": "store retail interior", "플래그십": "flagship store",
+    "성수": "Seoul Seongsu", "성수동": "Seoul Seongsu street",
+    "코펜하겐": "Copenhagen design",
+    "밀라노": "Milan design week",
+    # 디자인 브랜드·에이전시
+    "리퀴드 글래스": "Liquid Glass Apple UI",
+    "리퀴드": "Liquid Glass", "글래스모피즘": "glassmorphism",
+    "대한항공": "Korean Air airline", "아시아나": "Asiana Airlines",
+    "투썸": "Twosome Place cafe coffee", "투썸플레이스": "Twosome Place cafe coffee",
+    "스타벅스": "Starbucks coffee", "맥도날드": "McDonald brand",
+    "LG": "LG Electronics",
+    "BMW": "BMW", "현대": "Hyundai",
     "BBH": "BBH advertising agency",
-    "리브랜드": "rebrand identity",
-    "브랜딩": "branding",
-    "광고": "advertising",
+    "루프트한자": "Lufthansa", "펩시코": "PepsiCo",
+    # 디자인 액션 단어 → 구체적 쿼리로
+    "리브랜딩": "rebranding logo identity",
+    "리브랜드": "rebranding logo identity",
+    "브랜딩": "branding identity",
+    "아이덴티티": "brand identity logo",
+    "로고": "logo brand design",
+    "광고": "advertising campaign",
     "캠페인": "marketing campaign",
+    # AI 개념
     "에이전트": "AI agent",
-    "펀딩": "startup funding",
+    "펀딩": "startup funding venture",
     "밸류에이션": "startup valuation",
     "거버넌스": "AI governance policy",
     "크리에이터": "creator content",
+    "코딩": "coding programming",
+    # 마케팅 개념
+    "인플루언서": "influencer marketing",
+    "라이브커머스": "live commerce streaming",
 }
 
-def _img_queries(title, cat_en):
-    """제목에서 구체적 검색어 추출 → 카테고리 폴백 순서로 반환.
+def _url_keywords(url):
+    """URL 경로(영문 슬러그)에서 의미 있는 키워드를 추출한다.
+    기사 URL 슬러그는 보통 기사 핵심 키워드를 그대로 담고 있어 이미지 검색에 매우 유용하다."""
+    from urllib.parse import urlparse
+    path = urlparse(url).path.lower()
+    words = re.findall(r"[a-z]{3,}", path)
+    # 연도·날짜·CMS·불용어 제거 (content/magazine/page처럼 의미없는 슬러그 배제)
+    stop = {
+        "www", "com", "net", "org", "the", "and", "for", "with", "from",
+        "that", "this", "are", "was", "has", "been", "have", "will",
+        "its", "our", "new", "all", "but", "not", "news", "blog",
+        "article", "page", "post", "amp", "html", "php", "asp",
+        "content", "magazine", "category", "tag", "read", "view",
+        "archives", "index", "detail", "item", "topics",
+    }
+    kws = [w for w in words if w not in stop and len(w) >= 3]
+    return kws[:6]
+
+def _img_queries(title, cat_en, url=""):
+    """제목 + URL 슬러그에서 구체적 검색어 추출 → 카테고리 폴백 순서로 반환.
     한국어 브랜드·인물명을 영어로 변환해 Openverse 검색 정밀도를 높인다."""
     # 한국어 → 영어 치환
     t = title
     for ko, en in KO_TO_EN.items():
         t = t.replace(ko, en)
-    # 영어 단어 추출 (3글자 이상, 숫자·기호 제외)
-    en_words = re.findall(r"[A-Z][A-Za-z]{2,}|[A-Za-z]{4,}", t)
+    # 영어 단어 추출 (3글자 이상)
+    en_words = re.findall(r"[A-Z][A-Za-z]{2,}|[A-Za-z]{3,}", t)
     # 브랜드명·고유명사(대문자 시작) 우선
     proper = [w for w in en_words if w[0].isupper()]
     common = [w for w in en_words if not w[0].isupper()]
-    fallback = {"AI":         ["artificial intelligence", "AI technology", "machine learning"],
-                "DESIGN":     ["graphic design", "brand identity", "design studio"],
-                "MARKETING":  ["marketing advertising", "brand campaign", "digital marketing"],
-                }.get(cat_en, ["technology"])
+
+    # URL 슬러그 키워드 (매우 중요 — 기사 내용 그대로 반영)
+    url_kws = _url_keywords(url)
+    # URL 키워드로 proper/common 보강
+    for kw in url_kws:
+        cap = kw.capitalize()
+        if cap not in proper and kw.upper() not in [p.upper() for p in proper]:
+            if kw[0].isupper() or kw in ["ikea", "apple", "google", "adobe", "figma", "dezeen", "cannes"]:
+                proper.insert(0, cap)
+            else:
+                common.append(kw)
+
+    fallback = {
+        "AI":        ["artificial intelligence technology", "AI software", "machine learning"],
+        "DESIGN":    ["modern design product", "graphic design studio", "brand visual identity"],
+        "MARKETING": ["marketing campaign advertising", "brand strategy", "digital marketing"],
+    }.get(cat_en, ["technology"])
+
     qs = []
-    # 가장 구체적: 고유명사 2개 조합
-    if len(proper) >= 2: qs.append(f"{proper[0]} {proper[1]}")
-    if proper:           qs.append(proper[0])
+    # URL 키워드 2개 조합 (가장 기사 내용에 충실)
+    if len(url_kws) >= 2: qs.append(" ".join(url_kws[:3]))
+    if len(url_kws) >= 1: qs.append(url_kws[0])
+    # 고유명사 조합
+    if len(proper) >= 2:  qs.append(f"{proper[0]} {proper[1]}")
+    if proper:            qs.append(proper[0])
     # 고유명사 + 카테고리 힌트
-    if proper:           qs.append(f"{proper[0]} {fallback[0]}")
+    if proper:            qs.append(f"{proper[0]} {fallback[0]}")
+    if url_kws:           qs.append(f"{url_kws[0]} {fallback[0]}")
     # 일반 단어 + 힌트
-    if common:           qs.append(f"{common[0]} {fallback[0]}")
+    if common:            qs.append(f"{common[0]} {fallback[0]}")
     qs += fallback
     seen = set()
     return [q for q in qs if not (q in seen or seen.add(q))]
@@ -354,7 +421,7 @@ def get_card_image(url, accent, source, bw, bh, key, title="", cat_en="", force_
     """force_search=True: og:image를 건너뛰고 바로 제목 기반 이미지 검색(동일 URL 중복 카드용)."""
     cache = os.path.join(IMG_CACHE, key + ".png")
     salt  = int(hashlib.md5(key.encode()).hexdigest(), 16)
-    qs    = _img_queries(title, cat_en)
+    qs    = _img_queries(title, cat_en, url)
     if os.path.exists(cache):
         img = Image.open(cache).convert("RGB")
     else:
