@@ -418,77 +418,17 @@ _WD     = ["월", "화", "수", "목", "금", "토", "일"]
 DATE_ISO = _TODAY
 DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
+# ── 테스트: AI 1건만 렌더링 ──────────────────────────────────────────────────
+# 서핏·이오플래닛에서 공통으로 다룬 핫토픽 우선 배치
+# TechCrunch 원문 URL → og:image 품질 보장
 AI = [
- ("Claude Opus 4.8 공개 — SWE-bench 88.6%",
-  "Anthropic이 Opus 4.8을 공개했다. SWE-bench Verified 88.6%, Terminal-Bench 2.1 74.6%를 기록했고 병렬 서브에이전트와 2.5배 빠른 패스트 모드를 지원한다. 가격은 동일하게 유지됐다.",
-  "Build Fast with AI", "https://www.buildfastwithai.com/blogs/claude-opus-4-8-review-benchmarks-dynamic-workflows-2026"),
- ("구글 Gemini 3.5 Flash 정식 출시",
-  "구글의 경량 모델 Gemini 3.5 Flash가 정식 버전(GA)으로 전환됐다. 동급 모델 대비 약 4배 빠른 속도로 프런티어급 지능을 제공한다고 밝혔다.",
-  "Google Blog", "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/"),
- ("깃허브 코파일럿, 6월 1일부터 사용량 과금 전환",
-  "마이크로소프트 깃허브가 코파일럿을 요청 기반에서 사용량 기반 미터링 과금으로 전환한다. 1크레딧당 0.01달러의 가상화폐 'GitHub AI Credits'를 도입한다.",
-  "GitHub Blog", "https://github.blog/news-insights/company-news/github-copilot-is-moving-to-usage-based-billing/"),
- ("OpenAI, 1220억 달러 조달 — 밸류 8520억 달러",
-  "OpenAI가 역대 최대 규모인 1220억 달러를 8520억 달러 기업가치에 조달했다. 아마존 500억·엔비디아 300억 달러 등 대형 투자가 포함됐다.",
-  "TechCrunch", "https://techcrunch.com/2026/03/31/openai-not-yet-public-raises-3b-from-retail-investors-in-monster-122b-fund-raise/"),
- ("안드레이 카파시, Anthropic 합류",
-  "저명한 AI 연구자이자 교육자인 안드레이 카파시가 Anthropic에 합류했다고 밝혔다. 프리트레이닝팀에서 Claude 자체를 활용한 연구 자동화를 이끈다.",
-  "TechCrunch", "https://techcrunch.com/2026/05/19/openai-co-founder-andrej-karpathy-joins-anthropics-pre-training-team/"),
- ("BMW i 벤처스, 3억 달러 에이전틱 AI 펀드",
-  "BMW i 벤처스가 초기~시리즈 B 단계 스타트업을 겨냥한 3억 달러 신규 펀드를 발표했다. 에이전틱·피지컬 AI와 산업 소프트웨어, 공급망 기술에 투자한다.",
-  "TechCrunch", "https://techcrunch.com/2026/04/29/bmw-i-ventures-has-a-new-300m-fund-and-ai-is-riding-shotgun/"),
- ("엔비디아, 오픈 에이전트 개발 플랫폼 공개",
-  "엔비디아가 지식 노동을 자동화하는 오픈 에이전트 개발 플랫폼을 공개했다. 기업이 전문 영역 AI 에이전트를 직접 구축·운영할 수 있도록 지원한다.",
-  "NVIDIA Newsroom", "https://nvidianews.nvidia.com/news/ai-agents"),
+ ("애플 WWDC 2026: Siri AI·iOS 27·애플 인텔리전스 전면 공개",
+  "서핏·이오플래닛이 모두 주목한 이번 주 최대 AI 이슈. 애플이 WWDC 2026에서 iOS 27과 전면 재설계된 Siri AI를 공개했다. Safari 탭 AI 관리·크로스앱 문맥 인식·원탭 비밀번호 업데이트 등 Apple Intelligence가 실사용 수준으로 도약했다는 평가다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/09/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/"),
 ]
 
-DESIGN = [
- ("피그마 Make, 로컬 코드베이스 연결 지원",
-  "5월 28일 피그마 Make가 로컬 코드베이스에 연결되도록 확장됐다. 특정 요소를 지정해 프롬프트하거나 편집 패널·채팅으로 변경을 지시하면 AI 코딩 에이전트가 코드를 수정한다.",
-  "Figma Release Notes", "https://www.figma.com/release-notes/"),
- ("피그마 Buzz, 캠페인 자산 대량 편집 기능",
-  "5월 22일 피그마 Buzz가 캠페인 자산을 대규모로 일괄 편집·리사이즈하는 기능을 추가했다. 스프레드시트 업로드로 수백 개 변형을 한 번에 생성·관리할 수 있다.",
-  "Fast Company", "https://www.fastcompany.com/91545179/figma-ai-agent-tool"),
- ("피그마, 캔버스 위 AI 디자인 에이전트 도입",
-  "피그마가 디자인 작업이 이뤄지는 캔버스에 전용 AI 에이전트를 내장했다. 디자인 생성·리믹스와 반복 작업 자동화를 수행하며 디자인 시스템을 기본 준수한다.",
-  "Figma Blog", "https://www.figma.com/blog/4-new-ways-to-go-from-idea-to-product-with-ai-tools/"),
- ("펩시코, 25년 만의 새 비주얼 아이덴티티",
-  "펩시코가 약 25년 만에 기업 아이덴티티를 전면 개편했다. 소문자 워드마크와 흙빛 컬러 팔레트, 단순화된 아이코노그래피를 도입하고 'P'를 중심에 뒀다.",
-  "PepsiCo", "https://www.pepsico.com/newsroom/stories/2026/an-inside-look-at-pepsico-new-visual-identity-with-its-lead-designer"),
- ("구글 워크스페이스 아이콘 대대적 리디자인",
-  "구글이 워크스페이스 앱 아이콘을 'AI 우선' 미학으로 개편하는 정황이 포착됐다. 수년간 이어진 플랫·4색 아이콘 체계에서 벗어나 Gemini 계열과 결을 맞춘다.",
-  "CGfrog", "https://blog.cgfrog.com/new-google-logos-icons-leaked-2026/"),
- ("BBH, 44년 만의 첫 대규모 리브랜드",
-  "광고 에이전시 BBH가 44년 만에 첫 비주얼 아이덴티티 개편을 단행했다. Studio DRAMA와 협업한 전용 서체로 'AI 획일화'에 반기를 들며 창업자들의 개성을 타이포에 녹였다.",
-  "It's Nice That", "https://www.itsnicethat.com/articles/bbh-studio-drama-rebrand-graphic-design-project-260226"),
- ("Brand New: 최신 리브랜드·아이덴티티 아카이브",
-  "전 세계 주요 로고·아이덴티티 프로젝트를 매일 큐레이션해 업데이트한다. 최신 리브랜드 사례를 한눈에 확인할 수 있는 레퍼런스다.",
-  "UnderConsideration", "https://www.underconsideration.com/brandnew/"),
-]
-
-MARKETING = [
- ("구글 마케팅 라이브 2026: 광고의 AI 전환",
-  "5월 20일 구글이 마케팅 라이브에서 AI 기반 광고 솔루션을 대거 공개했다. 구글과 유튜브 전반에서 마케터 성장을 돕는 도구들이 소개됐다.",
-  "Google", "https://blog.google/products/ads-commerce/google-marketing-live-2026-collection/"),
- ("스냅, '통합 어트리뷰션' 출시",
-  "스냅이 플랫폼 지표와 MMP 데이터를 결합한 통합 어트리뷰션을 출시했다. 앱 광고주가 캠페인을 실시간으로 평가·최적화할 수 있게 됐다.",
-  "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
- ("타입폼, 'Growth Flow' 출시",
-  "5월 21일 타입폼이 폼 응답이 후속 비즈니스 액션을 자동 실행하는 Growth Flow를 출시했다. 응답 데이터를 세일즈 파이프라인·이메일·고객 지원으로 수작업 없이 전달한다.",
-  "MarTech", "https://martech.org/the-latest-ai-powered-martech-news-and-releases/"),
- ("펍매틱, '디테일드 리즈닝 에이전트' 도입",
-  "5월 21일 펍매틱이 프로그래매틱 광고 대시보드에 분석 요약을 제공하는 추론 에이전트를 도입했다. 거래 경로·수수료·경매 역학을 상세히 보고한다.",
-  "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
- ("Sounder AI, 트레이드 데스크서 컨텍스트 광고 확장",
-  "트라이튼 디지털의 Sounder AI가 5월 21일 트레이드 데스크 내 컨텍스트 광고 배치를 확장했다. 팟캐스트 음성을 스캔해 콘텐츠를 분류하고 위험 신호를 식별한다.",
-  "The Agile Brand Guide", "https://agilebrandguide.com/yesterdays-marketing-technology-ai-news-may-22-2026/"),
- ("세일즈포스, 'Agentforce Coworker' 베타 공개",
-  "5월 22일 세일즈포스가 검색형 인터페이스에 AI 동료를 심는 Agentforce Coworker 베타를 공개했다. 업무 화면 안에서 에이전트가 협업 파트너처럼 동작한다.",
-  "MarTech", "https://martech.org/the-latest-ai-powered-martech-news-and-releases/"),
- ("\"바이럴은 전략이 아니다\" — 적합성·주목도 강조",
-  "DS그룹의 라지브 자인은 브랜드가 바이럴을 전략으로 삼지 말고 적합성·주목도·발견 가능성에 집중해야 한다고 강조했다. AI·크리에이터·CTV가 광고를 재편하고 있다.",
-  "BestMediaInfo", "https://bestmediainfo.com/mediainfo/advertising/top-advertising-marketing-and-media-news-headlines-of-today-may-22-2026-11861013"),
-]
+DESIGN = []
+MARKETING = []
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
 SECTIONS = [
