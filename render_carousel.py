@@ -609,17 +609,23 @@ DESIGN = [
   "LG 전자가 Wolff Olins와 협업해 상징적인 슬로건 'Life's Good'을 중심으로 브랜드 아이덴티티를 새롭게 정의했다. 기술 기업에서 라이프스타일 기업으로의 전환을 시각 언어로 풀어냈다는 평가다. 글로벌 캠페인과 연동한 디자인 시스템이 함께 공개됐다.",
   "Creative Boom", "https://www.creativeboom.com/news/lg-electronics-kicks-off-its-lifes-good-campaign-with-renewed-brand-identity/"),
  # ⑥ 가구 — 이케아 PS 2026 (공기주입식 의자)
+ # img_url: Hypebeast 기사 — Dezeen보다 og:image 접근 가능, 실제 이케아 의자 사진
  ("이케아 PS 2026: 공기주입식 의자 등 가구 44종 공개",
   "이케아가 밀라노 디자인위크에서 PS 2026 컬렉션 44종을 공개했다. 미카엘 악셀손이 20개 시제품 끝에 완성한 공기주입식 1인용 의자, 회전 플로어 램프 등 '놀이 같은 기능성'이 핵심이다. 평팩·발펌프 동봉으로 합리적 가격과 지속가능성을 동시에 잡았다.",
-  "Dezeen", "https://www.dezeen.com/2026/05/13/ikea-ps-collection-furniture/"),
+  "Dezeen", "https://www.dezeen.com/2026/05/13/ikea-ps-collection-furniture/",
+  "https://hypebeast.com/2026/4/ikea-ps-2026-collection-inflatable-furniture-milan-design-week"),
  # ⑦ 가구/프로덕트 — 코펜하겐 3 Days of Design 신제품
+ # img_url: Wallpaper* — Dezeen 차단 우회, 실제 가구 제품 사진
  ("코펜하겐 '3 Days of Design 2026' 신제품 8선",
   "400여 브랜드가 모인 코펜하겐 디자인위크(6/10~12)에서 주목할 신제품 8종이 공개됐다. 단일 알루미늄 판을 접어 만든 톰 페레데이의 'Sail' 테이블 등 소재 실험과 단순한 형태가 돋보였다. 북유럽 가구·오브제 트렌드의 최전선을 보여준다.",
-  "Dezeen", "https://www.dezeen.com/2026/06/12/products-tiles-furniture-3-days-of-design-2026/"),
+  "Dezeen", "https://www.dezeen.com/2026/06/12/products-tiles-furniture-3-days-of-design-2026/",
+  "https://www.wallpaper.com/design-interiors/design-events/3-days-of-design-2026-copenhagen-preview"),
  # ⑧ 한국 프로덕트 — ILKW 조명
+ # img_url: ILKW 공식 브랜드 사이트 — 실제 유리 조명 제품 사진
  ("한국 조명 브랜드 ILKW '스노우맨22' 컬렉션",
   "한국 조명 브랜드 ILKW가 손으로 분 유리에 눈사람 형태를 결합한 '스노우맨22' 컬렉션을 선보였다. 벽·플로어·테이블·펜던트로 확장되는 장난기 어린 유리 셰이드가 특징이다. 국내 디자인 브랜드가 글로벌 디자인 매체에 정식 소개된 반가운 사례다.",
-  "Dezeen", "https://www.dezeen.com/2026/06/01/snowman22-lighting-lkw-dezeen-showroom/"),
+  "Dezeen", "https://www.dezeen.com/2026/06/01/snowman22-lighting-lkw-dezeen-showroom/",
+  "https://ilkwdesign.com/SNOWMAN22-V2-Table"),
  # ⑨ 한국 인테리어/공간 1 — 성수동 팝업
  ("성수동 6월 팝업스토어 공간 디자인 총정리",
   "2026년 6월 성수동에서 운영 중인 주요 팝업스토어 공간이 한자리에 정리됐다. 뉴발란스 'Run Hub' 러닝 허브 등 브랜드 서사를 공간 경험으로 풀어낸 사례가 늘고 있다. 리테일·공간 기획자가 참고할 최신 팝업 인테리어 레퍼런스다.",
@@ -706,9 +712,6 @@ def main():
     pages = []
     n_articles = sum(len(s[4]) for s in SECTIONS)
     total = 1 + n_articles + 1   # 표지 + 기사 + 엔딩
-    # 동일 URL을 2번 이상 쓰는 카드는 og:image가 무관한 이미지일 가능성이 높음
-    # → 첫 번째 카드만 og:image, 나머지는 제목 기반 검색 강제
-    all_urls = [u for _, _, _, _, items in SECTIONS for _, _, _, u in items]
     _seen_urls: set = set()
     def _force(url):
         if url in _seen_urls: return True
@@ -716,12 +719,16 @@ def main():
     pages.append(cover(DATE, n_articles))
     idx = 2
     for cat_en, cat_ko, ac, suffix, items in SECTIONS:
-        for t, b, s, u in items:
-            forced = _force(u)            # og:image는 원본 URL로 시도(이미지 관련성 보존)
-            link = safe_link(u)           # 클릭 링크만 검증 — 죽었으면 안전 폴백
+        for item in items:
+            t, b, s, u = item[:4]
+            # 5번째 요소 = 이미지 전용 URL (og:image가 막힌 사이트 우회용)
+            # 없으면 기사 URL 그대로 사용
+            img_src = item[4] if len(item) > 4 else u
+            forced = _force(u)
+            link = safe_link(u)
             pages.append(card(idx, total, cat_en, cat_ko, ac, t, b, s, link,
                               f"{idx:02d}_{suffix}.png", force_search=forced,
-                              img_url=u))
+                              img_url=img_src))
             idx += 1
     pages.append(closing(f"{idx:02d}_closing.png"))
     pdf_name = DATE_ISO.strftime("%y%m%d") + "_FAFA NEWS.pdf"
