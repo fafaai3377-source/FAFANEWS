@@ -36,6 +36,8 @@ jobs:
 
       - name: 이메일 발송
         env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GMAIL_USER: fafaai3377@gmail.com
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           EMAIL_TO: fafaai3377@gmail.com
         run: |
