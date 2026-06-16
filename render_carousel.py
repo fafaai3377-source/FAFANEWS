@@ -563,107 +563,111 @@ DATE_ISO = _TODAY
 DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
 # ── 2026-06-16 (화) 브리핑 — 6/15(월)~6/16(화) 24시간 ─────────────────────
+# ⚠️ 전날(6/15) 기사와 중복 없음 — 모두 신규
 AI = [
  ("OpenAI 파트너 네트워크 출범, 1,500억 원 투자",
-  "OpenAI가 6월 15일 공식 파트너 프로그램 '오픈AI 파트너 네트워크'를 출시했다. BCG·액센츄어·베인 등과 함께 2026년 말까지 30만 명의 컨설턴트를 인증할 계획이다. 엔터프라이즈 AI 도입의 병목이 모델 성능보다 '조직 변화 관리'에 있다는 인식 전환을 반영한다.",
+  "OpenAI가 6월 15일 공식 파트너 프로그램 '오픈AI 파트너 네트워크'를 출시했다. BCG·액센츄어·베인 등과 함께 2026년 말까지 30만 명의 컨설턴트를 인증할 계획이다. 모델 성능보다 '조직 변화 관리'가 엔터프라이즈 AI 도입의 진짜 병목이라는 인식 전환을 반영한다.",
   "OpenAI", "https://openai.com/index/introducing-openai-partner-network/"),
  ("G7 정상회담에 AI CEO 3인 동시 첫 등장",
-  "오픈AI 샘 알트만, 딥마인드 데미스 하사비스, Anthropic 다리오 아모데이가 프랑스 에비앙 G7 정상회의(6/15~17)에 동시 참석했다. 3대 AI 랩 CEO가 주요국 정상들 앞에 나란히 서는 것은 사상 처음이다. 청소년 안전·AI 사이버·바이오 위험에 관한 자발적 공약 패키지 합의가 논의되고 있다.",
+  "오픈AI 샘 알트만, 딥마인드 데미스 하사비스, Anthropic 다리오 아모데이가 프랑스 에비앙 G7 정상회의(6/15~17)에 동시 참석했다. 3대 AI 랩 CEO가 주요국 정상들 앞에 나란히 서는 것은 사상 처음이다. 청소년 안전과 AI 사이버·바이오 위험 대응을 위한 자발적 공약 패키지 합의가 논의되고 있다.",
   "Bloomberg", "https://dataconomy.com/2026/06/12/ai-leaders-openai-google-deepmind-anthropic-g7-summit/"),
  ("미 정부 Anthropic 모델 금지, AI 탈옥 아니었다",
-  "TechCrunch가 6월 15일 단독 보도한 결과, 미 정부의 Anthropic 모델 수출 제한은 'AI 탈옥' 우려와 무관한 것으로 드러났다. 실제 배경은 Mythos 5의 군사·사이버 역량에 관한 국가안보 검토 절차다. AI 기업 IPO 과정에서 규제 리스크가 기업 가치에 직접 반영될 수 있다는 선례를 남겼다.",
+  "TechCrunch가 6월 15일 단독 보도한 결과, 미 정부의 Anthropic 모델 수출 제한은 'AI 탈옥' 우려와 무관한 것으로 드러났다. 실제 배경은 Mythos 5의 군사·사이버 역량에 관한 국가안보 검토 절차다. AI 기업 IPO 과정에서 규제 리스크가 기업 가치를 직접 갉아먹을 수 있다는 선례를 남겼다.",
   "TechCrunch", "https://techcrunch.com/2026/06/15/the-us-governments-anthropic-models-ban-was-never-about-an-ai-jailbreak/"),
- ("Claude Fable 5, 출시 직후 수출 규제 충돌",
-  "Anthropic이 6월 9일 역대 최강 공개 모델 Claude Fable 5를 출시했으나, 미국 정부 수출 지시로 짧은 시간 내 서비스가 일시 중단됐다. 소프트웨어 엔지니어링·비전·과학 연구 등 거의 모든 벤치마크에서 최고 성능을 기록했다. 사이버·화학·생물 관련 질의는 안전 모델이 자동 응답하는 이중 장치가 탑재됐다.",
-  "TechCrunch", "https://techcrunch.com/2026/06/09/anthropic-released-claude-fable-5-its-most-powerful-model-publicly-days-after-warning-ai-is-getting-too-dangerous/"),
- ("Anthropic IPO 기밀 신청 — Claude Code $10억 돌파",
-  "Anthropic이 SEC에 IPO 기밀 신청서를 제출하며 기업가치 약 $9,650억을 목표로 설정했다. Claude Code가 출시 6개월 만에 연매출 $10억을 돌파했으며, 2분기 전체 연환산 매출은 $109억 수준이다. AI 코딩 어시스턴트 시장의 독주가 기업 가치를 견인하는 새 공식이 확인됐다.",
-  "TechCrunch", "https://techcrunch.com/2026/06/01/anthropic-files-to-go-public/"),
- ("WWDC 2026: iOS 27 & Gemini Siri 앱 간 맥락 이해",
-  "애플이 WWDC 2026에서 iOS 27과 Gemini 기반의 차세대 Siri를 발표했다. 메시지·메일·사진 등 앱 간 콘텍스트를 실시간으로 이해하며, 앱 전환 없이 멀티스텝 작업을 완료한다. OS 레벨 AI 통합이 표준화되면서 서드파티 앱·플러그인 전략의 재설계가 불가피해진 상황이다.",
-  "TechCrunch", "https://techcrunch.com/2026/06/09/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/"),
- ("EU AI Act 고위험 규정 8월 2일 전면 시행",
-  "EU AI법의 고위험 AI 시스템 규정이 2026년 8월 2일부터 전면 적용된다. 고용·교육·금융·의료·핵심 인프라 분야 AI가 대상이며, 기업은 적합성 평가와 기술 문서를 제출해야 한다. EU 시장을 대상으로 하는 글로벌 기업에도 동일 적용돼 컴플라이언스 비용이 크게 늘어날 전망이다.",
-  "MarketingProfs", "https://www.marketingprofs.com/opinions/2026/54909/ai-update-june-5-2026-ai-news-and-views-from-the-past-week/"),
+ ("VivaTech 2026 내일 개막 — 젠슨 황 GTC 파리",
+  "유럽 최대 스타트업·AI 행사 VivaTech 2026이 6월 17~20일 파리에서 열린다. NVIDIA CEO 젠슨 황이 'GTC 파리' 기조연설을 맡으며, Yann LeCun이 Meta 퇴임 후 공동 창업한 AMI Labs 대표로 귀환한다. 유럽 AI 주권·딥테크 투자 전략이 핵심 의제이며, AWS·NVIDIA가 선발한 7개 프랑스 AI 스타트업이 공개된다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/02/why-vivatech-2026-is-the-place-to-see-europes-ai-strategy-take-shape/"),
+ ("Meta AI 설비투자 $1,450억로 재상향 — 데이터센터 공격 확장",
+  "Meta가 2026년 AI 설비투자(Capex) 가이던스를 $1,250억~$1,450억으로 재차 상향했다. 2025년 지출($722억)의 2배 수준으로, 루이지애나 기가와트급 AI 데이터센터 캠퍼스 등 공격적 인프라 확장이 배경이다. AI 반도체·전력·냉각 업계에 대한 수요 폭발이 지속될 것이라는 강력한 신호다.",
+  "Fortune", "https://fortune.com/2026/04/29/meta-zuckerberg-145-billion-ai-spending-roi/"),
+ ("Anthropic Project Glasswing — 15개국 150기관에 Mythos 공개",
+  "Anthropic이 Project Glasswing을 통해 15개국 이상 150개 기관에 미공개 AI 모델 Claude Mythos Preview를 공개했다. 의료·에너지·통신 등 핵심 인프라 운영기관이 포함되며, 참가 기관들이 이미 2만 3천여 개의 소프트웨어 취약점을 발견했다. AI가 사이버보안 공세·방어 양면에서 핵심 도구가 되는 새로운 국면이 열렸다.",
+  "Help Net Security", "https://www.helpnetsecurity.com/2026/06/03/anthropic-project-glasswing-expansion/"),
+ ("EU AI Act 8월 2일 시행 D-47 — 고위험 AI 컴플라이언스 마감",
+  "EU AI법의 고위험 AI 시스템 규정 시행이 D-47로 다가왔다. 고용·교육·금융·의료·핵심 인프라 분야 AI가 대상이며, 적합성 평가·기술 문서·사람의 감독 체계를 갖춰야 한다. EU 시장 대상 글로벌 기업에도 동일 적용되므로, 하반기 AI 서비스 출시 일정에 즉각 영향을 미칠 규제다.",
+  "Cybersecurity Dive", "https://www.cybersecuritydive.com/news/ai-anthropic-claude-mythos-project-glasswing-expand/821714/"),
 ]
 
 DESIGN = [
- # ① 한국 브랜딩 핫이슈 — 투썸 한글 자모 논란 (6/10 ~ 현재 진행중)
- ("투썸플레이스 한글 자모 BI, SNS 논란 계속",
-  "투썸플레이스가 6월 10일 공개한 한글 자모 'ㅆ·ㅁ' 결합 새 심벌 논란이 이어지고 있다. SNS에서 '점집 로고'·'가독성 없다'는 혹평이 계속되고, 브랜드 측은 '확정 로고가 아닌 개발 시안'이라고 해명했다. 설명 없이 의미를 파악할 수 없는 심벌의 한계를 보여주는 실시간 케이스스터디다.",
-  "디자인 나침반", "https://designcompass.org/2026/06/10/twosome-place-korean-symbol-rebranding/"),
- # ② 프로덕트/UI — iOS 27 Liquid Glass (WWDC 6/9)
- ("iOS 27 Liquid Glass — 글래스모피즘 OS 표준화",
-  "애플이 WWDC 2026에서 'Liquid Glass'라는 새 디자인 언어를 iOS 27에 도입했다. 반투명 유리 질감, 동적 블러, 빛 굴절 효과가 결합된 인터페이스로 iOS 7 이후 최대 시각 변화다. 디자이너에게는 글래스모피즘이 플랫폼 디자인 시스템으로 공식 채택된 역사적 기준점이 됐다.",
-  "Apple", "https://www.apple.com/newsroom/2026/06/apple-unveils-next-generation-of-apple-intelligence-siri-ai-and-more/",
-  "https://techcrunch.com/2026/06/09/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/"),
- # ③ 툴/디지털 — Figma AI 에이전트 베타
+ # ① 브랜딩 — Xerox 리브랜드 (Lexmark 통합, 6월 신규)
+ ("Xerox, Lexmark 통합 새 브랜드 정체성 공개",
+  "Xerox가 Lexmark 인수 통합을 계기로 새로운 로고와 브랜드 아이덴티티를 공개했다. CMO는 '다음 챕터로의 명확한 발걸음'이라 평했으며, 인쇄·문서 기술을 넘어 소프트웨어·워크플레이스 서비스로 확장하는 방향성을 시각 언어에 담았다. 100년 역사 레거시 브랜드가 인수·합병을 통해 정체성을 재정의하는 전형적 케이스다.",
+  "Printweek", "https://www.printweek.com/content/news/xerox-rolls-out-rebrand"),
+ # ② 브랜딩 — Every Man Jack + Baker Mayfield
+ ("Every Man Jack + Baker Mayfield 'Effort Over Image' 리브랜드",
+  "남성 케어 브랜드 Every Man Jack이 NFL 쿼터백 Baker Mayfield와 손잡고 'Effort Over Image' 캠페인으로 리브랜드했다. 외모보다 노력을 강조하는 메시지로 기존 그루밍 브랜드의 과장된 마초 이미지와 정반대로 포지셔닝했다. 운동선수 협업이 단순 광고를 넘어 브랜드 가치 재정의에 활용된 모범 사례다.",
+  "DesignRush", "https://news.designrush.com/every-man-jack-baker-mayfield-effort-over-image-rebrand"),
+ # ③ 툴 — Figma AI 에이전트 베타 (6월 확대)
  ("Figma AI 에이전트, 캔버스 안에서 대화하며 디자인",
-  "Figma가 캔버스와 레일에 내장된 AI 에이전트를 5월 말부터 베타 출시해 6월 전체 확대 중이다. 자연어로 아이디어를 탐색하고, 대규모 편집을 자동화하며, 디자인 시스템을 즉시 적용한다. Figma Sites·Buzz·Weave·Draw 등 9개 플랫폼으로 확장되며 '디자인 플랫폼'으로 전환이 가속된다.",
+  "Figma가 캔버스와 레일에 내장된 AI 에이전트를 6월 전체 확대 중이다. 자연어로 아이디어를 탐색하고, 대규모 편집을 자동화하며, 디자인 시스템을 즉시 적용한다. Figma Sites·Buzz·Weave·Draw 등 9개 플랫폼으로 확장되며 '디자인 툴'에서 '디자인 운영 플랫폼'으로 전환이 가속되고 있다.",
   "LogRocket", "https://blog.logrocket.com/ux-design/figma-ai-2026-quick-overview/"),
- # ④ 한국 공간 — 손흥민 NOS7 성수 월드컵 팝업
+ # ④ 한국 공간 — NOS7 손흥민 성수 월드컵 팝업
  ("손흥민 브랜드 NOS7, 성수 월드컵 팝업 오픈",
-  "손흥민이 직접 론칭한 라이프스타일 브랜드 NOS7이 FIFA 월드컵 2026 시즌을 맞아 성수동에 팝업스토어를 열었다. MNH와 협업 캐릭터 '캡틴 소니'를 재출시하고 한정판 굿즈와 현장 이벤트를 운영한다. 스포츠 스타 IP를 패션·라이프스타일 브랜드로 전환하는 K-스포츠 마케팅의 새 공식으로 주목받는다.",
+  "손흥민이 직접 론칭한 라이프스타일 브랜드 NOS7이 FIFA 월드컵 2026 시즌을 맞아 성수동에 팝업스토어를 열었다. MNH와 협업 캐릭터 '캡틴 소니'를 재출시하고 한정판 굿즈와 현장 이벤트를 운영한다. 스포츠 스타 IP를 패션·라이프스타일 브랜드로 전환하는 K-스포츠 마케팅의 새 모델로 주목받는다.",
   "인더뉴스", "https://www.inthenews.co.kr/news/article.html?no=87221"),
- # ⑤ 가구 — 이케아 PS 2026 (Dezeen 차단 → Hypebeast 이미지)
- ("이케아 PS 2026: 공기주입식 의자 등 44종 공개",
-  "이케아가 밀라노 디자인위크에서 PS 2026 컬렉션 44종을 공개했다. 미카엘 악셀손이 20개 시제품 끝에 완성한 공기주입식 1인용 의자, 회전 플로어 램프 등 '놀이 같은 기능성'이 핵심이다. 평팩·발펌프 동봉으로 합리적 가격과 지속가능성을 동시에 잡았다.",
-  "Dezeen", "https://www.dezeen.com/2026/05/13/ikea-ps-collection-furniture/",
-  "https://hypebeast.com/2026/4/ikea-ps-2026-collection-inflatable-furniture-milan-design-week"),
- # ⑥ 가구/오브제 — 코펜하겐 3 Days of Design (Dezeen 차단 → Wallpaper* 이미지)
- ("코펜하겐 '3 Days of Design 2026' 신제품 8선",
-  "400여 브랜드가 참가한 코펜하겐 디자인위크(6/10~12)에서 주목할 신제품 8종이 공개됐다. 단일 알루미늄 판을 접어 만든 톰 페레데이의 'Sail' 테이블 등 소재 실험과 단순한 형태가 돋보였다. 북유럽 가구·오브제 트렌드의 최전선을 보여주는 연례 행사다.",
-  "Dezeen", "https://www.dezeen.com/2026/06/12/products-tiles-furniture-3-days-of-design-2026/",
-  "https://www.wallpaper.com/design-interiors/design-events/3-days-of-design-2026-copenhagen-preview"),
- # ⑦ 한국 프로덕트/조명 — ILKW 스노우맨22 (Dezeen 차단 → ILKW 공식 이미지)
- ("한국 조명 브랜드 ILKW '스노우맨22' 컬렉션",
-  "한국 조명 브랜드 ILKW가 손으로 분 유리에 눈사람 형태를 결합한 '스노우맨22' 컬렉션을 선보였다. 벽·플로어·테이블·펜던트로 확장되는 장난기 어린 유리 셰이드가 특징이다. 국내 디자인 브랜드가 Dezeen 쇼룸에 정식 소개된 반가운 사례다.",
-  "Dezeen", "https://www.dezeen.com/2026/06/01/snowman22-lighting-lkw-dezeen-showroom/",
-  "https://ilkwdesign.com/SNOWMAN22-V2-Table"),
- # ⑧ 한국 인테리어/공간 — Chukha 성수 팝업
+ # ⑤ 한국 공간/인테리어 — Chukha 성수 팝업
  ("Chukha 성수 팝업 — '매일의 축하' 컨셉 공간",
-  "한국 라이프스타일 브랜드 Chukha가 '매일의 작은 순간을 축하한다'는 컨셉으로 성수에서 두 달간(5월~6월 28일) 팝업을 운영 중이다. 공간 전체가 축하와 일상을 재해석한 오브제와 컬러로 구성됐다. 성수가 단순 체험을 넘어 브랜드 세계관을 전달하는 실험실로 자리 잡고 있음을 보여준다.",
+  "한국 라이프스타일 브랜드 Chukha가 '매일의 작은 순간을 축하한다'는 컨셉으로 성수에서 두 달간(5월~6월 28일) 팝업을 운영 중이다. 공간 전체가 축하와 일상을 재해석한 오브제와 컬러로 구성됐다. 성수가 단순 판매를 넘어 브랜드 세계관을 전달하는 실험실로 자리 잡고 있음을 보여준다.",
   "Inside Seoul", "https://insideseoul.app/popups"),
- # ⑨ 이벤트 — 버밍엄 디자인 페스티벌 2026 (6/10~12)
+ # ⑥ 이벤트 — 버밍엄 디자인 페스티벌 2026 (6/10~12)
  ("버밍엄 디자인 페스티벌 2026 — 60인 연사 3일 무료",
-  "영국 버밍엄 디자인 페스티벌이 6월 10~12일 열렸다. 60명 이상의 연사와 수천 장의 무료 티켓이 제공됐으며, 브랜딩·타이포그래피·모션 등 다양한 세션이 진행됐다. 런던 외 디자인 커뮤니티가 글로벌 담론을 주도한다는 점에서 영국 디자인 생태계의 분산화가 눈에 띈다.",
+  "영국 버밍엄 디자인 페스티벌이 6월 10~12일 열렸다. 60명 이상의 연사와 수천 장의 무료 티켓이 제공됐으며, 브랜딩·타이포그래피·모션 등 다양한 세션이 진행됐다. 런던 외 지역 디자인 커뮤니티가 글로벌 담론을 주도한다는 점에서 영국 디자인 생태계의 분산화가 눈에 띈다.",
   "Creative Boom", "https://www.creativeboom.com/news/the-theme-of-this-years-birmingham-design-festival-couldnt-be-more-apt/"),
- # ⑩ 트렌드 리포트 — Stills 2026 비주얼 트렌드
+ # ⑦ 트렌드 — Stills 2026 비주얼 트렌드 리포트
  ("Stills 2026: AI 반작용 — 인간 중심 비주얼 급부상",
-  "스톡 이미지 플랫폼 Stills의 2026 비주얼 트렌드 리포트는 AI 과잉에 대한 반작용으로 유기적·아날로그 디자인이 강하게 부상 중임을 핵심 트렌드로 꼽았다. 손으로 그린 텍스처, 불완전한 형태, 진짜 사람 중심의 사진이 브랜드 시각 언어의 핵심이 되고 있다. AI 이미지가 넘쳐날수록 인간적 결함이 신뢰의 증거가 되는 역설이다.",
+  "스톡 이미지 플랫폼 Stills의 2026 비주얼 트렌드 리포트는 AI 과잉에 대한 반작용으로 유기적·아날로그 디자인이 강하게 부상하고 있음을 핵심 트렌드로 꼽았다. 손으로 그린 텍스처, 불완전한 형태, 진짜 사람 중심의 사진이 브랜드 시각 언어의 핵심이 되고 있다. AI 이미지가 넘쳐날수록 인간적 결함이 신뢰의 증거가 되는 역설이다.",
   "Creative Boom", "https://www.creativeboom.com/insight/stills-trends-report-demonstrates-how-bold-human-centred-design-is-defining-2026/"),
- # ⑪ 브랜딩 인사이트 — '이상하게 가라' 전략
+ # ⑧ 브랜딩 인사이트 — '이상하게 가라'
  ("'이상하게 가라' — AI 시대 브랜딩 생존 전략",
-  "Creative Boom이 2026 브랜딩 전략으로 '이상하게 가는 것(being weird)'을 핵심으로 제안했다. AI가 평균적인 것을 모두 생산하는 시대에, 예측 불가능하고 기이한 브랜드 표현만이 기억에 남는다는 논지다. 투썸 리브랜딩 논란도 '이상함'의 방향성 실패가 초래한 결과라는 시각도 있다.",
+  "Creative Boom이 2026 브랜딩 전략으로 '이상하게 가는 것(being weird)'을 핵심으로 제안했다. AI가 평균적인 결과물을 쏟아내는 시대에, 예측 불가능하고 기이한 브랜드 표현만이 기억에 남는다는 논지다. 최근 투썸 리브랜딩 논란처럼 '의도 없는 이상함'이 아닌 '방향 있는 이상함'이 핵심이다.",
   "Creative Boom", "https://www.creativeboom.com/insight/how-being-weird-can-save-branding-in-2026/"),
- # ⑫ 한국 브랜딩 — 대한항공 + Lippincott 리브랜드
- ("대한항공 + Lippincott, 40년 만의 전면 리브랜드",
-  "대한항공이 글로벌 브랜딩 에이전시 Lippincott과 협력해 40년 만에 전면 브랜드 리뉴얼을 단행했다. 태극 모티프를 현대적으로 재해석한 새 로고와 프리미엄 컬러 팔레트가 적용됐다. 아시아나 합병을 앞두고 글로벌 프리미엄 항공사 포지셔닝을 공고히 하려는 전략이 담겼다.",
-  "Creative Boom", "https://www.creativeboom.com/news/korean-air-unveils-elegant-new-brand-identity-in-collaboration-with-lippincott/"),
+ # ⑨ 프로덕트 — 삼성전자 iF 디자인 어워드 77관왕
+ ("삼성전자 iF 디자인 어워드 77관왕 — 지속가능 Gold 수상",
+  "삼성전자가 2026 iF 디자인 어워드에서 77개 상을 수상했다. Music Studio 5와 홈 어플라이언스 지속가능 디자인 아이덴티티가 Gold Award를 받았다. 모바일·TV를 넘어 지속가능성 카테고리까지 수상 범위가 확장된 점이 업계에서 주목받는다.",
+  "Samsung Newsroom", "https://news.samsung.com/global/samsung-receives-77-accolades-at-if-design-awards-2026"),
+ # ⑩ 어워드 — DesignRush 6월 디자인 어워드
+ ("DesignRush 6월 디자인 어워드 — AI·웹·패키징 수상작",
+  "DesignRush가 6월 디자인 어워드 수상작을 발표했다. Qodeca의 포트폴리오 플랫폼이 웹 디자인 부문 최우수작으로 선정됐으며, 퍼리윙클 그라디언트와 옐로우그린 포인트 컬러의 조합이 특징이다. AI 도구를 활용한 제품 디자인과 브랜드 패키징 작업들이 올해 수상 트렌드를 주도했다.",
+  "DesignRush", "https://news.designrush.com/designrush-design-award-winners-june-2026"),
+ # ⑪ 스튜디오 소식 — Creative Boom Booms & Shakes 6월
+ ("Creative Boom 6월 스튜디오 소식 — 오픈·채용·리브랜딩",
+  "Creative Boom의 6월 Booms & Shakes 섹션에 스튜디오 오픈·채용·리브랜딩 소식이 줄을 이었다. 베를린을 중심으로 캐릭터 디자인·일러스트 스튜디오들이 주목받고 있으며, 기후 중심 프로젝트를 전문으로 하는 신생 스튜디오도 포함됐다. 2026년 글로벌 크리에이티브 생태계의 이동과 신규 진입자 트렌드를 보여준다.",
+  "Creative Boom", "https://www.creativeboom.com/news/booms-and-shakes-june-2026/"),
+ # ⑫ 로고 트렌드 — 2026 로고 디자인 트렌드
+ ("2026 로고 트렌드 — 버블 레터폼·손글씨·유기적 형태",
+  "Creative Bloq가 선정한 2026 로고 디자인 트렌드는 버블 레터폼·손글씨 스크립트·유기적 불규칙 형태가 주도한다. AI 생성 그래픽이 넘쳐나는 시대에 인간의 손맛과 불완전함이 브랜드 개성의 핵심 수단이 됐다. Xerox·Every Man Jack 등 최근 리브랜딩 사례들도 이 흐름 위에 있다.",
+  "Creative Bloq", "https://www.creativebloq.com/design/logos-icons/these-logo-design-trends-will-define-2026"),
 ]
 
 MARKETING = [
- ("칸 라이언즈 2026 타이타늄 18캠페인 쇼트리스트",
-  "칸 라이언즈가 137개 엔트리 중 18개 캠페인을 2026 타이타늄 쇼트리스트로 선정했다. IKEA Preowned 중고 가구 마켓플레이스, 하이네켄 소음방지 자전거 벨 'Duobell', 아식스 캠페인 등이 포함됐다. 쥬리 의장은 TBWA의 Chaka Sobhani이며 그랑프리는 6월 26일 발표된다.",
-  "Ad Age", "https://adage.com/events-awards/cannes-lions/aa-titanium-shortlist-2026/"),
- ("FIFA 2026 — 체험형 스폰서십이 전통 광고 대체",
-  "FIFA 월드컵 2026을 기점으로 브랜드 스폰서십이 로고 노출 중심에서 팬덤 기반 체험 경험으로 급전환하고 있다. 스타디움 광고판 대신 팬 존·팝업·앱 게임화로 소비자와 직접 관계를 구축한다. 한국에서도 손흥민 NOS7 팝업 등 스포츠 마케팅이 월드컵 시즌과 연동해 활발히 전개 중이다.",
+ # ① Google Marketing Live 2026 — Gemini 광고 재편 (신규)
+ ("Google Marketing Live 2026 — Gemini로 광고 스택 전면 재편",
+  "구글이 Google Marketing Live 2026에서 Gemini 기반 광고 스택 전면 재편을 발표했다. AI Mode 광고·Direct Offers·Gemini 기반 리드 수집 챗 에이전트 등 새 광고 포맷이 도입됐다. 기존 키워드·배너 중심 광고에서 '대화형 AI 내 네이티브 광고'로의 전환이 본격화됐다.",
+  "Search Engine Land", "https://searchengineland.com/google-marketing-live-2026-everything-you-need-to-know-478167"),
+ # ② FIFA 2026 체험 스폰서십 (신규)
+ ("FIFA 2026 — 체험형 스폰서십이 전통 광고를 대체한다",
+  "FIFA 월드컵 2026을 기점으로 브랜드 스폰서십이 로고 노출 중심에서 팬덤 기반 체험 경험으로 급전환하고 있다. 스타디움 광고판 대신 팬 존·팝업·앱 게임화로 소비자와 직접 관계를 구축한다. 한국에서도 NOS7 손흥민 성수 팝업 등 스포츠 마케팅이 월드컵 시즌과 강하게 연동되는 중이다.",
   "Best Media Info", "https://bestmediainfo.com/mediainfo/advertising/top-advertising-marketing-and-media-news-headlines-of-today-june-15-2026-12038846"),
- ("AI 오버뷰 인용 브랜드, 오가닉 클릭 120% 증가",
-  "구글 AI 오버뷰에 인용된 브랜드가 인용되지 않은 브랜드 대비 오가닉 클릭률이 120% 더 높다는 분석이 나왔다. AI 시대 SEO의 핵심이 '페이지 순위'에서 'AI 오버뷰 인용 소스 되기'로 이동하고 있다. E-E-A-T(경험·전문성·권위성·신뢰성) 강화가 새 검색 최적화 전략의 중심이 됐다.",
+ # ③ AI 오버뷰 SEO (신규)
+ ("AI 오버뷰 인용 브랜드, 오가닉 클릭 120% 더 높아",
+  "구글 AI 오버뷰에 인용된 브랜드가 인용되지 않은 브랜드보다 오가닉 클릭률이 120% 높다는 분석이 나왔다. AI 시대 SEO의 핵심이 '페이지 순위'에서 'AI 오버뷰 인용 소스 되기'로 이동하고 있다. E-E-A-T(경험·전문성·권위성·신뢰성) 강화가 새로운 검색 최적화 전략의 중심이 됐다.",
   "Seafoam Media", "https://seafoammedia.com/june-2026-marketing-news-trends-insights/"),
- ("소셜 커머스 $1조 돌파 — 라이브 쇼핑·인플루언서 경제",
-  "글로벌 소셜 커머스 시장이 2026년 상반기 $1조를 돌파했다. 틱톡샵·인스타그램·유튜브 라이브 쇼핑이 폭발적으로 성장하며 전통 이커머스와 격차를 빠르게 좁히고 있다. Z세대 소비 패턴을 재편하는 인플루언서 경제와 실시간 구매 경험의 결합이 핵심 성장 동력이다.",
+ # ④ 소셜 커머스 (신규)
+ ("소셜 커머스 $1조 돌파 — 라이브 쇼핑·크리에이터 경제",
+  "글로벌 소셜 커머스 시장이 2026년 상반기 $1조를 돌파했다. 틱톡샵·인스타그램·유튜브 라이브 쇼핑이 폭발적으로 성장하며 전통 이커머스와의 격차를 좁히고 있다. 크리에이터 경제와 실시간 구매 경험의 결합이 핵심 성장 동력이며, 브랜드들의 라이브 커머스 예산이 빠르게 확대되고 있다.",
   "Seafoam Media", "https://seafoammedia.com/june-2026-marketing-news-trends-insights/"),
- ("칸 라이언즈 2026 개막 기조 — AB InBev CMO 연설",
-  "칸 라이언즈 2026이 6월 22~26일 프랑스 칸에서 열린다. AB InBev 글로벌 CMO 마르셀 마르콘데스가 'Creative Marketer of the Year'로 선정돼 개막 기조연설을 맡는다. LionHeart Award는 오프라 윈프리가 수상하며, 독립 에이전시의 대형 행사 존재감 확대도 올해 주목 포인트다.",
+ # ⑤ IKEA 미국 40주년 미트볼 → 팔라펠볼 캠페인 (신규)
+ ("IKEA 미트볼 40주년 — 신메뉴 '팔라펠볼'로 화제 마케팅",
+  "IKEA가 스웨덴 미트볼 탄생 40주년을 기념해 신메뉴 '팔라펠볼'을 전 세계 레스토랑에 도입하고 전방위 기념 캠페인을 전개 중이다. 40주 연속 딜·한정판 굿즈·$2.99 복고 미트볼 플레이트 등 체험 마케팅을 총동원했다. 푸드가 브랜드 정체성의 핵심이 된 사례로, 이케아 미트볼은 이케아 매장 방문의 독립적 이유가 된 지 오래다.",
+  "Ingka Group", "https://www.ingka.com/newsroom/ikea-celebrates-the-40th-anniversary-of-its-iconic-meatball-by-rolling-out-the-new-falafel-ball/"),
+ # ⑥ 칸 라이언즈 개막 (내일 D-6, 신규 각도)
+ ("칸 2026 D-6 — AB InBev CMO 기조 + 오프라 LionHeart",
+  "칸 라이언즈 2026 개막(6/22)이 6일 앞으로 다가왔다. AB InBev 글로벌 CMO 마르셀 마르콘데스가 'Creative Marketer of the Year'로 개막 기조연설을 맡고, 오프라 윈프리가 LionHeart Award를 수상한다. 올해 독립 에이전시들이 대형 홀딩스에 도전장을 내미는 것도 관전 포인트다.",
   "Cannes Lions", "https://www.canneslions.com/news/cannes-lions-announces-its-2026-programme"),
- ("칸 라이언즈 Glass — 사회 변화 캠페인 쇼트리스트",
-  "사회 변화를 이끄는 마케팅을 선정하는 Glass: Lion for Change 쇼트리스트가 공개됐다. 젠더 편견 해소·기후 행동·포용성을 주제로 한 글로벌 캠페인들이 이름을 올렸다. 브랜드가 사회적 목소리를 내는 방식이 수상의 핵심 기준으로 자리 잡고 있음을 다시 확인시켰다.",
-  "Campaign Asia", "https://www.campaignasia.com/article/cannes-lions-2026-apac-contenders-shortlisted-across-titanium-glass-and-innovation/4z33qq0vc2x4pvwy4hq1x367ca"),
- ("2026 마케팅 트렌드 — AI 에이전트·소셜 커머스·SEO 대격변",
-  "6월 15일 기준 2026년 마케팅 핵심 키워드는 AI 에이전트 자동화, 소셜 커머스 폭발, AI 오버뷰 SEO 대응으로 수렴된다. 마케터의 역할이 '실행자'에서 'AI 성과를 설계하고 검증하는 전략가'로 빠르게 전환되고 있다. 단기 퍼포먼스보다 브랜드 신뢰 구축에 투자하는 것이 장기 경쟁력이라는 공통 시사점이 도출됐다.",
-  "B2The7", "https://www.b2the7.com/news-blog/marketing-trends-june-15-2026"),
+ # ⑦ Adweek 50 2026 (신규)
+ ("Adweek 50 2026 — 광고계 차세대 리더 50인 선정",
+  "Adweek가 광고·마케팅업계의 차세대 리더 50인을 선정한 'Adweek 50 2026'을 발표했다. AI 활용 크리에이티브 전략가, DEI 기반 마케터, 퍼포먼스·브랜드 균형을 잡는 CMO급 인재들이 이름을 올렸다. 업계가 주목하는 인재 프로파일이 '기술·창의력·사회적 감수성'의 교차점으로 수렴되고 있다.",
+  "Adweek", "https://www.adweek.com/brand-marketing/the-2026-adweek-50-are-up-for-the-challenge/"),
 ]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)

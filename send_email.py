@@ -25,11 +25,12 @@ def _subject(date_label):
     return f"[FAFA NEWS] {date_label} AI·디자인·마케팅 모닝 브리핑"
 
 def _html(date_label):
+    window = "72시간" if datetime.date.today().weekday() == 0 else "24시간"
     return (
         f"<div style='font-family:Apple SD Gothic Neo,Pretendard,sans-serif;color:#3a3a3a'>"
         f"<h2 style='margin:0 0 8px'>오늘의 AI·디자인·마케팅 브리핑</h2>"
         f"<p style='margin:0;color:#8a8a82'>{date_label}</p>"
-        f"<p>지난 72시간 주요 소식을 카드 28장 PDF로 정리했습니다. 첨부파일을 확인하세요.</p>"
+        f"<p>지난 {window} 주요 소식을 카드 28장 PDF로 정리했습니다. 첨부파일을 확인하세요.</p>"
         f"<p style='color:#8a8a82;font-size:13px'>— FAFA NEWS 자동 브리핑</p></div>"
     )
 
