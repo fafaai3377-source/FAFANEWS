@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-FAFA NEWS 브리핑 이메일 발송 모듈 (HTTPS API 사용 — 이 환경은 SMTP 차단됨)
+FAFA NEWS 브리핑 이메일 발송 모듈
 
-환경변수:
-  RESEND_API_KEY      Resend API 키 (권장)  또는
+환경변수 (우선순위 순):
+  GMAIL_APP_PASSWORD  Gmail 앱 비밀번호 (가장 안정적 — Gmail→Gmail 직발송)
+  RESEND_API_KEY      Resend API 키
   SENDGRID_API_KEY    SendGrid API 키
   EMAIL_TO            수신자 (기본: fafaai3377@gmail.com)
-  EMAIL_FROM          발신자 (기본: FAFA NEWS <onboarding@resend.dev>)
-                      ※ 커스텀 도메인 발신은 해당 서비스에서 도메인 인증 필요
+  GMAIL_USER          발신 Gmail 주소 (GMAIL_APP_PASSWORD 사용 시, 기본: fafaai3377@gmail.com)
 
-사용:  python3 send_email.py "output/260529_FAFA NEWS.pdf" "2026년 5월 29 (금)"
-또는   render_carousel.py 가 끝에서 send() 호출
+사용:  python3 send_email.py "output/260529_FAFA NEWS.pdf" "2026년 5월 29일 (금)"
 """
-import os, sys, base64, json, datetime
+import os, sys, base64, json, datetime, smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 import requests
 
 DEFAULT_TO   = "fafaai3377@gmail.com"
@@ -27,9 +29,24 @@ def _html(date_label):
         f"<div style='font-family:Apple SD Gothic Neo,Pretendard,sans-serif;color:#3a3a3a'>"
         f"<h2 style='margin:0 0 8px'>오늘의 AI·디자인·마케팅 브리핑</h2>"
         f"<p style='margin:0;color:#8a8a82'>{date_label}</p>"
-        f"<p>지난 24시간 주요 소식 21건을 카드 23장 PDF로 정리했습니다. 첨부파일을 확인하세요.</p>"
+        f"<p>지난 72시간 주요 소식을 카드 28장 PDF로 정리했습니다. 첨부파일을 확인하세요.</p>"
         f"<p style='color:#8a8a82;font-size:13px'>— FAFA NEWS 자동 브리핑</p></div>"
     )
+
+def send_via_gmail(app_password, gmail_user, to, subject, html, pdf_path):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"]    = f"FAFA NEWS <{gmail_user}>"
+    msg["To"]      = to
+    msg.attach(MIMEText(html, "html", "utf-8"))
+    with open(pdf_path, "rb") as f:
+        part = MIMEApplication(f.read(), Name=os.path.basename(pdf_path))
+    part["Content-Disposition"] = f'attachment; filename="{os.path.basename(pdf_path)}"'
+    msg.attach(part)
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(gmail_user, app_password)
+        smtp.sendmail(gmail_user, to, msg.as_bytes())
+    return 200, "OK"
 
 def send_via_resend(api_key, sender, to, subject, html, pdf_path):
     with open(pdf_path, "rb") as f:
@@ -61,22 +78,36 @@ def send_via_sendgrid(api_key, sender, to, subject, html, pdf_path):
     return r.status_code, r.text
 
 def send(pdf_path, date_label, to=None, sender=None):
-    to = to or os.environ.get("EMAIL_TO", DEFAULT_TO)
+    to     = to     or os.environ.get("EMAIL_TO", DEFAULT_TO)
     sender = sender or os.environ.get("EMAIL_FROM", DEFAULT_FROM)
     subject, html = _subject(date_label), _html(date_label)
-    resend = os.environ.get("RESEND_API_KEY")
-    sg = os.environ.get("SENDGRID_API_KEY")
+
+    gmail_pw   = os.environ.get("GMAIL_APP_PASSWORD")
+    gmail_user = os.environ.get("GMAIL_USER", DEFAULT_TO)
+    resend     = os.environ.get("RESEND_API_KEY")
+    sg         = os.environ.get("SENDGRID_API_KEY")
+
+    if gmail_pw:
+        try:
+            code, body = send_via_gmail(gmail_pw, gmail_user, to, subject, html, pdf_path)
+            print(f"[Gmail SMTP] 200 OK -> {to}")
+            return True
+        except Exception as e:
+            print(f"[Gmail SMTP] 실패: {e} — Resend로 재시도")
+
     if resend:
         code, body = send_via_resend(resend, sender, to, subject, html, pdf_path)
         ok = code in (200, 201)
         print(f"[Resend] {code} {'OK -> ' + to if ok else body[:300]}")
         return ok
+
     if sg:
         code, body = send_via_sendgrid(sg, sender, to, subject, html, pdf_path)
         ok = code in (200, 202)
         print(f"[SendGrid] {code} {'OK -> ' + to if ok else body[:300]}")
         return ok
-    print("이메일 API 키 없음 (RESEND_API_KEY 또는 SENDGRID_API_KEY 미설정) — 발송 건너뜀")
+
+    print("이메일 API 키 없음 (GMAIL_APP_PASSWORD / RESEND_API_KEY / SENDGRID_API_KEY 미설정) — 발송 건너뜀")
     return False
 
 if __name__ == "__main__":
