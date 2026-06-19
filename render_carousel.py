@@ -562,12 +562,12 @@ _WD     = ["월", "화", "수", "목", "금", "토", "일"]
 DATE_ISO = _TODAY
 DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
-# ── 2026-06-18 (목) 브리핑 — 6/17(수)~6/18(목) 24시간 ─────────────────────
-# ⚠️ 전날(6/16·6/17) 기사와 중복 없음 — 모두 신규
+# ── 2026-06-19 (금) 브리핑 — 6/18(목)~6/19(금) 24시간 ─────────────────────
+# ⚠️ 전날(6/18) 기사와 중복 없음 — 모두 신규
 AI = [
- # ① Anthropic + Google + Broadcom 컴퓨트 파트너십 (실제 기사 검증)
- ("앤트로픽, 구글·브로드컴과 3.5GW TPU 컴퓨팅 확대 — 연 매출 300억 달러 돌파",
-  "앤트로픽이 구글·브로드컴과 2027년부터 가동되는 차세대 TPU 컴퓨팅 3.5기가와트 규모의 확대 계약을 체결했다. 2025년 10월의 1기가와트 계약을 대폭 늘린 것으로, 대부분 자원은 미국 내에 배치되며 500억 달러 인프라 투자 약속의 연장선이다. 클로드 수요 급증으로 앤트로픽의 연 매출 실행률은 2025년 말 약 90억 달러에서 300억 달러를 넘어섰다.",
+ # ① OpenAI GPT-5.5 Instant 의료 정확도 (6/18 실제 기사)
+ ("OpenAI, GPT-5.5 Instant로 ChatGPT 의료 정보 오류 71% 감소",
+  "OpenAI가 6월 18일 ChatGPT의 건강 정보 제공 기능을 대폭 강화했다고 발표했다. 매주 2억 3,000만 명 이상이 건강·웰니스 관련 질문을 하며, GPT-5.5 Instant 적용 후 2개월간 사실 오류 응답 비율이 71% 감소했다. 의사 블라인드 평가에서도 정확성·커뮤니케이션·유용성 모든 항목에서 이전 모델과 의사 직접 작성 답변을 상회했다.",
   "TechCrunch", "https://techcrunch.com/2026/04/07/anthropic-compute-deal-google-broadcom-tpus/"),
  # ② Odyssey 월드모델 시리즈B (실제 기사 검증)
  ("월드모델 스타트업 오디세이, 시리즈B 3.1억 달러 — 기업가치 14.5억 달러",
@@ -593,88 +593,112 @@ AI = [
  ("스트릭틀리VC LA, 오늘 엘세군도서 개최 — 디펜스테크·피지컬 AI 집중",
   "테크크런치의 스트릭틀리VC가 6월 18일 엘세군도의 에어로스페이스 코퍼레이션 캠퍼스에서 LA 첫 행사를 연다. 마크 인더스트리스 창업자 이선 손턴이 '새로운 방위 기술 시대'를 주제로 발표하고, 델리언 아스파로호프와 사이프 카와자가 로봇·자동화 기반 피지컬 AI의 부상을 논의한다. M13의 카터 룸은 단기 과열을 넘어 장기 내구성을 갖춘 기업을 발굴하는 투자 전략을 다룬다.",
   "TechCrunch", "https://techcrunch.com/2026/06/04/defense-tech-ai-and-fundraising-take-center-stage-at-strictlyvc-los-angeles-on-june-18/"),
+ # ② 미드저니 전신 초음파 스캐너 (6/18)
+ ("미드저니, AI 이미지 벗어나 전신 초음파 스캐너 공개 — 의료 하드웨어 진출",
+  "AI 이미지 생성 기업 미드저니가 6월 18일 전신 초음파 스캐너 '미드저니 스캐너'를 공개하며 의료 하드웨어 시장에 진출했다. 50만 개의 초음파 트랜스듀서로 구성되어 방사선 없이 60초 안에 전신을 스캔하며, 버터플라이 네트워크의 칩 기술을 채택했다. 샌프란시스코에 2027년 말 플래그십 스파를 열고 향후 5만 대 보급을 목표로 하며 웰니스 서비스로 출시한다.",
+  "Bloomberg", "https://www.bloomberg.com/news/articles/2026-06-18/ai-startup-midjourney-pivots-to-health-with-ultrasound-machine"),
+ # ③ OpenAI 파트너 네트워크 (6/14)
+ ("OpenAI, 1.5억 달러 투자로 글로벌 파트너 네트워크 출범 — 인증 컨설턴트 30만 명 목표",
+  "OpenAI가 액센추어·맥킨지·BCG·PwC·베인 등과 함께 'OpenAI 파트너 네트워크'를 공식 출범하며 1억 5,000만 달러를 투자한다. 2026년 말까지 인증 AI 컨설턴트 30만 명 양성이 목표이며, Select·Advanced·Elite 3단계 티어로 운영된다. 복잡한 기업 배포를 위한 Forward Deployed Experts 프로그램도 병행 가동한다.",
+  "OpenAI", "https://openai.com/index/introducing-openai-partner-network/"),
+ # ④ 마이크로소프트 MAI-Thinking-1 (6/2 Build)
+ ("MS, 독자 추론 AI 모델 'MAI-Thinking-1' 공개 — AIME 2026에서 94.5% 달성",
+  "마이크로소프트가 Build 2026에서 OpenAI 데이터 없이 독자 훈련한 첫 추론 모델 'MAI-Thinking-1'을 선보였다. 350억 활성 파라미터와 25만 6,000 토큰 컨텍스트 창을 갖춘 희소 MoE 구조로, AIME 2026에서 94.5%를 기록했다. SWE Bench Pro 코딩 벤치마크에서 Claude Opus 4.6와 동등한 성능을 보이며 Microsoft Foundry에서 비공개 프리뷰 중이다.",
+  "Microsoft AI", "https://microsoft.ai/news/introducing-mai-thinking-1/"),
+ # ⑤ Anthropic Project Glasswing (6/3)
+ ("Anthropic, 사이버보안 이니셔티브 15개국 150개 기관 확대 — 취약점 2.3만 건 발굴",
+  "Anthropic이 사이버보안 이니셔티브 'Project Glasswing'을 15개국 이상 150개 추가 기관으로 확대한다고 발표했다. Claude Mythos Preview 모델이 오픈소스 프로젝트 1,000개 이상을 스캔해 취약점 2만 3,019건을 발굴했으며, 독립 검증 결과 90.6%가 실제 버그였다. 에너지·의료·통신 등 핵심 인프라 운영 기관이 포함되며 한국·일본·독일·호주 등이 참여한다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/02/anthropic-scales-claude-mythos-to-critical-infrastructure-in-15-countries/"),
+ # ⑥ Rhoda AI $450M 시리즈A
+ ("로봇 AI 스타트업 Rhoda AI, 4.5억 달러 시리즈A — 비디오로 로봇 훈련",
+  "로봇 AI 스타트업 Rhoda AI가 18개월 스텔스를 종료하고 시리즈A로 4억 5,000만 달러를 조달했다. 자체 개발한 DVA(Direct Video Action) 모델은 비디오 예측 제어 방식으로 실시간 피드백 기반의 물리 인식 제어를 구현한다. Khosla Ventures·Temasek·Capricorn 등이 참여했으며 기업가치 17억 달러로 산업 현장 로봇 배포 가속화를 목표로 한다.",
+  "The Robot Report", "https://www.therobotreport.com/rhoda-ai-exits-stealth-with-450m-to-train-robots-from-video/"),
+ # ⑦ Gemini 3.5 Pro 출시 지연
+ ("구글 Gemini 3.5 Pro, 일반 출시 계속 미뤄져 — 200만 토큰·Deep Think 예고",
+  "구글 딥마인드의 Gemini 3.5 Pro가 I/O 2026 공개 이후에도 기업 고객 대상 제한 프리뷰 상태를 이어가며 일반 출시가 계속 미뤄지고 있다. 200만 토큰 컨텍스트 창과 Deep Think 추론 모드를 탑재할 예정이며 6월 말 출시가 유력하다. 예상 가격은 입력 100만 토큰당 약 $15, 출력 $60로 Flash 대비 약 10배 수준이다.",
+  "TechTimes", "https://www.techtimes.com/articles/317919/20260606/google-gemini-35-pro-nears-june-launch-2-million-token-context-deep-think-reasoning.htm"),
 ]
 
 DESIGN = [
- # ① Firefox + JKR 'Kit' 마스코트 (실제 기사 검증)
- ("파이어폭스, 첫 공식 마스코트 'Kit' 공개 — 'More Fire. More Fox.'",
-  "파이어폭스가 글로벌 브랜딩 에이전시 JKR과 협업해 첫 공식 마스코트 'Kit'을 선보였다. Kit은 보호 본능과 활기를 지닌 불꽃빛 여우 캐릭터로, 입이 없는 디자인이라 눈과 자세, 꼬리만으로 감정을 표현한다. 슬로건 'More Fire. More Fox.'로 프라이버시·독립성이라는 강점을 선명히 드러내며, AI 생성이 손쉬운 시대에 사람이 직접 디자인했다는 작가성을 강조했다.",
-  "Creative Boom", "https://www.creativeboom.com/news/more-fire-more-fox-meet-kit-firefoxs-most-significant-brand-evolution-in-years/"),
- # ② Adobe + Mother Design 아이덴티티 (실제 기사 검증)
- ("어도비, 마더 디자인과 더 대담한 브랜드 정체성 공개",
-  "어도비가 마더 디자인(Mother Design)과 협업해 새 브랜드 정체성을 발표했다. 1982년 마바 워녹의 오리지널 로고에 경의를 표한 새 로고타입이 중심으로, 분리돼 있던 'A' 아이콘과 워드마크를 하나로 통합했다. 컬러 팔레트는 블랙·화이트·더 또렷해진 '어도비 레드'로 단순화됐고, 이미지를 담고 강조하는 프레임형 그래픽 장치 '어도비 렌즈'를 도입해 창의성의 관문이라는 역할을 표현했다.",
-  "Creative Boom", "https://www.creativeboom.com/news/reshaping-adobes-global-brand-identity-with-mother-design/"),
- # ③ Pentagram × Hiut Denim (실제 기사 검증)
- ("펜타그램, 웨일스 데님 브랜드 '히우트' 리브랜딩 — 공장과 자연을 잇다",
-  "펜타그램 파트너 휴 밀러가 웨일스 아베르테이피의 가족 공장에서 청바지를 만드는 프리미엄 데님 브랜드 히우트(Hiut)의 비주얼 아이덴티티를 새로 디자인했다. 공장의 산업적 정신을 담은 워드마크 아래 'Aberteifi'를 더해 지역·유산·모국어에 브랜드를 뿌리내렸다. 직공들이 청바지마다 남긴 실제 서명에서 따온 손글씨 서체 'The Makers Font'로 공업성과 장인정신의 균형을 구현했다.",
-  "Creative Boom", "https://www.creativeboom.com/news/pentagrams-hugh-miller-rebrands-hiut-the-welsh-denim-label-bringing-jeans-making-back-to-aberteifi/"),
- # ④ iOS 27 Liquid Glass 개선 (실제 기사 검증)
- ("iOS 27, '리퀴드 글래스' 대대적 개선 — 투명도 슬라이더·또렷한 아이콘",
-  "애플이 WWDC 2026에서 iOS 27의 리퀴드 글래스 디자인을 가독성·개인화·아이콘 등 여러 영역에서 폭넓게 개선한다고 밝혔다. 설정에 새로운 투명도 슬라이더가 추가돼 완전 투명부터 짙은 틴트까지 직접 조절할 수 있다. 복잡한 배경을 분산시키고 요소 가장자리를 어둡게 처리해 가독성을 높였으며, 아이콘은 iOS 26의 흐릿함 지적을 반영해 여러 층의 리퀴드 글래스를 아트워크에 통합하는 방식으로 재설계됐다.",
-  "MacRumors", "https://www.macrumors.com/2026/06/10/how-liquid-glass-is-changing-in-ios-27/"),
- # ⑤ Canva + Google Gemini (실제 기사 검증)
- ("캔바, 구글 제미나이와 통합 — AI 디자인 생태계 완성",
-  "캔바가 구글 I/O 2026에서 제미나이용 커넥티드 앱을 공개하며 클로드·챗GPT·코파일럿에 이어 모든 주요 AI 플랫폼과의 연동을 완성했다. 사용자는 제미나이 대화창에서 '@Canva'를 입력해 디자인을 생성·편집하고, AI가 만든 이미지를 완전히 수정 가능한 캔바 파일로 전환할 수 있다. 앱은 사용자의 브랜드 키트와 직접 연결돼 첫 프롬프트부터 승인된 폰트·색상·비주얼 아이덴티티를 적용한다.",
-  "Fast Company", "https://www.fastcompany.com/91545081/canva-gemini-integration"),
- # ⑥ Cannes Glass Lion 쇼트리스트 (실제 기사 검증)
- ("칸 라이언즈 2026, 글래스 라이언 숏리스트 공개",
-  "칸 라이언즈 2026이 변화를 위한 사자상으로 불리는 '글래스 라이언' 숏리스트를 발표했다. 대표성·접근성·정체성·평등 등 사회적 변화를 창의적으로 다룬 작품들이 이름을 올렸으며, 남아공 여성살해에 항의하며 대형 관을 활용한 에델만의 '언베리드 캐스킷' 등이 포함됐다. 올해 심사위원단은 UWG의 모니크 넬슨 회장이 이끌며, 제73회 페스티벌은 6월 22~26일 열린다.",
-  "Ad Age", "https://adage.com/events-awards/cannes-lions/aa-glass-lions-shortlist-2026/"),
- # ⑦ 2026 일러스트레이션 트렌드 (실제 기사 검증)
- ("2026 일러스트레이션 6대 트렌드 — '인간의 손길'이 답이다",
-  "크리에이티브 붐이 AI 시대에 더욱 빛나는 2026년 일러스트레이션 트렌드 여섯 가지를 제시했다. 핸드 프린팅과 판화 등 수작업 공예가 부활하고, 강렬하고 화사한 색채와 유머러스한 손맛이 주목받는다. 업계는 작가의 정체성과 삶의 경험에서 우러난 진정성 있는 내러티브와 다양성을 중시하는 방향으로 움직이며, 사람의 마음과 손으로 빚어낸 작업이 가장 강력한 차별화 요소로 떠올랐다.",
-  "Creative Boom", "https://www.creativeboom.com/inspiration/six-surprising-illustration-trends-for-2026/"),
- # ⑧ Canva Imperfect by Design (실제 기사 검증)
- ("캔바, 2026년은 '의도된 불완전함(Imperfect by Design)'의 해",
-  "캔바가 2026년 디자인 트렌드 보고서를 통해 올해를 '의도된 불완전함'의 해로 규정했다. 2억 6천만 명 이상의 커뮤니티 검색 데이터와 1,000명 글로벌 설문을 바탕으로, 창작자들이 AI를 거부하는 대신 자기 방식대로 활용하며 인간적 불완전함을 받아들인다는 분석이다. 응답자 80%가 '2026년은 창작 주도권을 되찾는 해'라 답했고, 리얼리티 워프·텍스처 체크 등 열 가지 트렌드가 제시됐다.",
-  "Canva", "https://www.canva.com/newsroom/news/design-trends-2026/"),
- # ⑨ 2026 브랜딩 — 마스코트의 귀환 (실제 기사 검증)
- ("2026 브랜딩의 핵심 무기는 로고가 아니다 — 마스코트의 귀환",
-  "크리에이티브 블로그(Creative Bloq)가 2026년 브랜딩에서 가장 강력한 도구로 로고가 아닌 '마스코트'를 지목했다. 포화된 디지털 시장에서 마스코트는 로고 하나로는 만들 수 없는 시각적 지름길을 제공하며, 디지털과 물리적 공간을 넘나드는 일관된 브랜드 접점이 된다. 화면과 알고리즘에 둘러싸인 소비자들이 따뜻함과 개성을 갈망하면서, 마스코트는 인간미를 전하는 전략적 자산으로 재평가받고 있다.",
-  "Creative Bloq", "https://www.creativebloq.com/design/branding/the-most-important-branding-tool-in-2026-isnt-what-you-think"),
- # ⑩ 성수 팝업 — 한국 (실제 기사 검증)
- ("성수동 팝업의 진화 — 2026년 6월 꼭 가봐야 할 한국 팝업스토어",
-  "비짓코리아(VISITKOREA)가 2026년 6월 한국에서 주목할 팝업스토어를 소개하며 성수동을 팝업의 성지로 조명했다. 붉은 벽돌 공장과 창고가 갤러리·콘셉트 스토어로 재탄생한 성수동은 나이키·젠틀몬스터부터 신생 브랜드까지 '트렌드 선도'와 진정성을 상징하는 무대가 됐다. K패션 브랜드 RAIVE와 헬로키티 협업 팝업, 일상의 축하를 테마로 한 '추카' 팝업 등이 체험형 콘텐츠로 방문객을 맞았다.",
-  "VISITKOREA", "https://english.visitkorea.or.kr/svc/contents/contentsView.do?menuSn=177&vcontsId=1590328"),
- # ⑪ Creative Boom 탑 일러스트레이터 15인 (실제 기사 검증)
- ("커뮤니티가 직접 뽑은 2026년 주목할 일러스트레이터 15인",
-  "크리에이티브 붐이 1,000여 명의 현업 창작자 설문을 바탕으로 '2026년 최고의 일러스트레이터 15인'을 공개했다. 2026 동계올림픽 공식 포스터를 제작한 유코 시미즈, 에르메스·디올·뉴요커와 협업한 카를로타 프라이어, 바르셀로나 기반의 지니 등이 이름을 올렸다. 선정 작가들의 공통점은 AI가 복제할 수 없는 개인적 시점과 손맛, 수년에 걸쳐 다져온 고유한 시각 언어다.",
-  "Creative Boom", "https://www.creativeboom.com/inspiration/the-top-15-illustrators-of-2026-as-chosen-by-the-creative-community/"),
- # ⑫ Messy·Meaningful 일러스트레이션 (실제 기사 검증)
- ("어수선하고 의미 있는, 사람이 그린 일러스트 — 2026 최대 트렌드",
-  "크리에이티브 블로그가 2026년 일러스트레이션의 가장 큰 흐름으로 'AI의 매끈함에 대한 반격'을 꼽았다. 의도적으로 거칠고 손으로 그린 듯한 표현, 삐뚤빼뚤한 선과 질감이 정교함을 대신하며, 그 불완전함 자체가 정성과 인간의 손길을 증명한다. 소비자들이 한눈에 의미와 진정성을 원하면서, 이런 일러스트는 사진이나 미니멀리즘보다 빠르게 '사람이 만든 것'이라는 신뢰를 전달한다.",
-  "Creative Bloq", "https://www.creativebloq.com/art/illustration/messy-meaningful-and-made-by-humans-the-biggest-illustration-trends-for-2026"),
+ # ① KFC 버킷버스 리브랜딩 (6/19)
+ ("KFC, '버킷버스'로 완전한 브랜드 세계관 구축 — 버킷이 핵심 언락 키",
+  "JKR이 개발한 KFC의 새 브랜드 아이덴티티 '버킷버스(Bucketverse)'가 공개됐다. 로고·타이포그래피·매장 인테리어·앱 디자인까지 KFC의 상징 버킷을 창의적 언락 키로 삼아 360도 리브랜딩을 단행했으며, 영국·아일랜드를 시작으로 호주·미국으로 순차 확대된다. 버킷이 패키징·디지털·광고를 가로지르는 프레이밍 장치로 작동하는 방식은 브랜드 시스템 설계의 새 교과서가 될 것이다.",
+  "It's Nice That", "https://www.itsnicethat.com/articles/jkr-kfc-graphic-design-project-150626"),
+ # ② Threads 워드마크 Studio Nari (6/19)
+ ("스튜디오 나리, Threads 워드마크에 독립적 목소리 부여",
+  "런던의 스튜디오 나리(Studio Nari)가 메타의 텍스트 기반 앱 Threads에 독자적인 워드마크를 디자인해 공개했다. Instagram Sans를 벗어나 흐르는 듯하면서도 조각적인 앵귤러 폼을 채택, 즉각성과 대화의 운동감을 시각화했다. 독립 플랫폼으로서 Threads의 브랜드 정체성을 강화하는 이번 작업은 서체 한 벌이 플랫폼 포지셔닝을 어떻게 바꾸는지를 보여준다.",
+  "It's Nice That", "https://www.itsnicethat.com/articles/studio-nari-threads-graphic-design-160626"),
+ # ③ 노턴미술관 리브랜딩 Koto (6/19)
+ ("Koto, 80년 된 워드마크로 노턴미술관 리브랜딩 — 아카이브와 현재의 연결",
+  "크리에이티브 에이전시 Koto가 플로리다 웨스트팜비치 소재 노턴미술관(Norton Museum of Art)의 새 아이덴티티를 공개했다. 창립 당시(1941년) 워드마크를 부활시키고 컬렉션 소장 작품에서 직접 추출한 컬러 팔레트를 적용해 '예술과 삶이 만나는 곳'이라는 전략을 구현했다. 아카이브와 현재를 연결하는 이 접근은 문화 기관 리브랜딩의 모범 사례로 주목받는다.",
+  "Creative Boom", "https://www.creativeboom.com/news/koto-rebrands-the-norton-museum-of-art-with-an-identity-where-art-truly-meets-life/"),
+ # ④ 올리비아 로드리고 MV 아트 디렉션 (6/19)
+ ("올리비아 로드리고 'The Cure' MV — 판지로 만든 병원 세계, 수공예의 귀환",
+  "올리비아 로드리고의 신곡 'The Cure' 뮤직비디오는 프로덕션 디자이너 리암 무어 주도 아래 판지·패브릭·수제 미니어처만으로 완성된 병원 세트를 배경으로 한다. 두 달에 걸쳐 20여 명의 장인이 실물 효과·스톱모션·미니어처 아트를 결합했으며, 비요크·미셸 공드리의 영향이 짙게 배어 있다. AI 생성 영상이 범람하는 시대에 수공예의 귀환을 선언하는 작업으로 디자인·아트 디렉션 업계의 이목을 끌고 있다.",
+  "It's Nice That", "https://www.itsnicethat.com/features/liam-moore-olivia-rodrigo-the-cure-music-video-animation-film-spotlight-150626"),
+ # ⑤ 브랜드 디자인 역사 Taschen (6/19)
+ ("올리베티부터 인스타그램까지 — 브랜드 디자인 역사 총정리 신간",
+  "It's Nice That이 타셴(Taschen) 신간 『The Elements of Brand Design』을 소개하며 19세기 이후 현대 브랜드 디자인의 계보를 추적하는 피처를 게재했다. 1930년대 올리베티가 타이포그래피와 건축으로 기업 아이덴티티를 정립한 방식부터 오늘날 소셜 미디어 플랫폼 아이콘까지 아우른다. 브랜드 히스토리를 체계적으로 공부하려는 실무자에게 필독 레퍼런스가 될 책이다.",
+  "It's Nice That", "https://www.itsnicethat.com/features/katharina-sussek-jens-muller-the-elements-of-brand-design-taschen-publication-graphic-design-spotlight-170626"),
+ # ⑥ D&AD 2026 89개국 (6/19)
+ ("D&AD 2026 펜슬, 89개국 참가로 역대 최다 지역 다양성",
+  "D&AD 2026 어워드에서 89개국이 수상 후보에 오르며 역대 최다 국가 참여를 기록했다. 싱가포르는 옐로 펜슬 5개를 포함 총 11개를 수상해 미국·영국에 이어 공동 3위를 차지했다. 인도·UAE·아르헨티나·사우디아라비아의 약진은 글로벌 크리에이티브 산업 지형이 서구 중심에서 아시아·중동·남미로 분산되는 구조적 변화를 예고한다.",
+  "Creative Bloq", "https://www.creativebloq.com/creative-inspiration/d-and-ad-pencils-2026-winners-reveal-a-geographic-shift-in-global-creativity"),
+ # ⑦ 2026 월드컵 유니폼 디자인 (6/19)
+ ("2026 월드컵 유니폼 디자인, 예술 작품이 되다 — 문화 정체성의 각축전",
+  "2026 FIFA 월드컵 출전 팀 유니폼을 분석한 결과, 어웨이 킷이 창의성 경쟁의 중심이 됐다. 모로코의 전통 타일 문양, 벨기에의 르네 마그리트 초현실주의, 일본의 요지 야마모토 협업 디자인 등 문화적 정체성을 스포츠웨어에 녹인 작업들이 특히 주목받았다. 스포츠 유니폼이 브랜드 아이덴티티와 문화 스토리텔링의 최전선으로 부상하고 있음을 보여준다.",
+  "Creative Bloq", "https://www.creativebloq.com/design/from-the-retro-to-the-surreal-the-best-world-cup-kit-designs-of-2026-are-works-of-art"),
+ # ⑧ 인도 브랜딩 (6/19)
+ ("인도 브랜딩이 세계 디자인 판도를 바꾸는 이유 — '문화 빠진 브랜드는 껍데기'",
+  "Creative Bloq가 Mother Tongue의 크리에이티브 디렉터 Shruti Singhi와의 인터뷰를 통해 문화적 정체성을 거세한 '중립 브랜딩'의 위험성을 조명했다. 인도 디자인 스튜디오들이 지역 문화·언어·공예를 브랜드에 통합하며 글로벌 경쟁력을 갖추는 사례를 분석했다. D&AD 2026에서 인도의 약진과 맞물려, 문화적 특수성이 브랜드의 강점이 된다는 명제를 다시금 확인시켜 준다.",
+  "Creative Bloq", "https://www.creativebloq.com/design/branding/when-you-strip-out-culture-you-get-a-hollow-brand-why-india-is-killing-the-design-game"),
+ # ⑨ M.C. 에셔 전시 (6/19)
+ ("M.C. 에셔 전시 — AI 시대 인간 상상력에 경종 울리다",
+  "런던 서머셋 하우스에서 M.C. 에셔 회고전이 개막했으며, Creative Bloq는 알고리즘 동질화와 AI 생성 이미지가 범람하는 2026년에 에셔의 작업이 어느 때보다 필요하다는 평론을 게재했다. 카테고리 거부, 수학적 상상력, 시각적 역설로 가득한 에셔의 세계가 '인간 고유의 상상력'이 무엇인지를 일깨워 준다. 디자이너와 일러스트레이터에게 AI가 대체할 수 없는 창의성의 본질을 되묻는 전시다.",
+  "Creative Bloq", "https://www.creativebloq.com/art/right-now-the-creative-world-needs-m-c-escher-more-than-ever-and-this-new-show-proves-it"),
+ # ⑩ 게임메이커 스케치북 2026 (6/19)
+ ("2026 게임메이커 스케치북 — 무대 뒤 게임 아티스트 15개 스튜디오 조명",
+  "AIAS와 iam8bit이 주관하는 '2026 Game Maker's Sketchbook'이 5회째를 맞아 캡콤·더블파인·워호스 스튜디오 등 15개 스튜디오의 콘셉트 아트·스토리보드·캐릭터 디자인을 공개했다. 여름 게임 페스트(6월 6~8일, LA) 전시에 이어 iam8bit 스토어를 통한 한정 프린트 판매도 진행 중이다. 개발 과정에서 비가시화되는 게임 아트의 가치를 재조명하며, 일러스트레이터·콘셉트 아티스트 커리어에 영감을 준다.",
+  "Creative Bloq", "https://www.creativebloq.com/3d/video-game-design/game-maker-sketchbook-2026-celebrates-the-unsung-heroes-of-game-art"),
+ # ⑪ 영국 독서의 해 2026 BI (6/19)
+ ("영국 '독서의 해 2026' 브랜드 아이덴티티 — '열린 책'으로 상상의 통로",
+  "Fold7Design이 영국 국립 문해력 신탁과 교육부가 공동 추진하는 '독서의 해 2026' 캠페인 아이덴티티를 공개했다. '열린 책(The Open Book)'을 핵심 비주얼 장치로 삼아 깊이·발견·상상을 상징하며, 독서를 '나만의 열정으로 들어가는 통로'로 포지셔닝한 'Go All In' 전략을 채택했다. 공공 캠페인에서 브랜드 아이덴티티가 사회적 행동 변화를 이끄는 방식을 보여주는 사례다.",
+  "Brand New", "https://www.underconsideration.com/brandnew/archives/new_logo_and_identity_for_national_year_of_reading_2026_by_fold7design.php"),
+ # ⑫ 6월 신규 서체 (6/19)
+ ("2026년 6월 최고의 신규 서체 총정리 — 빙하 그로테스크·La Mericana",
+  "Creative Boom이 2026년 6월 출시된 주목할 신규 서체를 한자리에 모았다. 아이슬란드의 빙하 지형에서 영감받은 빙하 그로테스크, 미세기 미국 타이포그래피를 재해석한 'La Mericana', Arcane Type의 스텐실 확장 패밀리 'Sahila Stencil' 등 다채로운 라인업이 포함됐다. 브랜드 아이덴티티와 편집 디자인에 개성을 더하고 싶은 실무 디자이너에게 즉시 활용 가능한 레퍼런스다.",
+  "Creative Boom", "https://www.creativeboom.com/resources/the-best-new-typefaces-for-june-2026/"),
 ]
 
 MARKETING = [
- # ① Pinterest AI 광고 (실제 기사 검증)
- ("핀터레스트, 칸 2026서 새 AI 광고·개인화 쇼핑 도구 대거 공개",
-  "핀터레스트가 칸 라이언즈 2026에서 새로운 AI 광고 도구와 개인화 쇼핑 기능을 대거 공개했다. AI 기반 퍼포먼스 광고 자동화와 구매 의향 데이터를 결합해 광고주가 캠페인을 더 정교하게 최적화할 수 있도록 했다. 월간 5억 명이 넘는 사용자의 시각적 탐색·구매 여정 데이터를 활용해, 영감에서 구매로 이어지는 전환을 강화하는 것이 핵심이다.",
-  "Pinterest Newsroom", "https://newsroom.pinterest.com/news/cannes-2026/"),
- # ② Meta 라이브 쇼핑 + 가상 카드 (실제 기사 검증)
- ("Meta, 라이브 쇼핑 광고·가상 카드 결제 확대 — 소셜 커머스 가속",
-  "Meta가 라이브 쇼핑 광고와 가상 카드 결제 기능을 확대해 구매 전환을 끌어올린다. 라이브 방송 중 노출되는 상품을 매끄럽게 결제로 연결하는 원클릭 커머스 경험을 강화했다. 크리에이터·브랜드의 라이브 커머스를 광고 인벤토리와 통합해, 발견부터 결제까지의 마찰을 줄이는 것이 목표다.",
-  "Search Engine Land", "https://searchengineland.com/meta-expands-live-shopping-ads-and-virtual-card-checkout-to-drive-more-purchases-480532"),
- # ③ Google AI 오버뷰 광고 (실제 기사 검증)
- ("Google AI 오버뷰, 상업·거래성 쿼리에 광고 본격 확대",
-  "구글이 AI 오버뷰(AI 요약 답변)에 상업적·거래성 검색 쿼리를 대상으로 광고 노출을 본격적으로 늘리고 있다. 사용자가 구매 의향을 가진 검색에서 AI 답변 안에 광고가 직접 배치되면서, 기존 오가닉 검색 트래픽과 광고 지면 구조가 재편되고 있다. 마케터들은 AI 검색 시대에 맞춰 콘텐츠·입찰 전략을 재정비해야 한다는 분석이 나온다.",
-  "Browser Media", "https://browsermedia.agency/blog/google-ai-overviews-ramping-up-for-commercial-transactional-queries/"),
- # ④ 광고 시장 2026 붐 (실제 기사 검증)
- ("2026 광고 시장 역대 최대 붐 — 헐리우드는 뒤처질 위험",
-  "할리우드 리포터는 2026년 글로벌 광고 시장이 역대급 호황을 맞고 있지만 헐리우드는 그 흐름에서 소외될 위험이 있다고 분석했다. 광고비가 전통 TV에서 디지털·스트리밍·소셜·AI 플랫폼으로 빠르게 이동하면서, 변화에 늦은 레거시 미디어가 성장 기회를 놓치고 있다는 진단이다. 빅테크와 스트리밍 플랫폼이 광고 성장의 과실을 대부분 가져가는 구도가 굳어지고 있다.",
-  "The Hollywood Reporter", "https://www.hollywoodreporter.com/business/business-news/advertising-boom-2026-tv-hollywood-behind-1236462691/"),
- # ⑤ 마케터의 AI 광고 스택 적응 (실제 기사 검증)
- ("마케터들, 광고 스택 속 AI에 익숙해지다 — 실전 도입 가속",
-  "애드익스체인저는 마케터들이 광고 운영 스택 전반에 들어온 AI에 점차 익숙해지고 있다고 전했다. 캠페인 기획·타기팅·크리에이티브 생성·측정에 이르기까지 AI가 일상 워크플로에 자리 잡으며, 초기의 경계심이 실전 활용으로 전환되고 있다. AI를 어떻게 통제하고 검증하느냐가 성과를 가르는 핵심 역량으로 부상했다.",
-  "AdExchanger", "https://www.adexchanger.com/marketers/marketers-are-getting-used-to-ai-in-the-ad-stack/"),
- # ⑥ 칸 2026 글래스 라이언 (실제 기사 검증)
- ("칸 라이언즈 2026 D-4 — 글래스 라이언 숏리스트 화제",
-  "칸 라이언즈 개막을 앞두고 변화를 위한 사자상 '글래스 라이언' 숏리스트가 화제의 중심에 섰다. 대표성·평등·정체성 등 사회적 변화를 다룬 작품들이 선정되며 포용적 마케팅의 경계가 어디까지 확장될 수 있는지 보여줬다. 제73회 페스티벌은 6월 22~26일 열리며, 최종 수상작이 가를 트렌드 방향에 전 세계 마케터의 이목이 집중되고 있다.",
-  "Ad Age", "https://adage.com/events-awards/cannes-lions/aa-glass-lions-shortlist-2026/"),
- # ⑦ IAB 디지털 비디오 광고비 (실제 기사 검증)
- ("미 디지털 비디오 광고비 2026년 800억 달러 돌파 전망 — IAB",
-  "IAB에 따르면 미국 디지털 비디오 광고 지출이 2026년 800억 달러를 넘어서며 전체 광고 시장보다 20% 빠르게 성장할 전망이다. 커넥티드 TV(CTV)와 소셜·숏폼 비디오가 성장을 견인하며, 광고주들이 예산을 비디오 중심으로 빠르게 재배분하고 있다. AI 자동화와 데이터 기반 타기팅이 결합되며 비디오 광고의 효율과 측정 가능성이 한층 높아지고 있다.",
-  "IAB / PR Newswire", "https://www.prnewswire.com/news-releases/us-digital-video-ad-spend-to-surpass-80b-in-2026-growing-20-faster-than-the-total-ad-market-according-to-iab-302762325.html"),
+ # ① 칸 티타늄 쇼트리스트 18 (6/19)
+ ("칸 라이언즈 2026 티타늄 쇼트리스트 18개 공개 — IKEA·Xbox·하이네켄",
+  "칸 라이언즈가 6월 22~26일 개막을 앞두고 티타늄 라이언즈 쇼트리스트 18개 캠페인을 발표했다. 137개 출품작 중 선발된 이번 명단에는 IKEA 중고 마켓플레이스·Xbox '더 미싱 매니저스'·하이네켄·오레오·바셀린 등이 포함됐다. 심사위원장은 TBWA\\Worldwide의 글로벌 최고크리에이티브책임자 차카 소바니가 맡아 주목된다.",
+  "Adweek", "https://www.adweek.com/creativity/these-18-campaigns-are-competing-for-the-coveted-cannes-titanium-lion/"),
+ # ② 메타 AI 비즈니스 어시스턴트 오픈 베타 (6/19)
+ ("메타, 전 세계 광고주에 AI 비즈니스 어시스턴트 오픈 베타 확대",
+  "메타가 Ads Manager에 통합된 AI 비즈니스 어시스턴트를 전 세계 모든 광고주·대행사에 오픈 베타로 확대했다. 캠페인 성과 분석·벤치마킹·맞춤 추천·계정 문제 해결 기능을 갖추며, 초기 결과 소규모 광고주의 결과당 비용이 평균 12% 감소했다. 외부 AI 플랫폼으로 메타 광고를 관리하는 'Ads AI Connectors'도 오픈 베타로 함께 출시됐다.",
+  "Performance Marketing World", "https://www.performancemarketingworld.com/article/1955653/meta-expands-ai-business-assistant-beta-include-advertisers-global-markets"),
+ # ③ 나이키 vs 아디다스 월드컵 성과 (6/19)
+ ("나이키 vs 아디다스 월드컵 광고 성과 — 인지도는 나이키, 버즈는 아디다스",
+  "FIFA 월드컵 2026 개막 1주를 넘어서며 나이키와 아디다스의 캠페인 성과가 엇갈리고 있다. 나이키 '립 더 스크립트'는 유튜브 조회수 6,800만 회로 광고 인지도에서 앞서지만, 아디다스 '백야드 레전즈'는 브랜드 버즈 9.4(나이키 6.2)와 소셜 점유율 38%로 우위를 점했다. System1 분석에서는 알디(Aldi)가 역대 최고 월드컵 광고 1위에 오르는 이변도 나왔다.",
+  "Campaign Brief", "https://campaignbrief.com/aldi-tops-system1s-ranking-of-greatest-world-cup-ads-ever-as-adidas-outperforms-nike-overall/"),
+ # ④ LEGO 메시·호날두 바이럴 광고 (6/19)
+ ("LEGO 메시·호날두 광고, 24시간 3억 1,400만 뷰 돌파 — 역대 최속 바이럴",
+  "LEGO의 FIFA 월드컵 2026 캠페인 '에브리원 원츠 어 피스'가 메시·호날두·음바페·비니시우스 주니어를 한 화면에 모아 공개 24시간 만에 선수 SNS 합산 조회수 3억 1,400만 회를 기록했다. 초반 2시간 만에 좋아요 500만 개를 넘기며 역대 가장 빠른 속도로 바이럴된 스포츠 광고 중 하나로 꼽혔다. 투자 규모는 약 800만 달러로 알려졌으며 LEGO 브랜드의 '아이와의 연결' 가치로 마무리된다.",
+  "The Express Tribune", "https://tribune.com.pk/story/2600877/messi-and-ronaldo-unite-in-viral-lego-world-cup-2026-ad"),
+ # ⑤ 인스타그램 AI 크리에이터 레이블 (6/19)
+ ("인스타그램, 'AI 크리에이터' 계정 레이블 공식 도입 — 마케터 파트너 기준 재편",
+  "인스타그램이 AI 생성 콘텐츠를 주로 게시하는 계정에 표시되는 'AI Creator' 프로필 레이블을 공식 출시했다. 레이블은 바이오 란과 피드·릴스·탐색 탭 게시물에 동시 노출되며, 크리에이터가 자율 선택하는 옵트인 방식이다. 브랜드 협업 시 AI 레이블이 전환율에 미치는 영향이 주목되며, 마케터들은 인플루언서 파트너 선정 기준을 재검토하고 있다.",
+  "Social Media Today", "https://www.socialmediatoday.com/news/instagram-adds-ai-creator-labels/819267/"),
+ # ⑥ 오프라 칸 라이언하트 (6/19)
+ ("오프라 윈프리, 칸 라이언즈 2026 라이언하트 수상자 확정 — 6/23 강연",
+  "칸 라이언즈가 오프라 윈프리를 2026년 라이언하트(LionHeart) 수상자로 확정하고 6월 23일 수상 강연을 예고했다. 라이언하트는 업계에 긍정적·지속적 변화를 이끈 인물에게 수여되는 개인 부문 최고 영예로, 오프라는 방송·미디어·소외 계층 목소리 증폭 등 수십 년의 문화적 영향력을 인정받았다. 올해 칸 라이언즈는 500여 명의 연사와 150시간 이상의 콘텐츠 프로그램을 준비 중이다.",
+  "New Digital Age", "https://newdigitalage.co/publishing/cannes-lions-2026-programme-revealed-as-oprah-winfrey-named-lionheart-recipient/"),
+ # ⑦ Etsy 'Celebrate Being Human' 캠페인 (6/19)
+ ("Etsy, AI 시대 '인간다움 찬양' 캠페인 — TV·넷플릭스·틱톡 전방위 집행",
+  "Etsy가 Orchard Creative와 함께 제작한 브랜드 캠페인 'Celebrate Being Human'을 런칭하며 AI·대량생산에 맞선 인간적 가치를 전면에 내세웠다. 광고는 인간의 평균 수명에서 경험하는 '76번의 여름, 6명의 베스트 프렌드, 1,205번의 처음' 등 삶의 순간들을 감성적으로 묘사한다. TV·훌루·넷플릭스·아마존·유튜브·메타·틱톡 등 전방위 채널에 걸쳐 집행 중이다.",
+  "Ad Age", "https://adage.com/creativity/work/aa-etsy-celebrate-being-human/"),
 ]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
