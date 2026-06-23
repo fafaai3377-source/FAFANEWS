@@ -562,123 +562,122 @@ _WD     = ["월", "화", "수", "목", "금", "토", "일"]
 DATE_ISO = _TODAY
 DATE = f"{_TODAY.year}년 {_TODAY.month}월 {_TODAY.day}일 ({_WD[_TODAY.weekday()]})"
 
-# ── 2026-06-22 (월) 브리핑 — 6/19(금)~6/22(월) 72시간 ─────────────────────
-# ⚠️ 전날(6/19) 기사와 중복 없음 — 모두 신규
+# ── 2026-06-23 (화) 브리핑 — 6/22(월)~6/23(화) 24시간 ─────────────────────
+# ⚠️ 전날(6/22) 기사와 중복 없음 — 모두 신규
 AI = [
- # ① EU 오픈소스 AI 모델 EUROPA 컨소시엄 (6/19)
- ("EU, 자체 오픈소스 AI 모델 개발사 선정",
-  "유럽연합 집행위원회가 6월 19일 이탈리아 기업 Domyn이 이끄는 EUROPA 컨소시엄을 'Frontier AI Grand Challenge' 수상자로 선정했다. 해당 컨소시엄은 EU 24개 공식 언어를 지원하는 4,000억 파라미터 이상의 오픈소스 AI 모델을 구축하며, NVIDIA Blackwell 칩 6,000개 전용 클러스터를 지원받는다. 빅테크 의존에서 벗어난 유럽의 AI 주권 확보 전략의 핵심 이정표로 기업·연구자·공공기관 모두에 무료 공개될 예정이다.",
-  "European Commission", "https://digital-strategy.ec.europa.eu/en/news/commission-selects-europa-consortium-winner-frontier-ai-grande-challenge-project-build-european"),
- # ② Anthropic 서울 오피스 + 한국 파트너십 (6/17~18)
- ("Anthropic, 서울 오피스 개설·LG·삼성·네이버 파트너십 발표",
-  "Anthropic이 서울 오피스를 공식 개설하며 LG CNS·삼성SDS·NAVER·넥슨·한화솔루션 등 국내 주요 기업에 Claude를 배포하기로 했다. 과학기술정보통신부와 AI 안전성 강화 MOU도 체결했으며, KAIST·고려대·연세대·POSTECH 등으로 구성된 NAIRL 연구자 60명에게 Claude 접근권을 제공한다. IPO를 앞두고 아태 세 번째 거점을 확보하며 국내 엔터프라이즈 AI 시장 공략을 본격화했다.",
-  "Anthropic Blog", "https://www.anthropic.com/news/seoul-office-partnerships-korean-ai-ecosystem"),
- # ③ OpenAI Codex Record & Replay (6/18)
- ("OpenAI Codex, 한 번 보여주면 자동 반복 기능 추가",
-  "OpenAI가 Codex macOS 앱에 'Record & Replay' 기능을 출시했다. 사용자가 워크플로를 한 번 직접 수행하면 Codex가 이를 관찰해 재사용 가능한 자동화 스킬로 변환하며, 이후 Computer Use·브라우저 액션·플러그인과 결합해 무한 반복 실행이 가능하다. 별도 스크립트 작성 없이 AI 에이전트 자동화를 구현할 수 있어 ChatGPT Plus·Pro·Business 구독자의 반복 업무 자동화 진입 장벽이 크게 낮아졌다.",
-  "The Decoder", "https://the-decoder.com/openais-codex-can-now-watch-you-work-once-and-repeat-the-task-forever/"),
- # ④ Fable 5 수출 금지 6/20 업데이트
- ("Fable 5 수출 금지, 6월 20일에도 지속 — 트럼프 '협상 중'",
-  "6월 20일 기준 미국 정부의 수출 통제로 Fable 5와 Mythos 5의 전 세계 접근이 차단 중이다. 트럼프 대통령은 G7 정상회의에서 협상이 '잘 진행 중'이라고 언급했으나 공식 복구 일정은 발표되지 않았으며, 유료 구독자 대상 환불 신청 기간도 마감됐다. 이 사태는 미국 정부가 AI 모델 수출을 국가안보 자산으로 규제하는 새 선례를 만들고 있어 업계 전반에 중요한 리스크 신호다.",
-  "TechTimes", "https://www.techtimes.com/articles/318760/20260620/fable-5-ban-update-trump-softens-directive-stands-refund-deadline-closes-today.htm"),
- # ⑤ Baseten AI 추론 인프라 15억 달러 (6/18)
- ("AI 추론 인프라 Baseten, 15억 달러 조달·기업가치 130억 달러",
-  "AI 추론 인프라 스타트업 Baseten이 약 15억 달러 규모 펀딩을 마무리하며 기업가치 130억 달러로 5개월 만에 160% 상승했다. 연간 매출 실행률이 단 한 분기 만에 2억 달러에서 6억 달러로 3배 급증했고, 오픈소스 모델을 상시 구동하는 앱 수요 폭증이 원인이다. 파운데이션 모델이 범용화되면서 추론 인프라 레이어가 AI 스택의 핵심 수익 지점으로 부상하고 있다는 강력한 신호다.",
-  "TechCrunch", "https://techcrunch.com/2026/06/18/ai-inference-startup-baseten-reportedly-raising-1-5b-months-after-its-last-mega-round/"),
- # ⑥ General Intuition 게임 영상 학습 AI 3억 달러 (6/18)
- ("게임 영상 학습 AI 'General Intuition', 3억 달러 유치",
-  "뉴욕 스타트업 General Intuition이 게임 클립 3억 개/년 기반 월드모델 학습으로 3억 달러 투자 협상 중이며 기업가치는 20억 달러를 넘어섰다. 제프 베조스·에릭 슈미트가 신규 투자자로 참여하고, 8개월 전 시드 1억 3,400만 달러에 이은 두 번째 대형 라운드다. '게임 영상'이 실제 공간·시간 추론 능력을 갖춘 에이전트 학습의 최적 데이터로 주목받는 월드모델 투자 열풍을 보여준다.",
-  "TechCrunch", "https://techcrunch.com/2026/06/18/general-intuition-in-talks-to-raise-300m-at-around-2b-valuation/"),
- # ⑦ 퓨리서치 미국인 AI 인식 조사 (6/17)
- ("퓨리서치: 미국인 16%만 AI가 사회에 이롭다 믿어",
-  "퓨리서치센터 발표에 따르면 미국 성인의 49%가 AI 챗봇을 사용하지만, AI가 20년 내 사회에 긍정적 영향을 줄 것으로 믿는 비율은 16%에 불과하다. 63%는 AI 기술이 너무 빠르게 발전한다고 느끼며, 71%는 개인정보 보안을 우려한다. AI 채택률 급등과 사회적 신뢰 부재의 극심한 괴리는 기업의 AI 도입 커뮤니케이션 전략 수립에서 핵심 변수가 된다.",
-  "TechCrunch", "https://techcrunch.com/2026/06/17/only-16-percent-of-americans-think-ai-will-have-a-positive-impact-on-society-a-new-study-shows/"),
+ # ① 구글 딥마인드 A24에 750억 투자 (6/22)
+ ("구글 딥마인드, 인디 영화사 A24에 750억 원 투자",
+  "Google DeepMind가 인디 영화사 A24에 7,500만 달러를 투자하고 AI 영화 제작 도구 공동 개발 파트너십을 체결했다. A24 Labs는 AI 기반 스토리보드·프로덕션 워크플로 자동화 도구를 개발하며, 알파벳이 영화 스튜디오에 지분을 투자한 최초의 사례다. 콘텐츠 라이브러리 데이터 접근권 없이 도구 개발에만 집중한다는 점에서 창작자 권리를 의식한 구조다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/22/google-deepmind-bets-75m-on-ais-future-in-hollywood-with-a24-deal/"),
+ # ② OpenAI, 오픈소스 보안 프로젝트 출범 (6/22)
+ ("OpenAI, 오픈소스 취약점 자동 발굴 'Patch the Planet' 출범",
+  "OpenAI가 보안 전문 기업 Trail of Bits와 함께 'Patch the Planet' 이니셔티브를 공개했다. AI 기반 취약점 스캐닝으로 첫 1주 만에 19개 프로젝트에서 수백 건의 버그를 발견하고 64건의 풀리퀘스트와 51건의 이슈를 제출했다. cURL·Go·Python 등 30여 개 오픈소스 프로젝트가 참여하며, 참여 프로젝트는 ChatGPT Pro와 Codex Security API 크레딧을 제공받는다.",
+  "OpenAI Blog", "https://openai.com/index/patch-the-planet/"),
+ # ③ AI 칩 Groq, 6,500억 원 조달 (6/22)
+ ("AI 추론 칩 Groq, 6억 5천만 달러 신규 펀딩 완료",
+  "Groq가 6억 5,000만 달러 규모 신규 펀딩을 완료했다고 공식 발표했다. 앞서 NVIDIA가 Groq의 LPU 기술을 200억 달러에 라이선스하고 핵심 인력을 영입했으며, Groq는 이를 발판 삼아 자체 AI 추론 네오클라우드 사업을 확대한다. Disruptive·Infinitum이 주도한 이번 라운드로 Groq는 NVIDIA 경쟁 구도를 넘어 독립 추론 클라우드 플레이어로 전환을 본격화한다.",
+  "Bloomberg", "https://www.bloomberg.com/news/articles/2026-06-22/groq-raises-650-million-to-help-startup-pivot-after-nvidia-deal"),
+ # ④ 마이크로소프트·셰브론 AI 전력 20년 계약 (6/22)
+ ("MS·셰브론, AI 데이터센터용 2.67GW 전력 20년 계약",
+  "Microsoft와 Chevron이 텍사스 서부에 2.67기가와트 규모의 천연가스 발전소를 공동 개발하는 20년 전력구매계약(PPA)을 체결했다. 첫 전력 공급은 2028년으로 예정되며 약 2,000개 일자리 창출과 100억 달러 이상의 세수 효과가 기대된다. AI 데이터센터 전력 수요 급증에 대응하는 미국 최대급 전용 전력 프로젝트 중 하나다.",
+  "Chevron", "https://www.chevron.com/newsroom/2026/q2/chevron-signs-20-year-power-agreement-with-microsoft-for-west-texas-data-center"),
+ # ⑤ Anthropic 클로드 본인인증 7월 시행 (6/22)
+ ("Anthropic, 7월부터 Claude에 신분증 본인인증 도입",
+  "Anthropic이 7월 8일부터 Claude 이용자를 대상으로 여권·운전면허증과 셀피를 통한 생체 인증을 시행한다. 인증은 제3자 업체 Persona Identities가 처리하며, 수집된 데이터는 AI 학습이나 마케팅 목적에 활용되지 않는다. Claude Free·Pro·Max 구독자에만 적용되고 Team·Enterprise·API 플랜은 면제되며, AI 서비스의 신원 확인 표준화를 향한 업계 선제 행보로 주목받는다.",
+  "TechCrunch", "https://techcrunch.com/2026/06/22/anthropic-says-claude-may-want-to-see-your-id/"),
+ # ⑥ 오라클 AI로 2만 1천 명 감원 공식 공시 (6/22)
+ ("오라클, AI 도입으로 2만1천 명 감원 — 사상 첫 공식 공시",
+  "Oracle이 연간 재무 보고서(10-K)에서 최근 12개월간 AI 도입으로 2만1,000명을 감축했다고 공식 확인했다. 구조조정 비용으로 18억 4,000만 달러를 지출했으며, 이는 전년도의 약 5배 수준이다. AI가 직접 일자리를 대체했다고 대형 상장사가 공식 신고한 첫 사례로, 화이트칼라·기술직 AI 대체 가속화의 강력한 증거가 됐다.",
+  "Bloomberg", "https://www.bloomberg.com/news/articles/2026-06-22/oracle-layoffs-fueled-by-ai-reduces-workforce-by-21-000"),
+ # ⑦ AI 에이전트 '셀프 하네스' 성능 60% 향상 (6/22)
+ ("AI 에이전트가 자신의 실행 규칙 스스로 수정 — 성능 60%↑",
+  "상하이 인공지능 연구소가 AI 에이전트가 자신의 실행 규칙을 스스로 최적화하는 'Self-Harness' 프레임워크를 공개했다. Terminal-Bench 2.0에서 Qwen3.5-35B-A3B 모델 성능이 23.8%에서 38.1%로 약 60% 향상됐으며, 모델 재훈련 없이 하네스만 자동 업데이트하는 방식이다. 의료·법률 등 고위험 분야 완전 자동화에는 주의가 필요하다는 조건도 함께 제시됐다.",
+  "VentureBeat", "https://venturebeat.com/orchestration/researchers-introduce-self-harness-a-framework-that-lets-ai-agents-rewrite-their-own-rules-boosting-performance-up-to-60"),
 ]
 
 DESIGN = [
- # ① 헤르만 밀러 에어런 체어 30년 만에 컬러 추가
- ("에어런 체어, 30년 만에 컬러 입다 — 올리브·미드나잇 블루",
-  "헤르만 밀러가 아이코닉 에어런 체어에 올리브 그린 '재스퍼'와 미드나잇 블루 '나이트폴' 두 가지 컬러를 신규 추가했다. 지속가능성 개선으로 탄소 발자국을 12% 절감하고 플라스틱 재활용량을 두 배 이상 늘렸다. 폴튼 마켓 디자인데이즈를 통해 공개돼 6월 내내 화제를 모으고 있다.",
-  "Wallpaper*", "https://www.wallpaper.com/design-interiors/furniture/herman-miller-aeron-office-chair",
-  "https://news.millerknoll.com/2026-06-02-Herman-Miller-introduces-Aeron-Chair-in-color-and-advances-its-sustainable-and-inclusive-design"),
- # ② 이케아 PS 2026 공기주입식 의자 한국 출시
- ("이케아 PS 2026 공기주입식 의자, 한국 출시",
-  "이케아가 1990년대 연구를 계승한 공기주입식 이지체어를 포함한 'IKEA PS 2026' 컬렉션 44종을 국내 6개 매장에서 판매 중이다. 크롬 튜브 프레임 안에 독립 에어 챔버 두 개를 장착한 구조로, 20개 프로토타입 끝에 완성된 기술적 성취다. 다기능·재미 중심의 스칸디나비아 민주적 디자인 철학을 실험적으로 구현한 컬렉션이다.",
-  "핀포인트뉴스", "https://www.pinpointnews.co.kr/news/articleView.html?idxno=452735",
-  "https://www.ikea.com/global/en/stories/design/ikea-ps-2026-collection/"),
- # ③ 밀러놀 무토 20주년 콜트레 소파
- ("밀러놀, 무토 20주년 '콜트레 소파' 조각적 형태로 공개",
-  "밀러놀이 폴튼 마켓 디자인데이즈에서 무토(Muuto) 창립 20주년 기념 조각적 형태의 콜트레 소파를 프리뷰 공개했다. 70,000 sq ft 8개 층에 걸친 역대 최대 규모 쇼케이스로 지속가능·포용적 설계가 핵심 키워드였다. HAY의 팔리사드 캔틸레버 컬렉션 등도 함께 소개됐다.",
-  "GeneOnline", "https://www.geneonline.com/millerknoll-displays-new-furniture-collections-at-2026-fulton-market-design-days/",
-  "https://news.millerknoll.com/2026-06-03-MillerKnoll-Powers-the-Future-of-Design-at-Fulton-Market-Design-Days-2026"),
- # ④ 매리어트 본보이 호텔 감성 홈 리빙샵 론칭
- ("매리어트 본보이, '호텔 감성' 홈 리빙 숍 론칭",
-  "매리어트 본보이 부티크가 W호텔·웨스틴 컬렉션을 시작으로 호텔 인테리어 감성의 가구·오브제를 판매하는 '디자인 숍'을 론칭했다. 6월에는 프랑스 리비에라 영감의 서빙 트레이·리넨·와인 고블릿 드롭이 추가된다. 호스피탈리티 브랜드가 리테일 라이프스타일 영역으로 확장하는 새로운 비즈니스 모델로 주목받는다.",
-  "Wallpaper*", "https://www.wallpaper.com/travel/marriott-bonvoy-design-shop-launch"),
- # ⑤ 성수 '파묘' 팝업 (한국)
- ("성수 '파묘' 팝업 — 산업 창고를 퇴마 공간으로",
-  "영화 '파묘' IP를 활용한 공식 팝업이 성수이로18길 세원정밀 산업 공간에서 6월 14일~23일 운영 중이다. 을씨년스러운 공장 건물 분위기와 영화의 무속·퇴마 세계관을 결합한 이머시브 공간 연출로 SNS에서 화제를 모으고 있다. 산업 유산 공간을 브랜드 경험으로 전환하는 성수만의 팝업 공식을 잘 보여주는 사례다.",
-  "팝가", "https://popga.co.kr/content/magazine/284",
-  "https://www.seongsudonggorilla.com/article/633"),
- # ⑥ 젠틀몬스터 X Bratz 글로벌 팝업 (한국)
- ("젠틀몬스터 X Bratz, 서울·LA·상하이 월드투어 팝업",
-  "한국 아이웨어 브랜드 젠틀몬스터가 브라츠 인형 IP와 협업한 팝업을 서울·LA·상하이·방콕 4개 도시에서 동시 순회 운영한다. 각 도시마다 라벤더 톤 메탈릭 텍스처와 초대형 브라츠 조각상으로 SF적 드림월드를 구현하고, 전용 AI 부스에서 방문객을 브라츠 인형으로 변환하는 체험을 제공한다. 패션·팝컬처·AI 기술을 융합한 글로벌 공간 마케팅의 최신 사례다.",
-  "The Impression", "https://theimpression.com/gentle-monster-opens-bratz-inspired-melrose-pop-up/"),
- # ⑦ 투썸플레이스 한글 자모 심벌 논란 (한국)
- ("투썸플레이스 한글 자모 심벌 논란 — '이게 진짜 로고냐'",
-  "투썸플레이스의 한글 자모 'ㅆㅁ'과 영문 'T'를 조합한 새 심벌이 SNS에 퍼지며 디자인정글·온라인 커뮤니티에서 가독성 논쟁이 폭발했다. 회사 측은 '브랜드 2.0 시안 중 하나일 뿐 현행 로고 교체 계획 없다'며 진화에 나섰다. 한국 브랜드 로고가 가독성과 실험성 사이에서 어떤 균형을 잡아야 하는지 다시 생각하게 만드는 이슈다.",
-  "디자인정글", "https://www.jungle.co.kr/magazine/207054"),
- # ⑧ 임페리얼 칼리지 런던 학과별 'I' 아이덴티티
- ("임페리얼 칼리지 런던, 24개 학과마다 고유한 'I' 로고",
-  "디자인 스튜디오 더 클릭(The Click)이 임페리얼 칼리지 런던의 24개 학과를 위해 각 학과 성격에 맞는 고유한 'I' 레터폼 서브 브랜딩 시스템을 만들었다. 항공학과의 I는 활공하고 화학과의 I는 폴리머로 구성되는 식으로 학문적 특성이 시각 언어에 녹아든다. 대학 브랜딩의 경직된 통일성을 깨고 유연한 정체성을 설계한 사례다.",
-  "It's Nice That", "https://www.itsnicethat.com/articles/the-click-imperial-college-london-graphic-design-project-200526"),
- # ⑨ 인터브랜드 자사 리브랜딩 (인하우스)
- ("인터브랜드, 외부 에이전시 없이 자사 로고 직접 리디자인",
-  "글로벌 브랜드 컨설팅사 인터브랜드가 인하우스 팀 주도로 자사 브랜드 아이덴티티를 전면 개편했다. 외부 에이전시에 의존하지 않고 자사 역량으로 리브랜딩을 완수한 것 자체가 '우리가 하는 말을 우리가 실천한다'는 메시지다. Brand New가 방법론과 결과물을 심층 분석했다.",
-  "Brand New", "https://www.underconsideration.com/brandnew/archives/new_logo_and_identity_for_interbrand_done_in_house_2026.php"),
- # ⑩ 칸 라이언즈 2026 디자인 쇼트리스트 (6/21)
- ("칸 라이언즈 디자인 쇼트리스트, AI 크래프트 부문 신설",
-  "칸 라이언즈가 6월 21일 디자인 부문 최종 후보를 확정하며 AI 크래프트 서브카테고리를 2026년 처음 신설했다. 브랜드 아이덴티티·패키징·환경 디자인 등 3대 카테고리에 약 140편이 진출했으며 6월 22~26일 수상작이 발표된다. '비주얼 크래프트맨십'과 브랜드 연결성이 핵심 심사 기준이다.",
-  "Cannes Lions", "https://www.canneslions.com/awards/lions/design"),
- # ⑪ Creative Boom 6월 '이상하게 브랜딩하라'
- ("Creative Boom: '브랜딩이 너무 안전해졌다 — 이상함이 살길'",
-  "Creative Boom이 6월 'Booms & Shakes' 이슈에서 '브랜딩이 너무 무난해졌다'며 2026년에는 이상함(weird)이 브랜드를 살릴 수 있다고 주장했다. Mother Design의 디자인 디렉터가 '지난 12개월간 아이덴티티 디자인이 지나치게 sanitised됐다'며 리브랜딩 용기를 촉구했다. VIEVE 뷰티 등 실험적 브랜딩 프로젝트들이 이 흐름을 뒷받침한다.",
-  "Creative Boom", "https://www.creativeboom.com/news/booms-and-shakes-june-2026/"),
- # ⑫ 칸 라이언즈 첫 수상작 및 그랑프리 (6/22)
- ("칸 라이언즈 2026 첫 수상작 발표 — 그랑프리 주목",
-  "칸 라이언즈 2026이 6월 22일 개막 첫날 초기 부문 수상작을 발표했다. 올해 페스티벌은 AI·크리에이터 이코노미·비즈니스 임팩트를 3대 핵심 의제로 삼으며 신설 'Creative Brand Lion' 등 새 카테고리가 주목받고 있다. 수상작들은 단발성 캠페인 중심에서 지속 가능한 브랜드 시스템 구축으로 크리에이티브의 무게중심이 이동하고 있음을 보여준다.",
-  "Cannes Lions", "https://www.canneslions.com/news/first-winners-announced-at-the-72nd-cannes-lions-international-festival"),
+ # ① Figma Config 2026 개막 (6/23)
+ ("Figma Config 2026 개막 — AI 에이전트·Figma Make 공개",
+  "6월 23일 샌프란시스코 모스코니 센터에서 Figma Config 2026이 개막했다. 첫날 Config Commons와 Makeathon 수상자 발표($10만 달러 상금)가 진행됐으며, 24일 Dylan Field 키노트에서 Figma AI Agent·Figma Make 전면 공개가 예고됐다. 디자이너가 캔버스에서 AI 에이전트와 협업해 프로토타입에서 코드까지 원스톱으로 처리하는 워크플로가 공개될 예정이다.",
+  "TechTimes", "https://www.techtimes.com/articles/318823/20260622/figma-config-2026-kicks-off-today-virtual-attendance-still-free-person-sells-out.htm"),
+ # ② iOS 26 Liquid Glass 전 앱 강제 적용
+ ("iOS 26 Liquid Glass, 6월부터 앱 전체에 자동 적용",
+  "6월 2일부터 업데이트되는 모든 iOS 앱 컨테이너에 Liquid Glass 디자인이 기본 활성화되며 8월 말까지 기존 컨테이너 전체가 전환 완료된다. 탭 바·앱 바가 반투명·블러 처리돼 스크롤 시 콘텐츠에 집중되는 경험이 iOS 표준이 된다. iOS 앱을 운영하는 브랜드·프로덕트팀은 6월을 기점으로 Liquid Glass 가이드라인 대응을 서둘러야 한다.",
+  "SpotMe", "https://support.spotme.com/hc/en-us/articles/49966586899475-New-iOS-26-Liquid-Glass-design",
+  "https://9to5mac.com/wp-content/uploads/sites/6/2025/06/iOS-26-Liquid-Glass.jpg"),
+ # ③ Montana 팬톤 탄생 100주년 탄제린 한정판
+ ("Montana, 팬톤 탄생 100주년 와이어 탄제린 한정판",
+  "덴마크 가구 브랜드 Montana가 베르너 팬톤 탄생 100주년을 맞아 코펜하겐 3 Days of Design에서 Panton Wire 탄제린 한정판을 공개했다. 선명한 오렌지 컬러는 팬톤 특유의 대담한 색채 실험을 오마주하며 2026년 6월부터 1년 한정 판매된다. 파라다임 모듈형 소파 블록 컬러 에디션·욕실 컬렉션 리론칭도 함께 발표됐다.",
+  "Scandinavian Design", "https://scandinaviandesign.com/panton-wire-in-tangerine-for-verner-panton-100th-anniversary"),
+ # ④ Theo 폴딩 체어 마테오 툰 × Plank (6/11)
+ ("마테오 툰 × Plank, 오크 베니어 접이식 '테오 체어'",
+  "이탈리아 건축가 마테오 툰과 베네데토 파시아나가 Plank를 위해 설계한 접이식 목재 의자 'Theo'가 3 Days of Design 2026에서 데뷔했다. 성형 합판에 오크 베니어를 씌워 납작하게 접히며 계약·레스토랑·홈 오피스 등 다목적 사용을 타깃으로 한다. 목재의 온기와 모던한 폼의 조합으로 코펜하겐 디자인위크 주목 신제품 중 하나로 꼽혔다.",
+  "Dezeen", "https://www.dezeen.com/2026/06/11/theo-folding-chair-matteo-thun-benedetto-fasciana-plank-dezeen-showroom/",
+  "https://static.dezeen.com/uploads/2026/06/theo-chair-plank-dezeen-showroom.jpg"),
+ # ⑤ 성수 House of Toy Story 팝업 (한국)
+ ("성수 'House of Toy Story' — 1970s 미국 가정 복층 몰입 팝업",
+  "5월 23일부터 7월 12일까지 성수 +LECT HOUSE에서 운영 중인 'House of Toy Story' 팝업이 6월 하순 절정을 맞고 있다. 1970~80년대 미국 가정 인테리어를 층별로 재현해 포토존·아케이드 게임·DIY 머천다이징 스테이션을 구성했다. 공간 자체가 브랜드 스토리텔링의 배경이 되는 'IP 팝업 인테리어'의 국내 대형 사례로 주목받는다.",
+  "NOL World", "https://world.nol.com/en/content/festas/019ea4a7-ae4f-7ebe-934b-9448962ad968"),
+ # ⑥ 손흥민 NOS7 × MNH 월드컵 성수 팝업 (한국)
+ ("손흥민 NOS7 × MNH '캡틴쏜희' 성수 팝업 대성황",
+  "패션 브랜드 NOS7이 캐릭터 브랜드 MNH와 손잡고 서울 성수동에서 'The Captain is Here' 팝업을 열었다. 2026 FIFA 월드컵 시즌에 맞춰 출시 당일 품절됐던 '캡틴쏜희' 콜라보 캡슐 컬렉션을 한정 수량으로 재공개하며 인파가 몰렸다. IP 협업·월드컵 시즌 마케팅·성수 팝업을 연결한 한국형 스포츠 브랜드 팝업 전략의 성공 사례다.",
+  "인더뉴스", "https://www.inthenews.co.kr/news/article.html?no=87221"),
+ # ⑦ KFC 버킷버스 플래그십 레스토랑 여름 개장
+ ("KFC '버킷버스' 플래그십 레스토랑, 텍사스·두바이 여름 오픈",
+  "KFC 글로벌 리브랜딩 'Bucketverse'에 맞춰 텍사스 맥키니에 오픈 콘셉트 플래그십 레스토랑이 여름 개장 예정이며, 두바이에는 2층 규모의 완전 몰입형 매장이 가을 오픈을 앞두고 있다. 버킷을 중심 프레이밍 도구로 삼은 새 공간 디자인은 기존 패스트푸드 매장 문법을 해체하는 방향으로 설계됐다. 브랜드 아이덴티티를 공간 경험으로 직결하는 새로운 레스토랑 디자인 전략이다.",
+  "Design Rush", "https://news.designrush.com/kfc-global-rebrand-restaurant-redesign"),
+ # ⑧ Xerox × Lexmark 통합 아이덴티티 공개
+ ("Xerox, Lexmark 인수 후 통합 브랜드 아이덴티티 발표",
+  "Xerox가 Lexmark 인수 완료를 알리는 통합 브랜드 아이덴티티를 공개했다. 소문자 워드마크, 선으로 이루어진 구체형 'X' 심볼, 핸드드로 느낌의 커스텀 폰트가 핵심이다. 프린팅 하드웨어를 넘어 소프트웨어·워크플레이스 서비스 기업으로의 전환을 시각적으로 선언한 리브랜딩으로 업계 주목을 받고 있다.",
+  "Printweek", "https://www.printweek.com/content/news/xerox-rolls-out-rebrand"),
+ # ⑨ Ideogram 4.0 How&How 아이덴티티
+ ("Ideogram 4.0, How&How가 만든 '뇌 형태' 아이덴티티",
+  "AI 이미지 플랫폼 Ideogram이 4.0 모델 론칭과 함께 브랜딩 스튜디오 How&How 제작 새 아이덴티티를 발표했다. 네거티브 스페이스로 'I'를 새긴 뇌 형태 로고마크와 네이비·크림·블랙의 절제된 컬러 시스템이 특징이며, Brand LLM으로 버바 아이덴티티도 코드화해 AI 시대 브랜딩 방법론의 새 사례가 됐다.",
+  "Brand New", "https://www.underconsideration.com/brandnew/archives/new_logo_and_identity_for_ideogram_by_howhow.php",
+  "https://abduzeedo.com/sites/default/files/2026/ideogram-brand-identity-how-how.jpg"),
+ # ⑩ 칸 라이언즈 Design Lions GP — AXA 세 단어 (6/22)
+ ("칸 라이언즈 Design GP — AXA 보험 약관 '세 단어'의 기적",
+  "AXA의 집보험 약관에 'and domestic violence(그리고 가정폭력)' 세 단어를 추가해 피해자를 즉시 이주·지원하는 캠페인이 칸 라이언즈 2026 Design Lions 그랑프리를 수상했다. Publicis Conseil 파리 제작, 디자인·크리에이티브 전략·타이타늄 등 3개 그랑프리를 석권하며 올해 최다 수상 캠페인이 됐다. 브랜드 디자인이 사회 시스템 변화를 이끄는 도구가 될 수 있음을 증명한 역대급 케이스다.",
+  "Ad Age", "https://adage.com/events-awards/cannes-lions/aa-grand-prix-2026/"),
+ # ⑪ 칸 라이언즈 Outdoor GP — Mercado Livre '필드 바코드' (6/22)
+ ("칸 라이언즈 Outdoor GP — 경기장 잔디를 104m 바코드로",
+  "GUT 상파울루가 Mercado Livre를 위해 브라질 파카엠부 경기장 잔디를 104m 바코드로 전환한 'Field Barcode'가 Outdoor 그랑프리를 수상했다. 관중·TV·유튜브 시청자가 코드를 스캔해 25% 할인 쿠폰을 받았고, 5만 3,000건 사용·180만 달러 매출을 기록했다. 물리 공간을 쇼핑 미디어로 변환하는 파격적 발상이 실적으로 이어진 사례다.",
+  "Adweek", "https://www.adweek.com/creativity/the-ordinary-wins-big-among-8-grand-prix-winners-from-cannes-lions-2026-day-1/"),
+ # ⑫ 칸 라이언즈 AXA Titanium 그랑프리 (6/22)
+ ("AXA '세 단어', Titanium 그랑프리까지 — 칸 2026 최강 캠페인",
+  "AXA의 'Three Words' 캠페인이 Design·Creative Strategy에 이어 칸 라이언즈 최고 영예 Titanium 그랑프리까지 수상하며 2026년 칸 최다 수상 캠페인이 됐다. 약관 한 줄 수정으로 가정폭력 피해자를 실질적으로 보호하는 이 캠페인은 크리에이티비티와 사회적 임팩트가 비즈니스 전략과 완벽히 교차할 때 얼마나 강력한지를 증명한다. 2026 Titanium은 '사회를 실질적으로 바꾼 캠페인'에 주는 메시지를 전면에 세웠다.",
+  "Campaign Live", "https://www.campaignlive.co.uk/article/cannes-lions-2026-titanium-grand-prix-axa-three-words/1962418"),
 ]
 
 MARKETING = [
- # ① EA Advertising 인게임 광고 플랫폼 (6/15~19)
- ("EA, 인게임 브랜드 광고 플랫폼 'EA Advertising' 론칭",
-  "일렉트로닉 아츠가 월 1억 2000만 플레이어에 도달하는 'EA Advertising' 플랫폼을 6월 15일 공식 출시했다. Coach·Visa·Lowe's·State Farm 등이 첫 파트너로 인게임 챌린지·바이럴 아이템·스폰서 콘텐츠를 EA Sports 타이틀 전반에 집행하며, Lowe's는 98만 7000건 이상의 인게임 플레이를 이끌었다. 브랜드의 TV 스포츠 예산이 게이밍 미디어로 이동하는 가속화 사례다.",
-  "Marketing Dive", "https://www.marketingdive.com/news/ea-rolls-out-advertising-platform-with-enhanced-offerings-for-brands/822833/"),
- # ② 칸 라이언즈 2026 개막 (6/22)
- ("칸 라이언즈 2026 개막 — AI·크리에이터 이코노미 3대 의제",
-  "6월 22일 개막한 제73회 칸 라이언즈 인터내셔널 페스티벌이 AI·크리에이터 이코노미·비즈니스 임팩트를 3대 핵심 의제로 제시했다. OpenAI·Google DeepMind·Meta 등 빅테크 CEO급 연사 500명 이상이 150시간 이상의 프로그램에 참여하며, 신설된 'Creative Brand Lion'은 캠페인이 아닌 브랜드 생태계 전반의 창의 역량을 평가한다. 역사상 최초 3회 수상 'Creative Marketer of the Year' AB InBev가 개막 기조연설을 맡았다.",
-  "Cannes Lions", "https://www.canneslions.com/festival/programme"),
- # ③ Uber Eats 고든 램지 월드컵 캠페인
- ("Uber Eats × 고든 램지 '요리 하지 마!' 글로벌 캠페인",
-  "Uber Eats가 Mother 제작 'Who Could Cook At A Time Like This?'를 6월 9일 론칭했다. 고든 램지가 주방에 난입해 월드컵 시청을 이유로 요리를 막는 17개국 TV·OOH·SNS 캠페인으로, 유명 셰프가 '배달 주문'을 독려하는 역설적 설정이 강렬한 브랜드 각인 효과를 냈다. Uber Eats 역사상 첫 글로벌 단일 캠페인으로 스포츠 이벤트 연계 브랜드 포지셔닝의 교과서 사례다.",
-  "The Drum", "https://www.thedrum.com/news/ad-of-the-day-uber-eats-taps-gordon-ramsay-to-discourage-world-cup-cooking"),
- # ④ Lay's WhatsApp 월드컵 스타 채팅 마케팅
- ("Lay's, WhatsApp으로 팬 1000만 명 월드컵 마케팅",
-  "PepsiCo의 Lay's가 메시·베컴·앙리·스티브 카렐이 참여한 WhatsApp 브로드캐스트 채널로 90개 이상 시장에서 팬 1000만 명 이상을 확보했다. 선수들이 매치 데이마다 보이스 노트·밈·반응을 공유해 퍼스트파티 데이터와 세컨드스크린 인게이지먼트를 동시에 달성했다. WhatsApp 채널을 CRM과 콘텐츠 미디어로 활용한 대규모 스포츠 마케팅 선례다.",
+ # ① 오프라 칸 LionHeart 강연 (6/23)
+ ("오프라, 칸 라이언즈 LionHeart 무대 강연 — '공감이 최강 광고'",
+  "오프라 윈프리가 6월 23일 칸 라이언즈 뤼미에르 극장 무대에서 LionHeart 수상 강연을 진행했다. 수십 년간 미디어·스토리텔링·자선 활동으로 문화를 바꿔온 공로로 선정된 오프라의 메시지는 '인간의 창의성과 공감이 AI 시대에도 광고의 핵심'이라는 업계 화두와 맞닿는다. '공감을 팔지 말고 실천하라'는 그의 언급은 칸 라이언즈 2026의 핵심 키워드 중 하나로 회자됐다.",
+  "adobo Magazine", "https://www.adobomagazine.com/advertising-awards/cannes-lions-reveals-2026-program-with-lionheart-honoree-oprah-winfrey-alongside-stella-mccartney-mark-ritson-and-more/"),
+ # ② 칸 Outdoor GP — Mercado Livre 필드 바코드 (6/22)
+ ("칸 라이언즈 Outdoor GP — 104m 바코드 경기장, 180만 달러 매출",
+  "GUT 상파울루가 Mercado Livre를 위해 브라질 파카엠부 경기장 잔디를 104m 바코드로 전환한 'Field Barcode'가 Outdoor 그랑프리를 수상했다. 관중·TV·유튜브 시청자가 코드를 스캔해 25% 할인 쿠폰을 받았고, 5만 3,000건 사용·180만 달러 매출을 기록했다. 칸 Day 1 발표된 8개 그랑프리 중 가장 즉각적인 비즈니스 ROI를 입증한 캠페인이다.",
+  "Adweek", "https://www.adweek.com/creativity/the-ordinary-wins-big-among-8-grand-prix-winners-from-cannes-lions-2026-day-1/"),
+ # ③ The Ordinary Periodic Fable H&W GP (6/22)
+ ("The Ordinary '주기율표 패러디', 칸 헬스&웰니스 GP 수상",
+  "스킨케어 브랜드 The Ordinary의 'Periodic Fable'이 칸 라이언즈 Health & Wellness 그랑프리를 수상했다. 주기율표를 패러디해 '기공 제로'·'에이지 디파잉' 등 근거 없는 뷰티 마케팅 용어 49개를 폭로하며 소비자를 미혹하는 업계 관행에 정면 도전했다. Uncommon Creative Studio 제작으로, 브랜드가 자기 업계의 관행을 비판해 신뢰를 얻는 역공 마케팅의 교과서 사례다.",
+  "MM+M", "https://www.mmm-online.com/news/the-periodic-fable-takes-home-cannes-lions-2026-health-and-wellness-grand-prix/"),
+ # ④ 현대차 Coquí Alarmed 오디오 GP (6/22)
+ ("현대차 'Coquí Alarmed', 칸 오디오 GP — 개구리 경보음 캠페인",
+  "BBDO 푸에르토리코가 현대차 렌터카용으로 제작한 'Coquí Alarmed'가 칸 라이언즈 Audio & Radio 그랑프리를 받았다. 차량 잠금 경보음을 푸에르토리코 토종 개구리 '코키' 울음소리로 교체해 관광객의 불평을 문화 자부심 캠페인으로 역전시켰다. 불편함을 브랜드 자산으로 전환한 발상이 오디오 광고의 새 가능성을 보여준다.",
+  "Campaign Live", "https://www.campaignlive.co.uk/article/hyundai-bbdo-puerto-rico-win-audio-radio-grand-prix-cannes-lions/1962418"),
+ # ⑤ SKF 페로 제도 우주 프로그램 B2B GP (6/22)
+ ("SKF '페로 제도 우주 프로그램', B2B 그랑프리 — 조류에너지를 우주 서사로",
+  "스웨덴 베어링 제조사 SKF와 NORD Stockholm이 만든 'Faroe Islands Space Program'이 Creative B2B 그랑프리를 수상했다. 조류 에너지 수중 연 'Luna'를 중심으로 우주탐사 서사를 입혀 2030년 재생에너지 100% 목표를 가진 페로 제도 프로젝트를 홍보했다. B2B 광고가 B2C 못지않게 강렬한 스토리텔링으로 공감을 이끌 수 있음을 증명한 사례다.",
+  "LBBOnline", "https://lbbonline.com/news/Cannes-Lions-2026-Grand-Prix-Winners-in-Audio-and-Radio-Creative-B2B-Creative-Brand-Health-and-Wellness-Outdoor-Pharma-Print-and-Publishing-and-the-Grand-Prix-for-Good"),
+ # ⑥ Caritas 교황 차량→소아 이동클리닉 그랑프리 (6/22)
+ ("교황 차량→가자 소아 이동클리닉 — 칸 Grand Prix for Good 수상",
+  "Caritas Sweden과 스톡홀름 에이전시 Differ의 'Vehicle of Hope'가 Lions Health Grand Prix for Good를 수상했다. 교황 프란치스코가 2014년 요르단강 서안 방문 시 사용한 팝모빌을 가자지구 아동 이동 진료소로 개조해 하루 200명을 치료하는 것이 목표다. 이에 영감받아 7개 추가 클리닉이 대기 중이며, 브랜드 자산 활용과 인도적 임팩트를 연결한 모범 사례로 꼽혔다.",
+  "MM+M", "https://www.mmm-online.com/news/caritas-vehicle-of-hope-takes-home-cannes-lions-health-grand-prix-for-good/"),
+ # ⑦ FIFA 월드컵 2026 브랜드 마케팅 전쟁 (6/22~진행)
+ ("FIFA 월드컵 2026, 105억 달러 브랜드 마케팅 전쟁 본격화",
+  "FIFA 월드컵 2026 개막과 함께 유니레버·아디다스·나이키·코카콜라가 총 105억 달러 추가 광고비를 쏟아붓고 있다. 유니레버는 멕시코시티·뉴욕·마이애미에 'House of Fresh' 체험 허브를 운영하고, 코카콜라는 메시·베컴 등 WhatsApp 채널로 실시간 반응을 공유하며 퍼스트파티 데이터를 축적한다. 이번 월드컵은 스포츠 마케팅이 브랜드 활성화→퍼포먼스 전환의 통합 채널로 진화한 기점으로 기록될 전망이다.",
   "Adweek", "https://www.adweek.com/brand-marketing/fifa-world-cup-26-ad-tracker-brands-kick-off-summer-of-soccer/"),
- # ⑤ AB InBev 칸 라이언즈 역사상 최초 3회 수상
- ("AB InBev, 칸 라이언즈 역사상 최초 3회 연속 수상",
-  "Anheuser-Busch InBev가 2022·2023년에 이어 2026 칸 라이언즈 'Creative Marketer of the Year'를 세 번째로 수상, 역대 최초 3회 수상 기업이 됐다. AB InBev는 지난해 페스티벌에서만 37개 라이언을 수상했으며, 신설 'Creative Brand Lion' 심사위원장도 겸임한다. 브랜드 포트폴리오 전반에 걸친 창의적 일관성이 성장 동력이 된다는 점을 입증한 사례다.",
-  "Adweek", "https://www.adweek.com/creativity/ab-inbev-wins-cannes-lions-creative-marketer-of-the-year-for-a-historic-third-time/"),
- # ⑥ Instagram 릴스 트렌딩 광고 전 광고주 개방
- ("Instagram 릴스 트렌딩 광고, 전 광고주 개방 — 인지도 20% 향상",
-  "Meta가 Instagram Reels Trending Ads를 전체 광고주에게 개방하면서 문화 맥락 콘텐츠 옆 집행 시 브랜드 인지도 최대 20% 향상 효과를 공개했다. 내부 59개 연구 기준 대조군 대비 광고 회상 6.6%p 추가 상승을 기록했으며, TV·영화·패션위크·NFL 등 '컬처럴 모멘트' 카테고리도 신규 추가됐다. 문화적 관련성을 고려한 맥락 광고 배치가 퍼포먼스 향상의 핵심이 됨을 보여준다.",
-  "Variety", "https://variety.com/2026/digital/news/instagram-reels-trending-ads-tv-movies-cultural-moments-nfl-1236698010/"),
- # ⑦ 칸 라이언즈 Creative Brand Lion 신설
- ("칸 라이언즈 'Creative Brand Lion' 신설 — 캠페인 아닌 역량 평가",
-  "칸 라이언즈 2026이 신규 부문 'Creative Brand Lion'을 신설해 캠페인이 아닌 브랜드 내부 시스템·문화·역량을 평가 기준으로 삼기 시작했다. 137개 엔트리 중 10개만 쇼트리스트에 진입했으며, 측정 가능한 비즈니스 성장·ROI·장기 브랜드 가치가 심사 기준이다. '단발 캠페인 수상'에서 '반복 가능한 창의 역량 보유 기업' 인정으로 업계 평가 패러다임이 전환되고 있음을 보여주는 구조적 변화다.",
-  "Cannes Lions", "https://www.canneslions.com/news/cannes-lions-introduces-the-creative-brand-lion"),
 ]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
