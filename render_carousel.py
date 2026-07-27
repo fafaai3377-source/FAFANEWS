@@ -478,7 +478,7 @@ MARKETING = [
   "MarTech", "https://martech.org/your-best-practices-may-already-be-outdated/"),
  ("디스틸러리, 에이전틱 광고 최적화 상용화",
   "예측형 AI 기업 디스틸러리가 미디어 에이전시 캔버스 월드와이드와 손잡고 프로그래매틱 광고의 실시간 에이전틱 최적화 솔루션 'DS-1'을 라이브 캠페인에 업계 최초로 적용했다. 최종 결정권은 사람 트레이더가 유지한다.",
-  "GlobeNewswire", "https://www.globenewswire.com/news-release/2026/07/23/3332167/0/en/Dstillery-and-Canvas-Worldwide-Partner-to-Bring-DS-1-Agentic-Optimization-to-Live-Campaigns.html"),
+  "MarTech Series", "https://martechseries.com/predictive-ai/ai-platforms-machine-learning/dstillery-and-canvas-worldwide-partner-to-bring-ds-1-agentic-optimization-to-live-campaigns/"),
  ("AI가 다시 쓰는 그로스 마케팅 공식",
   "마케팅 컨퍼런스 '모던 그로스 스택 2026'이 서울 웨스틴 파르나스에서 열려 온오프라인 2000여 명이 참여했다. 'AI로 다시 쓰는 성장의 방식'을 주제로 27개 세션이 진행됐으며, 주최사 대표는 AI가 비즈니스의 판 자체를 재설계하는 혁신이라고 강조했다.",
   "베타뉴스", "https://www.betanews.net/article/view/beta202607220005"),
@@ -487,7 +487,7 @@ MARKETING = [
   "MarTech Series", "https://martechseries.com/predictive-ai/ai-platforms-machine-learning/wellsaid-sets-a-new-industry-standard-for-ai-voiceover-pricing/"),
  ("프로펠러애즈, AI 에이전트 캠페인 연동",
   "애드테크 기업 프로펠러애즈가 클로드·챗GPT 등 AI 에이전트로 광고 캠페인을 직접 운영할 수 있는 MCP 커넥터를 출시했다. 채팅 환경에서 여러 포맷의 캠페인을 생성·수정·일시중지하고 타겟팅과 예산을 조정할 수 있으며 전 광고주에게 무료로 제공된다.",
-  "PR Newswire", "https://www.prnewswire.com/news-releases/propellerads-launches-mcp-connector-letting-advertisers-run-campaigns-through-ai-agents-302834104.html"),
+  "PropellerAds Blog", "https://propellerads.com/blog/propellerads-ssp-mcp-connector/"),
 ]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
