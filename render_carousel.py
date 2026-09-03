@@ -427,7 +427,7 @@ AI = [
   "Cryptopolitan", "https://www.cryptopolitan.com/wonderful-550m-double-valuation-5-billion/"),
  ("멀티버스 컴퓨팅, 유럽 최고 성능 모델 'Quasar 438B' 공개",
   "스페인 스타트업 멀티버스 컴퓨팅이 4380억 파라미터 추론 모델 Quasar 438B를 출시했다. 아티피셜 애널리시스 인텔리전스 지수에서 유럽 모델 중 최고 점수를 기록했다.",
-  "GlobeNewswire", "https://www.globenewswire.com/news-release/2026/09/02/3355465/0/en/multiverse-computing-launches-quasar-438b-the-highest-scoring-european-model-on-artificial-analysis-intelligence-index.html"),
+  "The AI Insider", "https://theaiinsider.tech/2026/09/02/multiverse-computing-launches-quasar-438b/"),
  ("퍼플렉시티, 맥용 '하이브리드 컴퓨트' 출시",
   "퍼플렉시티가 클라우드와 온디바이스 모델을 나눠 처리하는 하이브리드 컴퓨트를 애플 실리콘 맥에 도입했다. 이름·계좌번호 같은 민감정보는 기기 밖으로 나가지 않으며, 온디바이스 개인정보 분류기도 오픈소스로 공개했다.",
   "9to5Mac", "https://9to5mac.com/2026/09/01/perplexity-launches-privacy-minded-hybrid-compute-ai-feature-for-mac/"),
@@ -487,7 +487,7 @@ MARKETING = [
   "MarTech", "https://martech.org/openais-audacious-claim-about-ad-revenue/"),
  ("도나 캐런 뉴욕, 켄달 제너와 2026 가을 캠페인 공개",
   "도나 캐런 뉴욕이 켄달 제너를 모델로 한 2026 가을 캠페인을 공개했다. 사진작가 메르트 알라스가 뉴욕 곳곳에서 촬영했으며 새로운 시즌 컬러 '블랙 체리'를 함께 선보였다.",
-  "GlobeNewswire", "https://www.globenewswire.com/news-release/2026/09/02/3355269/0/en/donna-karan-new-york-unveils-its-fall-2026-campaign-featuring-kendall-jenner.html"),
+  "StockTitan", "https://www.stocktitan.net/news/GIII/donna-karan-new-york-unveils-its-fall-2026-campaign-featuring-kf6lhxts3ooz.html"),
 ]
 
 # (영문 라벨, 한글 라벨, 액센트, 파일 접미사, 기사 리스트)
