@@ -436,7 +436,7 @@ AI = [
   "TechCrunch", "https://techcrunch.com/2026/09/28/meta-launches-enterprise-ai-platform-hires-mongodb-ceo-to-lead-new-initiative/"),
  ("Anthropic IPO 서류 유출: 5180억 달러 컴퓨팅 약정",
   "로이터가 입수한 Anthropic의 기밀 IPO 서류에 따르면 2025년 매출은 약 46억 달러, 순손실은 420억 달러다. 향후 5180억 달러 규모의 인프라 약정도 담겨 있다.",
-  "CNBC", "https://www.cnbc.com/2026/09/28/anthropics-ipo-prospectus-shows-sweeping-ai-vision-surging-costs-reuters.html"),
+  "Reuters", "https://finance.yahoo.com/technology/ai/articles/exclusive-anthropics-ipo-prospectus-shows-231722972.html"),
  ("메타 Muse, 소상공인용 AI 에이전트로 확장",
   "메타가 AI 에이전트 Muse를 소상공인에게 확대하고 Shopify, Dropbox, Slack 등과의 연동을 추가했다. 영업·운영·마케팅 도구의 맥락을 읽는 에이전트를 노린다.",
   "TechCrunch", "https://techcrunch.com/2026/09/29/meta-is-expanding-its-ai-agent-muse-to-small-businesses/"),
