@@ -7,6 +7,9 @@ on:
       - 'render_carousel.py'   # 세션이 뉴스 데이터를 업데이트하면 자동 트리거
   workflow_dispatch:            # 수동 실행 버튼
 
+permissions:
+  contents: write               # briefings/ 폴더에 PDF 커밋·push 하기 위함
+
 jobs:
   render-and-send:
     runs-on: ubuntu-latest
@@ -33,6 +36,20 @@ jobs:
 
       - name: PDF 렌더링 (실제 기사 이미지 포함)
         run: python3 render_carousel.py
+
+      - name: briefings 폴더에 PDF 저장 & 커밋 (데스크탑 로컬 동기화용)
+        run: |
+          mkdir -p briefings
+          cp output/*.pdf briefings/
+          git config user.name "FAFA NEWS Bot"
+          git config user.email "fafaai3377@gmail.com"
+          git add briefings/*.pdf
+          if git diff --cached --quiet; then
+            echo "변경된 PDF 없음 — 커밋 건너뜀"
+          else
+            git commit -m "briefing PDF: $(date +'%Y-%m-%d')"
+            git push origin HEAD:main
+          fi
 
       - name: 이메일 발송
         env:
